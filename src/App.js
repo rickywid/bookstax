@@ -5,7 +5,7 @@ import './App.css';
 class App extends React.Component {
 
   componentDidMount() {
-    fetch('http://localhost:3001/').then(res=>{
+    fetch('https://bookstax-api.herokuapp.com/').then(res=>{
       return res.json();
     }).then(json=>{
       console.log(JSON.stringify(json));
