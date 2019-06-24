@@ -1,11 +1,20 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import styled from 'styled-components';
+
+const Button = styled.button`
+  border: 5px solid red;
+`;
 
 class App extends React.Component {
 
   componentDidMount() {
-    fetch('https://bookstax-api.herokuapp.com/').then(res=>{
+
+    const url = 'https://bookstax-api.herokuapp.com/';
+    const local = 'http://localhost:3001';
+
+    fetch(local).then(res=>{
       return res.json();
     }).then(json=>{
       console.log(JSON.stringify(json));
@@ -20,6 +29,7 @@ class App extends React.Component {
           <p>
             Edit <code>src/App.js</code> and save to reload.
           </p>
+          <Button>Click</Button>
           <a
             className="App-link"
             href="https://reactjs.org"
