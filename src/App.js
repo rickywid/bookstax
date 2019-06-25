@@ -1,34 +1,22 @@
 import React from 'react';
-import styled from 'styled-components';
+// import styled from 'styled-components';
 import './App.css';
-
-const Button = styled.button`
-  border: 5px solid red;
-`;
+import { BrowserRouter } from 'react-router-dom';
+import Routes from './routes';
 
 class App extends React.Component {
   componentDidMount() {
-    // const url = 'https://bookstax-api.herokuapp.com/';
-    const local = 'http://localhost:3001';
-
-    fetch(local)
-      .then(res => res.json())
-      .then(json => console.log(JSON.stringify(json)));
+    console.log('app mounted');
   }
 
   render() {
     return (
-      <div className="App">
-        <Button>styled-component button</Button>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </div>
+      <BrowserRouter>
+        <div className="App">
+          <p>BookStax</p>
+          {Routes}
+        </div>
+      </BrowserRouter>
     );
   }
 }
