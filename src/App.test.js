@@ -21,6 +21,6 @@ describe('Button exists', () => {
     const wrapper = shallow(<App />);
 
     const link = wrapper.find('a').text();
-    expect(link).toEqual('Learn React!'); // PASS
+    expect(link).toEqual('Learn React'); // PASS
   });
 });
