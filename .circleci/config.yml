@@ -20,6 +20,7 @@ jobs:
           
       - run: npm install
       - run: npm run eslint
+      - run: npm run test
 
       # Download and cache dependencies
       - save_cache:
@@ -34,7 +35,7 @@ jobs:
     steps:
       - checkout    
 
-      - run: npm run test
+      - run: npm install
        
   deploy:
     docker:
@@ -53,7 +54,6 @@ workflows:
   build-deploy:
     jobs:
       - build
-      - test
 
       - deploy:
           requires:
