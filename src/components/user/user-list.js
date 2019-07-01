@@ -1,13 +1,77 @@
 import React from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
-import initialData from './initial-data';
 import Column from '../column';
 
 class UserList extends React.Component {
   constructor(props) {
     super(props);
-    this.state = initialData;
+    this.state = {};
     this.onDragEnd = this.onDragEnd.bind(this);
+  }
+
+  componentDidMount() {
+    const data = {
+      books: {},
+      columns: {
+        backlog: {
+          id: 'backlog',
+          title: 'Backlog',
+          bookIds: [],
+        },
+        completed: {
+          id: 'completed',
+          title: 'Completed',
+          bookIds: [],
+        },
+        current: {
+          id: 'current',
+          title: 'Currently Reading',
+          bookIds: [],
+        },
+      },
+      columnOrder: ['backlog', 'completed', 'current'],
+    };
+
+    fetch('http://localhost:3001/user/1').then(res => res.json()).then((json) => {
+      const books = [...json[0].backlog, ...json[0].currently, ...json[0].completed];
+
+      const booksObj = {};
+      // const backlogObj = data.columns.backlog = {id: '', title: '', bookIds: []};
+      // const completedObj = data.columns.backlog = {id: '', title: '', bookIds: []};
+
+      books.map((book, index) => {
+        booksObj[`book-${index + 1}`] = {
+          id: `book-${index + 1}`,
+          content: {
+            title: book.title,
+            author: book.author,
+            cover: book.cover,
+            isbn: book.isbn,
+            status: book.status,
+          },
+        };
+
+        if (book.status === 'backlog') {
+          data.columns.backlog.bookIds.push(`book-${index + 1}`);
+        }
+
+        if (book.status === 'completed') {
+          data.columns.completed.bookIds.push(`book-${index + 1}`);
+        }
+
+        if (book.status === 'current') {
+          data.columns.current.bookIds.push(`book-${index + 1}`);
+        }
+
+        return null;
+      });
+
+      data.books = {
+        ...booksObj,
+      };
+
+      this.setState({ data });
+    });
   }
 
   onDragEnd(result) {
@@ -16,12 +80,11 @@ class UserList extends React.Component {
     let newDestColumn;
 
     const { destination, source, draggableId } = result;
-    const { columns } = this.state;
-
+    const { data } = this.state;
     // Get id of column that item was dragged from
-    const column = columns[source.droppableId];
+    const column = data.columns[source.droppableId];
     // create a copy of the taskIds array to manipulate
-    const newTaskIds = [...column.taskIds];
+    const newTaskIds = [...column.bookIds];
     // remove item from original position
     newTaskIds.splice(source.index, 1);
 
@@ -29,7 +92,7 @@ class UserList extends React.Component {
     const newColumn = {
       id: column.id,
       title: column.title,
-      taskIds: newTaskIds,
+      bookIds: newTaskIds,
     };
 
 
@@ -43,26 +106,44 @@ class UserList extends React.Component {
 
     // if item was dropped into a different column
     if (destination.droppableId !== source.droppableId) {
-      // update column the destination column array
-      destColumn = columns[destination.droppableId];
-      destTaskIds = [...destColumn.taskIds];
+      // update destination column array
+      destColumn = data.columns[destination.droppableId];
+      destTaskIds = [...destColumn.bookIds];
 
       destTaskIds.splice(destination.index, 0, draggableId);
       newDestColumn = {
         id: destColumn.id,
         title: destColumn.title,
-        taskIds: destTaskIds,
+        bookIds: destTaskIds,
       };
 
-      // update state
-      this.setState(prevState => ({
-        ...prevState,
-        columns: {
-          ...prevState.columns,
-          [newColumn.id]: newColumn,
-          [destColumn.id]: newDestColumn,
-        },
-      }));
+      const state = { ...data };
+
+      state.columns = {
+        ...data.columns,
+        [newColumn.id]: newColumn,
+        [destColumn.id]: newDestColumn,
+      };
+
+      state.books[draggableId].content.status = destination.droppableId;
+
+      this.setState({
+        data: { ...state },
+      }, () => {
+        const backlog = data.columns.backlog.bookIds.map(id => data.books[id].content);
+        const completed = data.columns.completed.bookIds.map(id => data.books[id].content);
+        const current = data.columns.current.bookIds.map(id => data.books[id].content);
+
+
+        fetch('http://localhost:3001/user/update/1', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ data: [backlog, completed, current] }),
+        });
+      });
+
       return;
     }
 
@@ -70,26 +151,51 @@ class UserList extends React.Component {
     newTaskIds.splice(destination.index, 0, draggableId);
 
     // update state
-    this.setState(prevState => ({
-      ...prevState,
-      columns: {
-        ...prevState.columns,
-        [newColumn.id]: newColumn,
-      },
-    }));
+    data.columns = {
+      ...data.columns,
+      [newColumn.id]: newColumn,
+    };
+
+    this.setState({
+      data: { ...data },
+    }, () => {
+      const backlog = data.columns.backlog.bookIds.map(id => data.books[id].content);
+      const completed = data.columns.completed.bookIds.map(id => data.books[id].content);
+      const current = data.columns.current.bookIds.map(id => data.books[id].content);
+
+      fetch('http://localhost:3001/user/update/1', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ data: [backlog, completed, current] }),
+      }).then(res => res.json()).then((json) => {
+        this.setState((prevState) => {
+          const state = prevState;
+          state.books = [...json[0].backlog, ...json[0].currently, ...json[0].completed];
+          state.columns = [...json];
+          return data;
+        });
+      });
+    });
   }
 
   render() {
-    const { columnOrder, columns, tasks } = this.state;
+    const {
+      data,
+    } = this.state;
+
+
+    if (!data) return null;
     return (
       <DragDropContext
         // onDragStart
         // onDragupdate
         onDragEnd={this.onDragEnd}
       >
-        {columnOrder.map((columnId) => {
-          const column = columns[columnId];
-          const tasksArr = column.taskIds.map(taskId => tasks[taskId]);
+        {data.columnOrder.map((columnId) => {
+          const column = data.columns[columnId];
+          const tasksArr = column.bookIds.map(bookId => data.books[bookId]);
 
           return <Column key={column.id} column={column} tasks={tasksArr} />;
         })}

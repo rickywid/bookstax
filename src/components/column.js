@@ -8,6 +8,7 @@ const Container = styled.div`
   min-height: 300px;
   border: 1px dashed grey;
   padding: 10px;
+  flex: 1;
 `;
 const Title = styled.h3``;
 const TaskList = styled.div``;

@@ -6,7 +6,7 @@ import Routes from './routes';
 
 class App extends React.Component {
   componentDidMount() {
-    fetch('http://localhost:3001').then(res => res.json()).then(json => console.log(json));
+    // fetch('http://localhost:3001').then(res => res.json()).then(json => console.log(json));
   }
 
   render() {

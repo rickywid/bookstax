@@ -20,7 +20,9 @@ class Task extends React.Component {
             ref={provided.innerRef}
             // innerRef={provided.innerRef}
           >
-            {task.content}
+            <img src={task.content.cover} alt="cover" />
+            <p>{task.content.title}</p>
+            <p>{task.content.author}</p>
           </Container>
         )}
       </Draggable>

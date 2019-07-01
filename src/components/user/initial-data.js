@@ -2,31 +2,66 @@ const initialData = {
   tasks: {
     'task-1': {
       id: 'task-1',
-      content: 'Take out the garbage',
+      content: {
+        title: '1984',
+        cover: 'http://books.google.com/books/content?id=dKiJDwAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api',
+        author: 'Fyodor Dostoyevsky',
+        isbn: '9781605205106',
+      },
     },
     'task-2': {
       id: 'task-2',
-      content: 'Take out the dog',
+      content: {
+        title: 'Crime and Punishment',
+        cover: 'https://books.google.com/books/content?id=0HZrq-4zA5QC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api',
+        author: 'Fyodor Dostoyevsky',
+        isbn: '9781605205106',
+      },
     },
     'task-3': {
       id: 'task-3',
-      content: 'Take out the car',
+      content: {
+        title: 'Harry Potter',
+        cover: 'http://books.google.com/books/content?id=5MQFrgEACAAJ&printsec=frontcover&img=1&zoom=5&source=gbs_api',
+        author: 'Fyodor Dostoyevsky',
+        isbn: '9781605205106',
+      },
     },
     'task-4': {
       id: 'task-4',
-      content: 'Take out the girl',
+      content: {
+        title: 'Lord of the Rings',
+        cover: 'http://books.google.com/books/content?id=4KwCoQEACAAJ&printsec=frontcover&img=1&zoom=5&source=gbs_api',
+        author: 'Fyodor Dostoyevsky',
+        isbn: '9781605205106',
+      },
     },
     'task-5': {
       id: 'task-5',
-      content: 'Take out the dinner',
+      content: {
+        title: 'The Hobbit',
+        cover: 'http://books.google.com/books/content?id=hFfhrCWiLSMC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api',
+        author: 'Fyodor Dostoyevsky',
+        isbn: '9781605205106',
+      },
     },
     'task-6': {
       id: 'task-6',
-      content: 'Take out the whatever',
+      content: {
+        title: 'Animal Farm',
+        cover: 'http://books.google.com/books/content?id=o6eSDwAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api',
+        author: 'Fyodor Dostoyevsky',
+        isbn: '9781605205106',
+      },
     },
     'task-7': {
       id: 'task-7',
-      content: 'Take out the ho',
+      content: {
+        title: 'Da Vinci Code',
+        cover: 'http://books.google.com/books/content?id=ohZ1wcYifLsC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api',
+        author: 'Fyodor Dostoyevsky',
+        isbn: '9781605205106',
+      },
     },
   },
   columns: {
