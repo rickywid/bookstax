@@ -34,10 +34,7 @@ class UserList extends React.Component {
 
     fetch('http://localhost:3001/user/1').then(res => res.json()).then((json) => {
       const books = [...json[0].backlog, ...json[0].currently, ...json[0].completed];
-
       const booksObj = {};
-      // const backlogObj = data.columns.backlog = {id: '', title: '', bookIds: []};
-      // const completedObj = data.columns.backlog = {id: '', title: '', bookIds: []};
 
       books.map((book, index) => {
         booksObj[`book-${index + 1}`] = {
@@ -126,14 +123,13 @@ class UserList extends React.Component {
       };
 
       state.books[draggableId].content.status = destination.droppableId;
-
       this.setState({
         data: { ...state },
       }, () => {
-        const backlog = data.columns.backlog.bookIds.map(id => data.books[id].content);
-        const completed = data.columns.completed.bookIds.map(id => data.books[id].content);
-        const current = data.columns.current.bookIds.map(id => data.books[id].content);
-
+        const newState = this.state;
+        const backlog = newState.data.columns.backlog.bookIds.map(id => newState.data.books[id].content);
+        const completed = newState.data.columns.completed.bookIds.map(id => newState.data.books[id].content);
+        const current = newState.data.columns.current.bookIds.map(id => newState.data.books[id].content);
 
         fetch('http://localhost:3001/user/update/1', {
           method: 'PUT',
@@ -141,6 +137,13 @@ class UserList extends React.Component {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({ data: [backlog, completed, current] }),
+        }).then(res => res.json()).then((json) => {
+          this.setState((prevState) => {
+            const state2 = prevState;
+            state2.books = [...json[0].backlog, ...json[0].currently, ...json[0].completed];
+            state2.columns = [...json];
+            return data;
+          });
         });
       });
 
@@ -184,7 +187,6 @@ class UserList extends React.Component {
     const {
       data,
     } = this.state;
-
 
     if (!data) return null;
     return (
