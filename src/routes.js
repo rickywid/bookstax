@@ -2,7 +2,7 @@ import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import Landing from './components/landing';
 import Search from './components/search';
-import ReadAssessment from './components/read-assessment';
+import ReadAssessment from './components/read-assessment/index';
 import BookProfile from './components/books/book-profile';
 import Dashboard from './components/dashboard';
 import UserProfile from './components/user/user-profile';
