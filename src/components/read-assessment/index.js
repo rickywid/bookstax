@@ -1,4 +1,5 @@
 import React from 'react';
+import Timer from '../../helpers/timer';
 // import styled from 'styled-components';
 
 class ReadAssessment extends React.Component {
@@ -8,7 +9,10 @@ class ReadAssessment extends React.Component {
       showStartPage: true,
       startTime: false,
       showResults: false,
+      wpm: 0,
     };
+
+    this.timer = new Timer();
   }
 
   componentDidMount() {
@@ -20,6 +24,7 @@ class ReadAssessment extends React.Component {
       const state = prevState;
       state.showStartPage = !prevState.showStartPage;
       state.startTime = true;
+      this.timer.start();
 
       return state;
     });
@@ -30,13 +35,28 @@ class ReadAssessment extends React.Component {
       const state = prevState;
       state.startTime = false;
       state.showResults = true;
+      const seconds = this.timer.stop();
 
+      state.wpm = this.calculateWpm(seconds);
+      return state;
+    });
+  }
+
+  calculateWpm(seconds) {
+    // wordCount = 944
+    // seconds is 273
+    // WordsPerSecond = wordCount / seconds = 3.64
+    // WPM = 3.64 * 60 = 218.46
+
+    this.setState((prevState) => {
+      const state = prevState;
+      state.wpm = (400 / seconds) * 60;
       return state;
     });
   }
 
   render() {
-    const { showStartPage, showResults } = this.state;
+    const { showStartPage, showResults, wpm } = this.state;
 
     if (showStartPage) {
       return (
@@ -75,7 +95,15 @@ class ReadAssessment extends React.Component {
         </p>
         <button onClick={this.onHandleStop.bind(this)} type="button">Stop</button>
 
-        { showResults ? <div>WPM: 250</div> : <div /> }
+        { showResults
+          ? (
+            <div>
+              WPM:
+              { wpm }
+            </div>
+          )
+          : <div />
+        }
       </div>
     );
   }
