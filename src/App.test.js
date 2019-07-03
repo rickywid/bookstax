@@ -16,11 +16,11 @@ import App from './App';
 // Jest API
 //
 
-describe('Button exists', () => {
-  it('check to see if button exists on page', () => {
+describe('Test', () => {
+  it('A sample test', () => {
     const wrapper = shallow(<App />);
 
-    const link = wrapper.find('a').text();
-    expect(link).toEqual('Learn React'); // PASS
+    const title = wrapper.find('p').text();
+    expect(title).toEqual('BookStax'); // PASS
   });
 });
