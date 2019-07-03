@@ -131,7 +131,7 @@ class UserList extends React.Component {
         const completed = newState.data.columns.completed.bookIds.map(id => newState.data.books[id].content);
         const current = newState.data.columns.current.bookIds.map(id => newState.data.books[id].content);
 
-        fetch('http://localhost:3001/user/update/1', {
+        fetch('http://localhost:3001/user/update/books/1', {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
