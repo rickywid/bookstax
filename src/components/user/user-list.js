@@ -1,11 +1,17 @@
 import React from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
+import styled from 'styled-components';
 import Column from '../column';
+
+const ReactDnDArea = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
 
 class UserList extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = { isLiked: true };
     this.onDragEnd = this.onDragEnd.bind(this);
   }
 
@@ -32,42 +38,45 @@ class UserList extends React.Component {
       columnOrder: ['backlog', 'completed', 'current'],
     };
 
-    fetch('http://localhost:3001/user/1').then(res => res.json()).then((json) => {
-      const books = [...json[0].backlog, ...json[0].currently, ...json[0].completed];
-      const booksObj = {};
+    Promise.all([fetch('http://localhost:3001/user/list/likes'), fetch('http://localhost:3001/user/1')]).then((res) => {
+      Promise.all([res[0].json(), res[1].json()]).then((res2) => {
+        const isLiked = res2[0];
+        const books = [...res2[1][0].backlog, ...res2[1][0].currently, ...res2[1][0].completed];
+        const booksObj = {};
 
-      books.map((book, index) => {
-        booksObj[`book-${index + 1}`] = {
-          id: `book-${index + 1}`,
-          content: {
-            title: book.title,
-            author: book.author,
-            cover: book.cover,
-            isbn: book.isbn,
-            status: book.status,
-          },
+        books.map((book, index) => {
+          booksObj[`book-${index + 1}`] = {
+            id: `book-${index + 1}`,
+            content: {
+              title: book.title,
+              author: book.author,
+              cover: book.cover,
+              isbn: book.isbn,
+              status: book.status,
+            },
+          };
+
+          if (book.status === 'backlog') {
+            data.columns.backlog.bookIds.push(`book-${index + 1}`);
+          }
+
+          if (book.status === 'completed') {
+            data.columns.completed.bookIds.push(`book-${index + 1}`);
+          }
+
+          if (book.status === 'current') {
+            data.columns.current.bookIds.push(`book-${index + 1}`);
+          }
+
+          return null;
+        });
+
+        data.books = {
+          ...booksObj,
         };
 
-        if (book.status === 'backlog') {
-          data.columns.backlog.bookIds.push(`book-${index + 1}`);
-        }
-
-        if (book.status === 'completed') {
-          data.columns.completed.bookIds.push(`book-${index + 1}`);
-        }
-
-        if (book.status === 'current') {
-          data.columns.current.bookIds.push(`book-${index + 1}`);
-        }
-
-        return null;
+        this.setState({ isLiked, data });
       });
-
-      data.books = {
-        ...booksObj,
-      };
-
-      this.setState({ data });
     });
   }
 
@@ -183,25 +192,65 @@ class UserList extends React.Component {
     });
   }
 
+  onHandleLike() {
+    const { isLiked } = this.state;
+
+    if (isLiked) {
+      this.setState({ isLiked: !isLiked }, () => {
+        // remove record from likes table
+        fetch('http://localhost:3001/user/update/list/likes', {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            user_id: 1,
+            list_id: 1,
+          }),
+        });
+      });
+
+      return;
+    }
+
+    this.setState({ isLiked: !isLiked }, () => {
+      // add id to likes table
+      fetch('http://localhost:3001/user/update/list/likes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: 1,
+          list_id: 1,
+        }),
+      });
+    });
+  }
+
   render() {
     const {
       data,
+      isLiked,
     } = this.state;
-
     if (!data) return null;
-    return (
-      <DragDropContext
-        // onDragStart
-        // onDragupdate
-        onDragEnd={this.onDragEnd}
-      >
-        {data.columnOrder.map((columnId) => {
-          const column = data.columns[columnId];
-          const tasksArr = column.bookIds.map(bookId => data.books[bookId]);
 
-          return <Column key={column.id} column={column} tasks={tasksArr} />;
-        })}
-      </DragDropContext>
+    return (
+      <ReactDnDArea>
+        <button type="button" onClick={this.onHandleLike.bind(this)}>{!isLiked ? 'Like' : 'Unlike'}</button>
+        <DragDropContext
+          // onDragStart
+          // onDragupdate
+          onDragEnd={this.onDragEnd}
+        >
+          {data.columnOrder.map((columnId) => {
+            const column = data.columns[columnId];
+            const tasksArr = column.bookIds.map(bookId => data.books[bookId]);
+
+            return <Column key={column.id} column={column} tasks={tasksArr} />;
+          })}
+        </DragDropContext>
+      </ReactDnDArea>
     );
   }
 }
