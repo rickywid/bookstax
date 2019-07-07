@@ -1,4 +1,7 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { simpleAction } from '../actions/simpleAction';
+
 // import styled from 'styled-components';
 
 class Landing extends React.Component {
@@ -12,7 +15,7 @@ class Landing extends React.Component {
   }
 
   componentDidMount() {
-    console.log('landing mounted');
+    // this.props.simpleAction();
   }
 
   saveBook = (book) => {
@@ -60,5 +63,9 @@ class Landing extends React.Component {
     );
   }
 }
+const mapDispatchToProps = dispatch => ({
+  simpleAction: () => dispatch(simpleAction()),
+});
 
-export default Landing;
+// export default Landing;
+export default connect(null, mapDispatchToProps)(Landing);

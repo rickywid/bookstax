@@ -17,9 +17,9 @@ const Routes = (
     <Route exact path="/read-assessment" component={ReadAssessment} />
     <Route exact path="/book/:book_id" component={BookProfile} />
     <Route exact path="/dashboard" component={Dashboard} />
-    <Route exact path="/user/show/:user_id" component={UserProfile} />
+    <Route exact path="/user/:user_id" component={UserProfile} />
     <Route exact path="/user/:user_id/list/:userlist_id" component={UserList} />
-    <Route exact path="/user/edit/:user_id" component={UserEdit} />
+    <Route exact path="/user/:user_id/edit" component={UserEdit} />
     <Route component={NoMatch} />
   </Switch>
 );
