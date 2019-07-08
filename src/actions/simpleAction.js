@@ -15,7 +15,6 @@ export const getUserProfile = () => (dispatch) => {
 
 
 export const userAuth = () => (dispatch) => {
-  console.log('called');
   dispatch({
     type: 'IS_AUTH',
     payload: true,

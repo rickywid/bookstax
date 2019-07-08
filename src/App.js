@@ -30,8 +30,8 @@ class App extends React.Component {
       <BrowserRouter>
         <div className="App">
           <nav>
-Welcome
-            {isAuth.authenticated ? user.name : 'Guest'}
+            navigation
+            {isAuth.authenticated ? ` ${user.name}` : 'Guest'}
           </nav>
           {Routes}
         </div>
