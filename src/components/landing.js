@@ -15,7 +15,7 @@ class Landing extends React.Component {
   }
 
   componentDidMount() {
-    // this.props.simpleAction();
+    console.log('landing');
   }
 
   saveBook = (book) => {
@@ -30,13 +30,17 @@ class Landing extends React.Component {
     };
 
     // save book to user's backlog
-    fetch('http://localhost:3001/user/addbook/1', {
+    fetch('http://localhost:3000/user/addbook/1', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
     }).then(res => console.log(res));
+  }
+
+  handleSignIn = () => {
+    window.open('http://localhost:3001/signin', '_self');
   }
 
   handleSearch() {
@@ -49,6 +53,7 @@ class Landing extends React.Component {
     const { results } = this.state;
     return (
       <div className="landing">
+        <button onClick={this.handleSignIn} type="button">Sign In With Google</button>
         <input type="text" placeholder="search title, author, isbn" />
         <button onClick={this.handleSearch.bind(this)} type="button">Search</button>
         {results.length > 0 ? results[0].items.map(book => (

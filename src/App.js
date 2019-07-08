@@ -1,8 +1,6 @@
-/* eslint-disable */
-
 import React from 'react';
 import { connect } from 'react-redux';
-
+import PropTypes from 'prop-types';
 import './App.css';
 import { BrowserRouter } from 'react-router-dom';
 import Routes from './routes';
@@ -17,20 +15,23 @@ class App extends React.Component {
   }
 
   componentDidMount() {
+    console.log('app');
   }
 
   componentWillReceiveProps(nextProps) {
+    console.log(nextProps);
     this.setState({ user: nextProps.user });
   }
 
   render() {
-    console.log(this.props.user);
+    const { isAuth } = this.props;
+    const { user } = this.state;
     return (
       <BrowserRouter>
         <div className="App">
           <nav>
 Welcome
-            {this.props.is_auth.authenticated ? this.props.user.name : 'Guest'}
+            {isAuth.authenticated ? user.name : 'Guest'}
           </nav>
           {Routes}
         </div>
@@ -40,13 +41,15 @@ Welcome
 }
 
 function mapStateToProps(state) {
-  console.log(state.auth);
   return {
     user: state.getUser,
-    is_auth: state.auth,
+    isAuth: state.auth,
   };
 }
 
 export default connect(mapStateToProps, null)(App);
 
-// export default App;
+App.propTypes = {
+  user: PropTypes.shape({}).isRequired,
+  isAuth: PropTypes.shape({ authenticated: PropTypes.bool.isRequired }).isRequired,
+};

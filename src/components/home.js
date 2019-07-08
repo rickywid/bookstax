@@ -1,18 +1,16 @@
-/* eslint-disable */
-
 import React from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import * as actions from '../actions/simpleAction';
 
 class Home extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   componentDidMount() {
+    console.log('home');
+    const { getUserProfile, userAuth } = this.props;
+
     // user is authenticated, get user profile
-    this.props.getUserProfile();
-    this.props.userAuth();
+    getUserProfile();
+    userAuth();
   }
 
   render() {
@@ -24,9 +22,9 @@ class Home extends React.Component {
   }
 }
 
-// function mapStateToProps(state) {
-//   console.log(state);
-// }
-
-// export default Landing;
 export default connect(null, actions)(Home);
+
+Home.propTypes = {
+  getUserProfile: PropTypes.func.isRequired,
+  userAuth: PropTypes.func.isRequired,
+};

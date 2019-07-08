@@ -1,13 +1,24 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
+import reduxThunk from 'redux-thunk';
 import App from './App';
-import configureStore from './store';
+// import configureStore from './store';
+import rootReducer from './reducers/rootReducer';
 import * as serviceWorker from './serviceWorker';
 
+const createStoreWithMiddleware = applyMiddleware(reduxThunk)(createStore);
+const token = localStorage.getItem('token');
+const store = createStoreWithMiddleware(rootReducer);
+
+if (token) {
+  store.dispatch({ type: 'IS_AUTH', payload: true });
+}
+
 ReactDOM.render(
-  <Provider store={configureStore()}>
+  <Provider store={store}>
     <App />
   </Provider>,
   document.getElementById('root'),
