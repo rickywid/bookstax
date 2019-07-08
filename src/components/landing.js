@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { simpleAction } from '../actions/simpleAction';
+import { getUserProfile } from '../actions/simpleAction';
 
 // import styled from 'styled-components';
 
@@ -64,7 +64,7 @@ class Landing extends React.Component {
   }
 }
 const mapDispatchToProps = dispatch => ({
-  simpleAction: () => dispatch(simpleAction()),
+  getUserProfile: () => dispatch(getUserProfile()),
 });
 
 // export default Landing;

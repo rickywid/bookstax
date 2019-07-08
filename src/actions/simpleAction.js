@@ -1,7 +1,18 @@
 // eslint-disable-next-line
-export const simpleAction = () => (dispatch) => {
+export const getUserProfile = () => (dispatch) => {
+  fetch('http://localhost:3001/user/1').then(res => res.json()).then((data) => {
+    // set user profile to global application state
+    dispatch({
+      type: 'GET_USER',
+      payload: data[0],
+    });
+  });
+};
+
+
+export const userAuth = () => (dispatch) => {
   dispatch({
-    type: 'SIMPLE_ACTION',
-    payload: 'result_of_simple_action',
+    type: 'IS_AUTH',
+    payload: true,
   });
 };

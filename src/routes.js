@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
-import Landing from './components/landing';
+import Main from './components/main';
 import Search from './components/search';
 import ReadAssessment from './components/read-assessment/index';
 import BookProfile from './components/books/book-profile';
@@ -12,7 +12,7 @@ import NoMatch from './components/noMatch';
 
 const Routes = (
   <Switch>
-    <Route exact path="/" component={Landing} />
+    <Route exact path="/" component={Main} />
     <Route exact path="/search" component={Search} />
     <Route exact path="/read-assessment" component={ReadAssessment} />
     <Route exact path="/book/:book_id" component={BookProfile} />
