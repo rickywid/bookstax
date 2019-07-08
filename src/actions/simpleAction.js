@@ -21,6 +21,15 @@ export const userAuth = () => (dispatch) => {
   });
 };
 
+export const signOut = () => (dispatch) => {
+  dispatch({
+    type: 'SIGNOUT',
+    payload: false,
+  });
+
+  localStorage.removeItem('token');
+};
+
 
 export const googleSignIn = history => (
   (dispatch) => {

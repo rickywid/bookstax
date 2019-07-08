@@ -1,22 +1,22 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import * as actions from '../actions/simpleAction';
 
 class Home extends React.Component {
   componentDidMount() {
     console.log('home');
-    const { getUserProfile, userAuth } = this.props;
+    // const { getUserProfile, userAuth } = this.props;
 
     // user is authenticated, get user profile
-    getUserProfile();
-    userAuth();
+    // getUserProfile();
+    // userAuth();
   }
 
   render() {
     return (
       <div className="home">
-        Logged in
+        Home - Logged in
       </div>
     );
   }
@@ -24,7 +24,7 @@ class Home extends React.Component {
 
 export default connect(null, actions)(Home);
 
-Home.propTypes = {
-  getUserProfile: PropTypes.func.isRequired,
-  userAuth: PropTypes.func.isRequired,
-};
+// Home.propTypes = {
+//   getUserProfile: PropTypes.func.isRequired,
+//   userAuth: PropTypes.func.isRequired,
+// };

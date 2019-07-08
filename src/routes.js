@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
-// import Main from './components/main';
-import Landing from './components/landing';
+import Main from './components/main';
+// import Landing from './components/landing';
 import Search from './components/search';
 import ReadAssessment from './components/read-assessment/index';
 import BookProfile from './components/books/book-profile';
@@ -16,7 +16,7 @@ import RequireAuth from './components/auth/require_auth';
 
 const Routes = (
   <Switch>
-    <Route exact path="/" component={Landing} />
+    <Route exact path="/" component={Main} />
     <Route exact path="/search" component={Search} />
     <Route exact path="/read-assessment" component={ReadAssessment} />
     <Route exact path="/book/:book_id" component={BookProfile} />
