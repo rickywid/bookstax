@@ -19,7 +19,11 @@ class Dashboard extends React.Component {
   }
 }
 
-export default connect(null, actions)(Dashboard);
+function mapStateToProps(state) {
+  console.log(state);
+}
+
+export default connect(mapStateToProps, actions)(Dashboard);
 
 Dashboard.propTypes = {
   getUserProfile: PropTypes.func.isRequired,

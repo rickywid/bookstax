@@ -1,5 +1,5 @@
 export const getUserProfile = () => (dispatch) => {
-  fetch('http://localhost:3001/user/1', {
+  fetch('http://localhost:3001/user/2', {
     credentials: 'include',
     headers: {
       'Access-Control-Allow-Credentials': true,

@@ -1,9 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { Link, BrowserRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import './App.css';
-import { BrowserRouter } from 'react-router-dom';
+
 import Routes from './routes';
 import * as actions from './actions/simpleAction';
 
@@ -61,7 +62,8 @@ class App extends React.Component {
     if (isAuth.authenticated) {
       return (
         <React.Fragment>
-          <NavItems>{user.name}</NavItems>
+          <NavItems><Link to={`/user/${user.id}`}>{user.name}</Link></NavItems>
+          <NavItems><Link to={`/user/${user.id}/list/${user.list_id}`}>Bookshelf</Link></NavItems>
           <NavItems onClick={this.signout}>Sign Out</NavItems>
         </React.Fragment>
       );
