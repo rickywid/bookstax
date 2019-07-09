@@ -62,8 +62,19 @@ class App extends React.Component {
     if (isAuth.authenticated) {
       return (
         <React.Fragment>
-          <NavItems><Link to={`/user/${user.id}`}>{user.name}</Link></NavItems>
-          <NavItems><Link to={`/user/${user.id}/list/${user.list_id}`}>Bookshelf</Link></NavItems>
+          <NavItems>
+            <Link to={`/user/${user.id}`}>
+              {user.name}
+              {' '}
+              {user.id}
+            </Link>
+          </NavItems>
+          <NavItems>
+            <Link to={`/user/${user.id}/list/${user.list_id}`}>
+Bookshelf
+              {user.list_id}
+            </Link>
+          </NavItems>
           <NavItems onClick={this.signout}>Sign Out</NavItems>
         </React.Fragment>
       );

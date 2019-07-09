@@ -16,6 +16,7 @@ class UserList extends React.Component {
   }
 
   componentDidMount() {
+    const bookshelfId = window.location.pathname.split('/')[4];
     const data = {
       books: {},
       columns: {
@@ -38,7 +39,7 @@ class UserList extends React.Component {
       columnOrder: ['backlog', 'completed', 'current'],
     };
 
-    Promise.all([fetch('http://localhost:3001/user/list/likes'), fetch('http://localhost:3001/user/bookshelf/1')]).then((res) => {
+    Promise.all([fetch('http://localhost:3001/user/list/likes'), fetch(`http://localhost:3001/user/bookshelf/${bookshelfId}`)]).then((res) => {
       Promise.all([res[0].json(), res[1].json()]).then((res2) => {
         const isLiked = res2[0];
         const books = [...res2[1][0].backlog, ...res2[1][0].currently, ...res2[1][0].completed];
