@@ -83,7 +83,7 @@ Bookshelf
 
     return (
       <React.Fragment>
-        <navItems>Log In</navItems>
+        <NavItems>Log In</NavItems>
       </React.Fragment>
     );
   }
@@ -93,7 +93,7 @@ Bookshelf
       <BrowserRouter>
         <div className="App">
           <NavBar>
-            <Logo>Bookstax</Logo>
+            <Logo>BookStax</Logo>
             <NavList>{this.renderNavLinks()}</NavList>
           </NavBar>
           {Routes}
