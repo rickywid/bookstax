@@ -13,6 +13,18 @@ export const getUserProfile = () => (dispatch) => {
   });
 };
 
+export const getLoggedInUserProfile = () => (dispatch) => {
+  // https://stackoverflow.com/questions/16434893/node-express-passport-req-user-undefined
+  fetch('http://localhost:3001/user/auth', { credentials: 'include' }).then(res => res.json()).then((data) => {
+    console.log(data);
+    // set user profile to global application state
+    dispatch({
+      type: 'CURRENT_USER',
+      payload: data[0],
+    });
+  });
+};
+
 
 export const userAuth = () => (dispatch) => {
   dispatch({

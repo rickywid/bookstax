@@ -5,12 +5,24 @@ import { Link } from 'react-router-dom';
 
 
 class UserProfile extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      user: {},
+    };
+  }
+
   componentDidMount() {
     console.log('user profile mounted');
+    const userId = window.location.pathname.split('/')[2];
+    fetch(`http://localhost:3001/user/${userId}`).then(res => res.json()).then((user) => {
+      this.setState({ user: user[0] });
+    });
   }
 
   render() {
-    const { user } = this.props;
+    const { user } = this.state;
     const userId = window.location.pathname.split('/')[1];
     return (
       <div className="user-profile">

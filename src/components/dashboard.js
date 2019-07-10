@@ -5,9 +5,8 @@ import * as actions from '../actions/simpleAction';
 
 class Dashboard extends React.Component {
   componentDidMount() {
-    const { getUserProfile } = this.props;
-    console.log('dashboard mounted');
-    getUserProfile();
+    const { getLoggedInUserProfile } = this.props;
+    getLoggedInUserProfile();
   }
 
   render() {
@@ -19,12 +18,8 @@ class Dashboard extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
-  console.log(state);
-}
-
-export default connect(mapStateToProps, actions)(Dashboard);
+export default connect(null, actions)(Dashboard);
 
 Dashboard.propTypes = {
-  getUserProfile: PropTypes.func.isRequired,
+  getLoggedInUserProfile: PropTypes.func.isRequired,
 };

@@ -16,7 +16,7 @@ const store = createStoreWithMiddleware(rootReducer);
 if (token) {
   store.dispatch({ type: 'IS_AUTH', payload: true });
 
-  fetch('http://localhost:3001/user/1', {
+  fetch('http://localhost:3001/user/auth', {
     credentials: 'include',
     headers: {
       'Access-Control-Allow-Credentials': true,
@@ -24,7 +24,7 @@ if (token) {
   }).then(res => res.json()).then((data) => {
     // set user profile to global application state
     store.dispatch({
-      type: 'GET_USER',
+      type: 'CURRENT_USER',
       payload: data[0],
     });
   });
