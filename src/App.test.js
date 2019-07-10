@@ -1,7 +1,15 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { mount } from 'enzyme';
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware } from 'redux';
+import reduxThunk from 'redux-thunk';
+import rootReducer from './reducers/rootReducer';
 // import renderer from 'react-test-renderer';
 import App from './App';
+
+
+const createStoreWithMiddleware = applyMiddleware(reduxThunk)(createStore);
+const store = createStoreWithMiddleware(rootReducer);
 
 // Pro Tip: You should write tests from a users point of view
 
@@ -18,7 +26,7 @@ import App from './App';
 
 describe('Test', () => {
   it('A sample test', () => {
-    const wrapper = shallow(<App />);
+    const wrapper = mount(<Provider store={store}><App /></Provider>);
 
     const title = wrapper.find('p').text();
     expect(title).toEqual('BookStax'); // PASS

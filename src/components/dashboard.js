@@ -1,9 +1,12 @@
 import React from 'react';
-// import styled from 'styled-components';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import * as actions from '../actions/simpleAction';
 
 class Dashboard extends React.Component {
   componentDidMount() {
-    console.log('dashboard mounted');
+    const { getLoggedInUserProfile } = this.props;
+    getLoggedInUserProfile();
   }
 
   render() {
@@ -15,4 +18,8 @@ class Dashboard extends React.Component {
   }
 }
 
-export default Dashboard;
+export default connect(null, actions)(Dashboard);
+
+Dashboard.propTypes = {
+  getLoggedInUserProfile: PropTypes.func.isRequired,
+};

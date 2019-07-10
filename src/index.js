@@ -1,13 +1,37 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
+import reduxThunk from 'redux-thunk';
 import App from './App';
-import configureStore from './store';
+// import configureStore from './store';
+import rootReducer from './reducers/rootReducer';
 import * as serviceWorker from './serviceWorker';
 
+const createStoreWithMiddleware = applyMiddleware(reduxThunk)(createStore);
+const token = localStorage.getItem('token');
+const store = createStoreWithMiddleware(rootReducer);
+
+if (token) {
+  store.dispatch({ type: 'IS_AUTH', payload: true });
+
+  fetch('http://localhost:3001/user/auth', {
+    credentials: 'include',
+    headers: {
+      'Access-Control-Allow-Credentials': true,
+    },
+  }).then(res => res.json()).then((data) => {
+    // set user profile to global application state
+    store.dispatch({
+      type: 'CURRENT_USER',
+      payload: data[0],
+    });
+  });
+}
+
 ReactDOM.render(
-  <Provider store={configureStore()}>
+  <Provider store={store}>
     <App />
   </Provider>,
   document.getElementById('root'),
