@@ -23,7 +23,6 @@ class UserProfile extends React.Component {
 
   render() {
     const { user } = this.state;
-    const userId = window.location.pathname.split('/')[1];
     return (
       <div className="user-profile">
         <p>User Profile</p>
@@ -39,7 +38,8 @@ Description:
 Joined:
           {user.created_at}
         </p>
-        <Link to={`/user/${userId}/edit`}>Edit profile</Link>
+        <Link to={`/user/${user.id}/edit`}>Edit profile</Link>
+        <Link to={`/user/${user.id}/list/${user.list_id}`}>Bookshelf</Link>
       </div>
     );
   }

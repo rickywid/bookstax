@@ -1,7 +1,11 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 import { DragDropContext } from 'react-beautiful-dnd';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import Column from '../column';
+import LoaderHOC from '../isLoading';
 
 const ReactDnDArea = styled.div`
   display: flex;
@@ -11,12 +15,19 @@ const ReactDnDArea = styled.div`
 class UserList extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { isLiked: true };
+    this.state = {
+      isLiked: true,
+      likeCount: null,
+      likedUsers: [],
+    };
     this.onDragEnd = this.onDragEnd.bind(this);
   }
 
   componentDidMount() {
     const bookshelfId = window.location.pathname.split('/')[4];
+    console.log('bookshelfId', bookshelfId);
+    const { loggedInUserId } = this.props;
+
     const data = {
       books: {},
       columns: {
@@ -39,9 +50,12 @@ class UserList extends React.Component {
       columnOrder: ['backlog', 'completed', 'current'],
     };
 
-    Promise.all([fetch('http://localhost:3001/user/list/likes'), fetch(`http://localhost:3001/user/bookshelf/${bookshelfId}`)]).then((res) => {
+    Promise.all([fetch(`http://localhost:3001/user/list/likes/${loggedInUserId}/${bookshelfId}`), fetch(`http://localhost:3001/user/bookshelf/${bookshelfId}`)]).then((res) => {
       Promise.all([res[0].json(), res[1].json()]).then((res2) => {
-        const isLiked = res2[0];
+        console.log(res2);
+        const isLiked = res2[0].voted;
+        const likeCount = res2[0].count;
+        const { likedUsers } = res2[0];
         const books = [...res2[1][0].backlog, ...res2[1][0].currently, ...res2[1][0].completed];
         const booksObj = {};
 
@@ -76,7 +90,11 @@ class UserList extends React.Component {
           ...booksObj,
         };
 
-        this.setState({ isLiked, data });
+        console.log(isLiked);
+
+        this.setState({
+          isLiked, likeCount, data, likedUsers,
+        });
       });
     });
   }
@@ -195,6 +213,8 @@ class UserList extends React.Component {
 
   onHandleLike() {
     const { isLiked } = this.state;
+    const { loggedInUserId } = this.props;
+    const listId = window.location.pathname.split('/')[4];
 
     if (isLiked) {
       this.setState({ isLiked: !isLiked }, () => {
@@ -205,9 +225,11 @@ class UserList extends React.Component {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            user_id: 1,
-            list_id: 1,
+            user_id: loggedInUserId,
+            list_id: listId,
           }),
+        }).then(res => res.json()).then((data) => {
+          this.setState({ likeCount: data.count });
         });
       });
 
@@ -222,9 +244,11 @@ class UserList extends React.Component {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          user_id: 1,
-          list_id: 1,
+          user_id: loggedInUserId,
+          list_id: listId,
         }),
+      }).then(res => res.json()).then((data) => {
+        this.setState({ likeCount: data.count });
       });
     });
   }
@@ -232,28 +256,48 @@ class UserList extends React.Component {
   render() {
     const {
       data,
+      likeCount,
       isLiked,
+      likedUsers,
     } = this.state;
     if (!data) return null;
 
     return (
-      <ReactDnDArea>
+      <div>
         <button type="button" onClick={this.onHandleLike.bind(this)}>{!isLiked ? 'Like' : 'Unlike'}</button>
-        <DragDropContext
-          // onDragStart
-          // onDragupdate
-          onDragEnd={this.onDragEnd}
-        >
-          {data.columnOrder.map((columnId) => {
-            const column = data.columns[columnId];
-            const tasksArr = column.bookIds.map(bookId => data.books[bookId]);
+        <p>{likeCount}</p>
+        <ul>
+          {likedUsers.map(user => <li><Link to={`/user/${user.id}`}>{user.name}</Link></li>)}
+        </ul>
 
-            return <Column key={column.id} column={column} tasks={tasksArr} />;
-          })}
-        </DragDropContext>
-      </ReactDnDArea>
+        <ReactDnDArea>
+          <DragDropContext
+            // onDragStart
+            // onDragupdate
+            onDragEnd={this.onDragEnd}
+          >
+            {data.columnOrder.map((columnId) => {
+              const column = data.columns[columnId];
+              const tasksArr = column.bookIds.map(bookId => data.books[bookId]);
+
+              return <Column key={column.id} column={column} tasks={tasksArr} />;
+            })}
+          </DragDropContext>
+        </ReactDnDArea>
+      </div>
     );
   }
 }
 
-export default UserList;
+function mapStateToProps(state) {
+  return {
+    loggedInUserId: state.getUser.id,
+  };
+}
+
+export default connect(mapStateToProps, null)(LoaderHOC('loggedInUserId')(UserList));
+
+
+UserList.propTypes = {
+  loggedInUserId: PropTypes.number.isRequired,
+};
