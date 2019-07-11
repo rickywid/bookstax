@@ -11,7 +11,6 @@ import UserList from './components/user/user-list';
 import UserEdit from './components/user/user-edit';
 import Redirect from './components/redirect';
 import NoMatch from './components/noMatch';
-
 import RequireAuth from './components/auth/require_auth';
 
 const Routes = (
