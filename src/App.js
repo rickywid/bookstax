@@ -40,18 +40,21 @@ class App extends React.Component {
     this.signout = this.signout.bind(this);
   }
 
-  componentDidMount() {
-    console.log('app');
+  async componentDidMount() {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const { getLoggedInUserProfile } = this.props;
+      getLoggedInUserProfile();
+    }
   }
 
   componentWillReceiveProps(nextProps) {
-    // console.log(nextProps);
     this.setState({ user: nextProps.user });
   }
 
   signout() {
     const { signOut } = this.props;
-    console.log(signOut());
+    signOut();
   }
 
 
@@ -116,4 +119,5 @@ App.propTypes = {
   user: PropTypes.shape({}).isRequired,
   isAuth: PropTypes.shape({ authenticated: PropTypes.bool.isRequired }).isRequired,
   signOut: PropTypes.func.isRequired,
+  getLoggedInUserProfile: PropTypes.func.isRequired,
 };
