@@ -1,4 +1,6 @@
 import React from 'react';
+import { Field, reduxForm } from 'redux-form';
+import { compose } from 'redux';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { DragDropContext } from 'react-beautiful-dnd';
@@ -26,6 +28,7 @@ class UserList extends React.Component {
       isLiked: true,
       likeCount: null,
       likedUsers: [],
+      comments: [],
     };
     this.onDragEnd = this.onDragEnd.bind(this);
   }
@@ -56,13 +59,17 @@ class UserList extends React.Component {
       columnOrder: ['backlog', 'completed', 'current'],
     };
 
-    Promise.all([fetch(`http://localhost:3001/user/list/likes/${loggedInUserId}/${this.bookshelfId}`), fetch(`http://localhost:3001/user/bookshelf/${this.bookshelfId}`)]).then((res) => {
-      Promise.all([res[0].json(), res[1].json()]).then((res2) => {
+    Promise.all([
+      fetch(`http://localhost:3001/user/list/likes/${loggedInUserId}/${this.bookshelfId}`),
+      fetch(`http://localhost:3001/user/bookshelf/${this.bookshelfId}`),
+      fetch(`http://localhost:3001/bookshelf/comments/${this.bookshelfId}`)]).then((res) => {
+      Promise.all([res[0].json(), res[1].json(), res[2].json()]).then((res2) => {
         const isLiked = res2[0].voted;
         const likeCount = res2[0].count;
         const { likedUsers } = res2[0];
         const books = [...res2[1][0].backlog, ...res2[1][0].currently, ...res2[1][0].completed];
         const booksObj = {};
+        const { comments } = res2[2];
 
         books.map((book, index) => {
           booksObj[`book-${index + 1}`] = {
@@ -96,7 +103,7 @@ class UserList extends React.Component {
         };
 
         this.setState({
-          isLiked, likeCount, data, likedUsers,
+          isLiked, likeCount, data, likedUsers, comments,
         });
       });
     });
@@ -259,15 +266,43 @@ class UserList extends React.Component {
     });
   }
 
+  onFormSubmit(values) {
+    const { loggedInUserId } = this.props;
+    const { comment } = values;
+
+    const data = {
+      comment,
+      user_id: loggedInUserId,
+      list_id: this.bookshelfId,
+    };
+
+    this.api.submitBookshelfComment(data);
+  }
+
+  renderField = ({
+    input, label, type, meta: { touched, error },
+  }) => (
+    <div>
+      <label>{label}</label> {/* eslint-disable-line */}
+      <div>
+        <input {...input} placeholder={label} type={type} />
+        {touched
+          && ((error && <span>{error}</span>))}
+      </div>
+    </div>
+  )
+
   render() {
     const {
       data,
       likeCount,
       isLiked,
       likedUsers,
+      comments,
     } = this.state;
 
-    const { loggedInUserId } = this.props;
+    const { handleSubmit, error, loggedInUserId } = this.props;
+
     if (!data) return null;
 
     return (
@@ -299,6 +334,22 @@ class UserList extends React.Component {
             })}
           </DragDropContext>
         </ReactDnDArea>
+        <p>
+          Comments (
+          {comments.length}
+          )
+        </p>
+        <form onSubmit={handleSubmit(this.onFormSubmit.bind(this))}>
+          <Field component={this.renderField} type='input' name='comment' label='Message' />
+          <button type='submit'>Send</button>
+          {error}
+        </form>
+        {comments.map(comment => (
+          <div>
+            <p>{comment.name}</p>
+            <p>{comment.comment}</p>
+          </div>
+        ))}
       </div>
     );
   }
@@ -311,9 +362,30 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, null)(LoaderHOC('loggedInUserId')(UserList));
+const validate = (values) => {
+  const errors = {};
+  if (!values.comment) {
+    errors.comment = 'Comment cannot be blank';
+  }
+
+  return errors;
+};
+
+// export default connect(mapStateToProps, null)(LoaderHOC('loggedInUserId')(UserList));
+
+
+export default compose(
+  reduxForm({
+    form: 'comments',
+    fields: ['comment'],
+    validate,
+  }),
+  connect(mapStateToProps, null),
+)(LoaderHOC('loggedInUserId')(UserList));
 
 
 UserList.propTypes = {
   loggedInUserId: PropTypes.number.isRequired,
+  error: PropTypes.shape({}).isRequired,
+  handleSubmit: PropTypes.func.isRequired,
 };

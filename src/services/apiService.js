@@ -44,7 +44,6 @@ export class ApiService {
       { 'Content-Type': 'application/json' },
       data,
     );
-
   }
 
   // get user's bookshelf likes
@@ -68,6 +67,16 @@ export class ApiService {
 
   // search books
   searchBooks() {}
+
+  // submit bookshelf comments
+  submitBookshelfComment(data) {
+    console.log(data)
+    return this.httpClient.post(
+      `http://localhost:3001/bookshelf/comment/new`,
+      { 'Content-Type': 'application/json' },
+      data,
+    );
+  }
 }
 
 export default ApiService;
