@@ -4,14 +4,7 @@ import { connect } from 'react-redux';
 import * as actions from '../actions/simpleAction';
 
 class Home extends React.Component {
-  componentDidMount() {
-    console.log('home');
-    // const { getUserProfile, userAuth } = this.props;
-
-    // user is authenticated, get user profile
-    // getUserProfile();
-    // userAuth();
-  }
+  componentDidMount() {}
 
   render() {
     return (

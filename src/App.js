@@ -40,18 +40,21 @@ class App extends React.Component {
     this.signout = this.signout.bind(this);
   }
 
-  componentDidMount() {
-    console.log('app');
+  async componentDidMount() {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const { getLoggedInUserProfile } = this.props;
+      getLoggedInUserProfile();
+    }
   }
 
   componentWillReceiveProps(nextProps) {
-    // console.log(nextProps);
     this.setState({ user: nextProps.user });
   }
 
   signout() {
     const { signOut } = this.props;
-    console.log(signOut());
+    signOut();
   }
 
 
@@ -63,14 +66,16 @@ class App extends React.Component {
       return (
         <React.Fragment>
           <NavItems>
-            <Link to={`/user/${user.id}`}>
+            {/* eslint jsx-quotes: ["error", "prefer-single"] */}
+            <Link to='/me'>
               {user.name}
               {' '}
               {user.id}
             </Link>
           </NavItems>
           <NavItems>
-            <Link to={`/user/${user.id}/list/${user.list_id}`}>
+            {/* eslint jsx-quotes: ["error", "prefer-single"] */}
+            <Link to='/me-list'>
 Bookshelf
               {user.list_id}
             </Link>
@@ -91,7 +96,7 @@ Bookshelf
   render() {
     return (
       <BrowserRouter>
-        <div className="App">
+        <div className='App'>
           <NavBar>
             <Logo>BookStax</Logo>
             <NavList>{this.renderNavLinks()}</NavList>
@@ -116,4 +121,5 @@ App.propTypes = {
   user: PropTypes.shape({}).isRequired,
   isAuth: PropTypes.shape({ authenticated: PropTypes.bool.isRequired }).isRequired,
   signOut: PropTypes.func.isRequired,
+  getLoggedInUserProfile: PropTypes.func.isRequired,
 };

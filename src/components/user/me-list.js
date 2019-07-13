@@ -13,10 +13,8 @@ const ReactDnDArea = styled.div`
   justify-content: space-between;
 `;
 
-class UserList extends React.Component {
+class MeList extends React.Component {
   api = new Api().Resolve();
-
-  userId = window.location.pathname.split('/')[2];
 
   bookshelfId = window.location.pathname.split('/')[4];
 
@@ -32,7 +30,7 @@ class UserList extends React.Component {
 
   componentDidMount() {
     // const bookshelfId = window.location.pathname.split('/')[4];
-    const { loggedInUserId } = this.props;
+    const { loggedInUserId, loggedInUserListId } = this.props;
 
     const data = {
       books: {},
@@ -56,7 +54,8 @@ class UserList extends React.Component {
       columnOrder: ['backlog', 'completed', 'current'],
     };
 
-    Promise.all([fetch(`http://localhost:3001/user/list/likes/${loggedInUserId}/${this.bookshelfId}`), fetch(`http://localhost:3001/user/bookshelf/${this.bookshelfId}`)]).then((res) => {
+
+    Promise.all([fetch(`http://localhost:3001/user/list/likes/${loggedInUserId}/${loggedInUserListId}`), fetch(`http://localhost:3001/user/bookshelf/${loggedInUserListId}`)]).then((res) => {
       Promise.all([res[0].json(), res[1].json()]).then((res2) => {
         const isLiked = res2[0].voted;
         const likeCount = res2[0].count;
@@ -215,33 +214,19 @@ class UserList extends React.Component {
 
   onHandleLike() {
     const { isLiked } = this.state;
-    const { loggedInUserId } = this.props;
-    const listId = window.location.pathname.split('/')[4];
+    const { loggedInUserId, loggedInUserListId } = this.props;
 
     if (isLiked) {
-      console.log('remove like');
       this.setState({ isLiked: !isLiked }, async () => {
         // remove record from likes table
-        const bookshelfInfo = await this.api.addUserLikeBookshelf({ user_id: loggedInUserId, list_id: this.bookshelfId });
+        const bookshelfInfo = await this.api.addUserLikeBookshelf({ user_id: loggedInUserId, list_id: loggedInUserListId });
+        console.log('liked:', bookshelfInfo);
         this.setState({ likeCount: bookshelfInfo.count });
-        // fetch('http://localhost:3001/user/update/list/likes', {
-        //   method: 'DELETE',
-        //   headers: {
-        //     'Content-Type': 'application/json',
-        //   },
-        //   body: JSON.stringify({
-        //     user_id: loggedInUserId,
-        //     list_id: listId,
-        //   }),
-        // }).then(res => res.json()).then((data) => {
-        //   this.setState({ likeCount: data.count });
-        // });
       });
 
       return;
     }
 
-    console.log('add like');
     this.setState({ isLiked: !isLiked }, () => {
       // add id to likes table
       fetch('http://localhost:3001/user/update/list/likes', {
@@ -251,9 +236,10 @@ class UserList extends React.Component {
         },
         body: JSON.stringify({
           user_id: loggedInUserId,
-          list_id: listId,
+          list_id: loggedInUserListId,
         }),
       }).then(res => res.json()).then((data) => {
+        console.log('unliked:', data);
         this.setState({ likeCount: data.count });
       });
     });
@@ -268,6 +254,7 @@ class UserList extends React.Component {
     } = this.state;
 
     const { loggedInUserId } = this.props;
+
     if (!data) return null;
 
     return (
@@ -307,13 +294,14 @@ class UserList extends React.Component {
 function mapStateToProps(state) {
   return {
     loggedInUserId: state.getUser.id,
-    loggedInUserListId: state.loggedInUserListId,
+    loggedInUserListId: state.getUser.list_id,
   };
 }
 
-export default connect(mapStateToProps, null)(LoaderHOC('loggedInUserId')(UserList));
+export default connect(mapStateToProps, null)(LoaderHOC('loggedInUserId')(MeList));
 
 
-UserList.propTypes = {
+MeList.propTypes = {
   loggedInUserId: PropTypes.number.isRequired,
+  loggedInUserListId: PropTypes.number.isRequired,
 };

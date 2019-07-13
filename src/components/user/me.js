@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Api from '../../services/api';
 
-class UserProfile extends React.Component {
+class Me extends React.Component {
   api = new Api().Resolve();
 
   constructor(props) {
@@ -15,17 +15,18 @@ class UserProfile extends React.Component {
     };
   }
 
-  async componentDidMount() {
-    const userId = window.location.pathname.split('/')[2];
-    const user = await this.api.getUserProfile(userId);
-
-    this.setState({ user: user[0] });
+  componentWillReceiveProps(nextProps) {
+    this.setState({ user: nextProps.user });
   }
+
+  // async componentDidMount() {
+  //   const userId = this.state.user.id;
+  // }
 
   render() {
     const { user } = this.state;
     return (
-      <div className="user-profile">
+      <div className='user-profile'>
         <p>User Profile</p>
         <p>
 Name:
@@ -40,7 +41,8 @@ Joined:
           {user.created_at}
         </p>
         <Link to={`/user/${user.id}/edit`}>Edit profile</Link>
-        <Link to={`/user/${user.id}/list/${user.list_id}`}>Bookshelf</Link>
+        { /* eslint jsx-quotes: ["error", "prefer-single"] */ }
+        <Link to='/me-list'>Bookshelf</Link>
       </div>
     );
   }
@@ -52,9 +54,9 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, null)(UserProfile);
+export default connect(mapStateToProps, null)(Me);
 
-UserProfile.propTypes = {
+Me.propTypes = {
   user: PropTypes.shape({
     name: PropTypes.string.isRequired,
     created_at: PropTypes.string.isRequired,

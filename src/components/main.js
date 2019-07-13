@@ -6,9 +6,7 @@ import Landing from './landing';
 // import * as actions from '../actions/simpleAction';
 
 class Main extends React.Component {
-  componentDidMount() {
-    console.log('home');
-  }
+  componentDidMount() {}
 
   render() {
     const { isAuth } = this.props;
