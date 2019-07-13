@@ -21,6 +21,18 @@ export class HttpClient {
     return this.makeRequest(request);
   }
 
+  post(endpoint, headers = {}, body = {}) {
+    const request = new Request(endpoint, {
+      body: JSON.stringify(body),
+      credentials: 'include',
+      headers,
+      method: 'POST',
+      mode: 'cors',
+    });
+
+    return this.makeRequest(request);
+  }
+
   put(endpoint, headers = {}, body = {}) {
     const request = new Request(endpoint, {
       body: JSON.stringify(body),
