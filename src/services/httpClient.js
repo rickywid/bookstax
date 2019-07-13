@@ -1,7 +1,6 @@
 export class HttpClient {
   makeRequest = async (request) => {
     const response = await fetch(request);
-
     if (!response.ok && response.type) {
       throw new Error(response.statusText);
     }
@@ -16,6 +15,28 @@ export class HttpClient {
       credentials: 'include',
       headers,
       method: 'GET',
+      mode: 'cors',
+    });
+
+    return this.makeRequest(request);
+  }
+
+  put(endpoint, headers = {}, body = {}) {
+    const request = new Request(endpoint, {
+      body: JSON.stringify(body),
+      headers,
+      method: 'PUT',
+      mode: 'cors',
+    });
+
+    return this.makeRequest(request);
+  }
+
+  delete(endpoint, headers = {}, body = {}) {
+    const request = new Request(endpoint, {
+      body: JSON.stringify(body),
+      headers,
+      method: 'DELETE',
       mode: 'cors',
     });
 

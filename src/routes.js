@@ -6,6 +6,8 @@ import Search from './components/search';
 import ReadAssessment from './components/read-assessment/index';
 import BookProfile from './components/books/book-profile';
 import Dashboard from './components/dashboard';
+import Me from './components/user/me';
+import MeList from './components/user/me-list';
 import UserProfile from './components/user/user-profile';
 import UserList from './components/user/user-list';
 import UserEdit from './components/user/user-edit';
@@ -20,6 +22,8 @@ const Routes = (
     <Route exact path="/read-assessment" component={ReadAssessment} />
     <Route exact path="/book/:book_id" component={BookProfile} />
     <Route exact path="/dashboard" component={RequireAuth(Dashboard)} />
+    <Route exact path="/me" component={RequireAuth(Me)} />
+    <Route exact path="/me-list" component={RequireAuth(MeList)} />
     <Route exact path="/user/:user_id" component={RequireAuth(UserProfile)} />
     <Route exact path="/user/:user_id/list/:userlist_id" component={RequireAuth(UserList)} />
     <Route exact path="/user/:user_id/edit" component={RequireAuth(UserEdit)} />

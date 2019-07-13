@@ -66,14 +66,16 @@ class App extends React.Component {
       return (
         <React.Fragment>
           <NavItems>
-            <Link to={`/user/${user.id}`}>
+            {/* eslint jsx-quotes: ["error", "prefer-single"] */}
+            <Link to='/me'>
               {user.name}
               {' '}
               {user.id}
             </Link>
           </NavItems>
           <NavItems>
-            <Link to={`/user/${user.id}/list/${user.list_id}`}>
+            {/* eslint jsx-quotes: ["error", "prefer-single"] */}
+            <Link to='/me-list'>
 Bookshelf
               {user.list_id}
             </Link>
@@ -94,7 +96,7 @@ Bookshelf
   render() {
     return (
       <BrowserRouter>
-        <div className="App">
+        <div className='App'>
           <NavBar>
             <Logo>BookStax</Logo>
             <NavList>{this.renderNavLinks()}</NavList>
