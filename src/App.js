@@ -4,7 +4,7 @@ import { Link, BrowserRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import './App.css';
-
+import SearchBooksModal from './components/searchBooksModal';
 import Routes from './routes';
 import * as actions from './actions/simpleAction';
 
@@ -35,6 +35,7 @@ class App extends React.Component {
 
     this.state = {
       user: {},
+      results: [],
     };
 
     this.signout = this.signout.bind(this);
@@ -57,6 +58,11 @@ class App extends React.Component {
     signOut();
   }
 
+  handleSearch() {
+    fetch('https://www.googleapis.com/books/v1/volumes?q=malcolm+gladwell?printType=books&maxResults=40').then(res => res.json()).then((json) => {
+      this.setState({ results: [json] });
+    });
+  }
 
   renderNavLinks() {
     const { isAuth } = this.props;
@@ -94,13 +100,17 @@ Bookshelf
   }
 
   render() {
+    const { results } = this.state;
     return (
       <BrowserRouter>
         <div className='App'>
           <NavBar>
             <Logo>BookStax</Logo>
             <NavList>{this.renderNavLinks()}</NavList>
+            <input type='text' placeholder='search title, author, isbn' />
+            <button onClick={this.handleSearch.bind(this)} type='button'>Search</button>
           </NavBar>
+          <SearchBooksModal results={results} />
           {Routes}
         </div>
       </BrowserRouter>
