@@ -55,8 +55,9 @@ class App extends React.Component {
   }
 
   onFormSubmit(values) {
-    const { searchResults, history } = this.props;
+    const { searchResults, history, reset } = this.props;
     searchResults(values, history);
+    reset();
   }
 
   signout() {
@@ -158,6 +159,7 @@ App.propTypes = {
   history: PropTypes.shape({}).isRequired,
   handleSubmit: PropTypes.func.isRequired,
   error: PropTypes.shape({}).isRequired,
+  reset: PropTypes.func.isRequired,
 };
 
 export default compose(
