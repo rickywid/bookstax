@@ -60,8 +60,8 @@ class BookProfile extends React.Component {
       <div className="book-profile">
         <h3>{title}</h3>
         <img src={imageLinks.smallThumbnail} alt="cover" />
-        {authors.map(author => <p>{author}</p>)}
-        {categories.map(category => <p>{category}</p>)}
+        {authors.map(author => <p key={author}>{author}</p>)}
+        {categories.map(category => <p key={category}>{category}</p>)}
         <p>{description}</p>
         <p>
           Rating:

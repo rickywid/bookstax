@@ -1,17 +1,19 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
-class SearchBooksModal extends React.Component {
+class SearchResults extends React.Component {
   componentDidMount() {
-    console.log('search modal');
+    console.log('search results mounted');
   }
 
   render() {
-    const { results } = this.props;
+    const { searchResults } = this.props;
     return (
       <div>
-        {results.length > 0 ? results[0].items.map(book => (
+
+        {searchResults[0].length > 0 ? searchResults[0].map(book => (
           <div>
             <Link to={{ pathname: `/book/${book.id}`, query: book.volumeInfo }}>
               <p>{book.volumeInfo.title}</p>
@@ -26,9 +28,13 @@ class SearchBooksModal extends React.Component {
   }
 }
 
-export default SearchBooksModal;
+function mapStateToProps(state) {
+  return { searchResults: state.searchResults };
+}
+
+export default connect(mapStateToProps, null)(SearchResults);
 
 
-SearchBooksModal.propTypes = {
-  results: PropTypes.shape({ length: PropTypes.number.isRequired }).isRequired,
+SearchResults.propTypes = {
+  searchResults: PropTypes.arrayOf.isRequired,
 };

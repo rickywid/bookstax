@@ -1,12 +1,14 @@
 import React from 'react';
+import { compose } from 'redux';
+import { Field, reduxForm } from 'redux-form';
+import { withRouter, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Link, BrowserRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import './App.css';
-import SearchBooksModal from './components/searchBooksModal';
 import Routes from './routes';
 import * as actions from './actions/simpleAction';
+
 
 const Logo = styled.p`
   margin: 0;
@@ -35,7 +37,6 @@ class App extends React.Component {
 
     this.state = {
       user: {},
-      results: [],
     };
 
     this.signout = this.signout.bind(this);
@@ -53,16 +54,27 @@ class App extends React.Component {
     this.setState({ user: nextProps.user });
   }
 
+  onFormSubmit(values) {
+    const { searchResults, history } = this.props;
+    searchResults(values, history);
+  }
+
   signout() {
     const { signOut } = this.props;
     signOut();
   }
 
-  handleSearch() {
-    fetch('https://www.googleapis.com/books/v1/volumes?q=malcolm+gladwell?printType=books&maxResults=40').then(res => res.json()).then((json) => {
-      this.setState({ results: [json] });
-    });
-  }
+  renderField = ({
+    input, label, type, meta: { touched, error },
+  }) => (
+    <div>
+      <div>
+        <input {...input} placeholder={label} type={type} />
+        {touched
+          && ((error && <span>{error}</span>))}
+      </div>
+    </div>
+  )
 
   renderNavLinks() {
     const { isAuth } = this.props;
@@ -100,23 +112,33 @@ Bookshelf
   }
 
   render() {
-    const { results } = this.state;
+    const { handleSubmit, error } = this.props;
+
     return (
-      <BrowserRouter>
-        <div className='App'>
-          <NavBar>
-            <Logo>BookStax</Logo>
-            <NavList>{this.renderNavLinks()}</NavList>
-            <input type='text' placeholder='search title, author, isbn' />
-            <button onClick={this.handleSearch.bind(this)} type='button'>Search</button>
-          </NavBar>
-          <SearchBooksModal results={results} />
-          {Routes}
-        </div>
-      </BrowserRouter>
+      <div className='App'>
+        <NavBar>
+          <Logo><Link to='/'>BookStax</Link></Logo>
+          <NavList>{this.renderNavLinks()}</NavList>
+          <form onSubmit={handleSubmit(this.onFormSubmit.bind(this))}>
+            <Field component={this.renderField} type='text' name='search' label='search title, author, isbn' />
+            <button type='submit'>Searchddd</button>
+            {error}
+          </form>
+        </NavBar>
+        {Routes}
+      </div>
     );
   }
 }
+
+const validate = (values) => {
+  const errors = { values };
+  if (!values.search) {
+    errors.search = 'Cannot be blank';
+  }
+
+  return errors;
+};
 
 function mapStateToProps(state) {
   return {
@@ -125,11 +147,24 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, actions)(App);
+// export default connect(mapStateToProps, actions)(App);
 
 App.propTypes = {
   user: PropTypes.shape({}).isRequired,
   isAuth: PropTypes.shape({ authenticated: PropTypes.bool.isRequired }).isRequired,
   signOut: PropTypes.func.isRequired,
   getLoggedInUserProfile: PropTypes.func.isRequired,
+  searchResults: PropTypes.func.isRequired,
+  history: PropTypes.shape({}).isRequired,
+  handleSubmit: PropTypes.func.isRequired,
+  error: PropTypes.shape({}).isRequired,
 };
+
+export default compose(
+  reduxForm({
+    form: 'searchBooks',
+    fields: ['search'],
+    validate,
+  }),
+  connect(mapStateToProps, actions),
+)(withRouter(App));
