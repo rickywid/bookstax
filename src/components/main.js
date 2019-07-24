@@ -11,7 +11,7 @@ class Main extends React.Component {
   render() {
     const { isAuth } = this.props;
     return (
-      <div className="home">
+      <div>
         {isAuth.authenticated ? <Home /> : <Landing />}
       </div>
     );

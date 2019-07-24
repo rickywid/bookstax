@@ -1,0 +1,17 @@
+body {
+  font-family: 'Darker Grotesque', sans-serif;
+}
+
+.error {
+  position: fixed;
+  margin: 0;
+}
+
+label {
+  font-weight: bold;
+}
+
+.sc-bxivhb.bUZGRr {
+  min-height: 100vh;
+  border: 1px solid red;
+}

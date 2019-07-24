@@ -43,6 +43,20 @@ export const signOut = () => (dispatch) => {
   localStorage.removeItem('token');
 };
 
+export const searchResults = (data, history) => (dispatch) => {
+  const query = data.search.split(' ').join('+');
+
+  fetch(`https://www.googleapis.com/books/v1/volumes?q=${query}?printType=books&maxResults=40`).then(res => res.json()).then((json) => {
+    dispatch({
+      type: 'SEARCH_RESULTS',
+      payload: {
+        results: json,
+      },
+    });
+
+    history.push('/search');
+  });
+};
 
 export const googleSignIn = history => (
   (dispatch) => {

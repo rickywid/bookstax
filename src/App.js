@@ -1,26 +1,29 @@
 import React from 'react';
+import { compose } from 'redux';
+import { Field, reduxForm } from 'redux-form';
+import { withRouter, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Link, BrowserRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import './App.css';
-import SearchBooksModal from './components/searchBooksModal';
+import { Button } from 'antd';
 import Routes from './routes';
 import * as actions from './actions/simpleAction';
-
-const Logo = styled.p`
-  margin: 0;
-`;
+import Logo from './assets/images/logo.png';
 
 const NavBar = styled.nav`
   display: flex;
-  padding: 0;
   justify-content: space-between;
+  padding: 1rem 2rem;
 `;
 
 const NavList = styled.ul`
   margin: 0;
   padding: 0;
+  display: inline-block;
+`;
+
+const NavRightSide = styled.div`
+  display: flex;
 `;
 
 const NavItems = styled.li`
@@ -29,13 +32,33 @@ const NavItems = styled.li`
   padding-right: 1rem;
 `;
 
+const InputWrapper = styled.div`
+  display: inline-block;
+`;
+
+const Form = styled.form`
+  input {
+    background: none;
+    border: 1px solid grey;
+    border-radius: 4px;
+    padding: 0 5px;
+    height: 32px;
+    margin-right: 1rem;
+  }
+  display: flex;
+  margin-right: 1rem;
+`;
+
+const Container = styled.div`
+  max-width: 1140px;
+  margin: 0 auto;
+`;
 class App extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       user: {},
-      results: [],
     };
 
     this.signout = this.signout.bind(this);
@@ -53,16 +76,26 @@ class App extends React.Component {
     this.setState({ user: nextProps.user });
   }
 
+  onFormSubmit(values) {
+    const { searchResults, history, reset } = this.props;
+    searchResults(values, history);
+    reset();
+  }
+
   signout() {
     const { signOut } = this.props;
     signOut();
   }
 
-  handleSearch() {
-    fetch('https://www.googleapis.com/books/v1/volumes?q=malcolm+gladwell?printType=books&maxResults=40').then(res => res.json()).then((json) => {
-      this.setState({ results: [json] });
-    });
-  }
+  renderField = ({
+    input, label, type, meta: { touched, error },
+  }) => (
+    <InputWrapper>
+      <input {...input} placeholder={label} type={type} />
+      {touched
+        && ((error && <p className='error'>{error}</p>))}
+    </InputWrapper>
+  )
 
   renderNavLinks() {
     const { isAuth } = this.props;
@@ -94,29 +127,46 @@ Bookshelf
 
     return (
       <React.Fragment>
-        <NavItems>Log In</NavItems>
+        <NavItems>About</NavItems>
+        <NavItems>About</NavItems>
+        <NavItems>About</NavItems>
+        <NavItems>Reading Test</NavItems>
+        <NavItems><Button>Sign In</Button></NavItems>
       </React.Fragment>
     );
   }
 
   render() {
-    const { results } = this.state;
+    const { handleSubmit } = this.props;
+
     return (
-      <BrowserRouter>
-        <div className='App'>
-          <NavBar>
-            <Logo>BookStax</Logo>
+      <div className='App'>
+        <NavBar>
+          <Link to='/'><img src={Logo} alt='logo' /></Link>
+          <NavRightSide>
+            <Form onSubmit={handleSubmit(this.onFormSubmit.bind(this))}>
+              <Field component={this.renderField} type='text' name='search' label='search title, author, isbn' />
+              <Button default type='submit'>Search</Button>
+            </Form>
             <NavList>{this.renderNavLinks()}</NavList>
-            <input type='text' placeholder='search title, author, isbn' />
-            <button onClick={this.handleSearch.bind(this)} type='button'>Search</button>
-          </NavBar>
-          <SearchBooksModal results={results} />
+          </NavRightSide>
+        </NavBar>
+        <Container>
           {Routes}
-        </div>
-      </BrowserRouter>
+        </Container>
+      </div>
     );
   }
 }
+
+const validate = (values) => {
+  const errors = { values };
+  if (!values.search) {
+    errors.search = 'Cannot be blank';
+  }
+
+  return errors;
+};
 
 function mapStateToProps(state) {
   return {
@@ -125,11 +175,25 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, actions)(App);
+// export default connect(mapStateToProps, actions)(App);
 
 App.propTypes = {
   user: PropTypes.shape({}).isRequired,
   isAuth: PropTypes.shape({ authenticated: PropTypes.bool.isRequired }).isRequired,
   signOut: PropTypes.func.isRequired,
   getLoggedInUserProfile: PropTypes.func.isRequired,
+  searchResults: PropTypes.func.isRequired,
+  history: PropTypes.shape({}).isRequired,
+  handleSubmit: PropTypes.func.isRequired,
+  error: PropTypes.shape({}).isRequired,
+  reset: PropTypes.func.isRequired,
 };
+
+export default compose(
+  reduxForm({
+    form: 'searchBooks',
+    fields: ['search'],
+    validate,
+  }),
+  connect(mapStateToProps, actions),
+)(withRouter(App));

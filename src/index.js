@@ -3,10 +3,12 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
+import { BrowserRouter } from 'react-router-dom';
 import reduxThunk from 'redux-thunk';
 import App from './App';
 import rootReducer from './reducers/rootReducer';
 import * as serviceWorker from './serviceWorker';
+import 'antd/dist/antd.css';
 
 const createStoreWithMiddleware = applyMiddleware(reduxThunk)(createStore);
 const token = localStorage.getItem('token');
@@ -18,7 +20,9 @@ if (token) {
 
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </Provider>,
   document.getElementById('root'),
 );
