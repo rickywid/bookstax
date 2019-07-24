@@ -5,24 +5,25 @@ import { withRouter, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import './App.css';
+import { Button } from 'antd';
 import Routes from './routes';
 import * as actions from './actions/simpleAction';
-
-
-const Logo = styled.p`
-  margin: 0;
-`;
+import Logo from './assets/images/logo.png';
 
 const NavBar = styled.nav`
   display: flex;
-  padding: 0;
   justify-content: space-between;
+  padding: 1rem 2rem;
 `;
 
 const NavList = styled.ul`
   margin: 0;
   padding: 0;
+  display: inline-block;
+`;
+
+const NavRightSide = styled.div`
+  display: flex;
 `;
 
 const NavItems = styled.li`
@@ -31,6 +32,27 @@ const NavItems = styled.li`
   padding-right: 1rem;
 `;
 
+const InputWrapper = styled.div`
+  display: inline-block;
+`;
+
+const Form = styled.form`
+  input {
+    background: none;
+    border: 1px solid grey;
+    border-radius: 4px;
+    padding: 0 5px;
+    height: 32px;
+    margin-right: 1rem;
+  }
+  display: flex;
+  margin-right: 1rem;
+`;
+
+const Container = styled.div`
+  max-width: 1140px;
+  margin: 0 auto;
+`;
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -68,13 +90,11 @@ class App extends React.Component {
   renderField = ({
     input, label, type, meta: { touched, error },
   }) => (
-    <div>
-      <div>
-        <input {...input} placeholder={label} type={type} />
-        {touched
-          && ((error && <span>{error}</span>))}
-      </div>
-    </div>
+    <InputWrapper>
+      <input {...input} placeholder={label} type={type} />
+      {touched
+        && ((error && <p className='error'>{error}</p>))}
+    </InputWrapper>
   )
 
   renderNavLinks() {
@@ -107,26 +127,33 @@ Bookshelf
 
     return (
       <React.Fragment>
-        <NavItems>Log In</NavItems>
+        <NavItems>About</NavItems>
+        <NavItems>About</NavItems>
+        <NavItems>About</NavItems>
+        <NavItems>Reading Test</NavItems>
+        <NavItems><Button>Sign In</Button></NavItems>
       </React.Fragment>
     );
   }
 
   render() {
-    const { handleSubmit, error } = this.props;
+    const { handleSubmit } = this.props;
 
     return (
       <div className='App'>
         <NavBar>
-          <Logo><Link to='/'>BookStax</Link></Logo>
-          <NavList>{this.renderNavLinks()}</NavList>
-          <form onSubmit={handleSubmit(this.onFormSubmit.bind(this))}>
-            <Field component={this.renderField} type='text' name='search' label='search title, author, isbn' />
-            <button type='submit'>Searchddd</button>
-            {error}
-          </form>
+          <Link to='/'><img src={Logo} alt='logo' /></Link>
+          <NavRightSide>
+            <Form onSubmit={handleSubmit(this.onFormSubmit.bind(this))}>
+              <Field component={this.renderField} type='text' name='search' label='search title, author, isbn' />
+              <Button default type='submit'>Search</Button>
+            </Form>
+            <NavList>{this.renderNavLinks()}</NavList>
+          </NavRightSide>
         </NavBar>
-        {Routes}
+        <Container>
+          {Routes}
+        </Container>
       </div>
     );
   }

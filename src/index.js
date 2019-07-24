@@ -8,6 +8,7 @@ import reduxThunk from 'redux-thunk';
 import App from './App';
 import rootReducer from './reducers/rootReducer';
 import * as serviceWorker from './serviceWorker';
+import 'antd/dist/antd.css';
 
 const createStoreWithMiddleware = applyMiddleware(reduxThunk)(createStore);
 const token = localStorage.getItem('token');
