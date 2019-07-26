@@ -185,8 +185,12 @@ App.propTypes = {
   searchResults: PropTypes.func.isRequired,
   history: PropTypes.shape({}).isRequired,
   handleSubmit: PropTypes.func.isRequired,
-  error: PropTypes.shape({}).isRequired,
+  error: PropTypes.shape({}),
   reset: PropTypes.func.isRequired,
+};
+
+App.defaultProps = {
+  error: PropTypes.shape({}),
 };
 
 export default compose(

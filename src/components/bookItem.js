@@ -7,12 +7,11 @@ const Container = styled.div`
 
 `;
 
-class Task extends React.Component {
+class BookItem extends React.Component {
   render() {
-    const { task, index } = this.props;
-
+    const { book, index } = this.props;
     return (
-      <Draggable draggableId={task.id} index={index}>
+      <Draggable draggableId={book.id} index={index}>
         {provided => (
           <Container
             {...provided.draggableProps}
@@ -20,9 +19,9 @@ class Task extends React.Component {
             ref={provided.innerRef}
             // innerRef={provided.innerRef}
           >
-            <img src={task.content.cover} alt="cover" />
-            <p>{task.content.title}</p>
-            <p>{task.content.author}</p>
+            <img src={book.content.cover} alt="cover" />
+            <p>{book.content.title}</p>
+            <p>{book.content.author}</p>
           </Container>
         )}
       </Draggable>
@@ -30,11 +29,18 @@ class Task extends React.Component {
   }
 }
 
-Task.propTypes = {
-  task: PropTypes.shape({ id: PropTypes.number, content: PropTypes.string }).isRequired,
+BookItem.propTypes = {
+  book: PropTypes.shape({
+    id: PropTypes.string,
+    content: PropTypes.shape({
+      cover: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
+      author: PropTypes.string.isRequired,
+    }),
+  }).isRequired,
   index: PropTypes.number.isRequired,
 };
 
-export default Task;
+export default BookItem;
 
 // https://github.com/atlassian/react-beautiful-dnd/issues/875

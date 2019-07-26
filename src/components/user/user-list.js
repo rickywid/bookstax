@@ -328,9 +328,9 @@ class UserList extends React.Component {
           >
             {data.columnOrder.map((columnId) => {
               const column = data.columns[columnId];
-              const tasksArr = column.bookIds.map(bookId => data.books[bookId]);
+              const booksArr = column.bookIds.map(bookId => data.books[bookId]);
 
-              return <Column key={column.id} column={column} tasks={tasksArr} />;
+              return <Column key={column.id} column={column} books={booksArr} />;
             })}
           </DragDropContext>
         </ReactDnDArea>

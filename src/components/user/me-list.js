@@ -265,10 +265,10 @@ class MeList extends React.Component {
           {likedUsers.map((user) => {
             if (user.id === loggedInUserId) {
               /* eslint jsx-quotes: ["error", "prefer-single"] */
-              return <li><Link to='/me'>{user.name}</Link></li>;
+              return <li key={user.name}><Link to='/me'>{user.name}</Link></li>;
             }
 
-            return <li><Link to={`/user/${user.id}`}>{user.name}</Link></li>;
+            return <li key={user.name}><Link to={`/user/${user.id}`}>{user.name}</Link></li>;
           })}
         </ul>
 
@@ -280,9 +280,9 @@ class MeList extends React.Component {
           >
             {data.columnOrder.map((columnId) => {
               const column = data.columns[columnId];
-              const tasksArr = column.bookIds.map(bookId => data.books[bookId]);
+              const booksArr = column.bookIds.map(bookId => data.books[bookId]);
 
-              return <Column key={column.id} column={column} tasks={tasksArr} />;
+              return <Column key={column.id} column={column} books={booksArr} />;
             })}
           </DragDropContext>
         </ReactDnDArea>
