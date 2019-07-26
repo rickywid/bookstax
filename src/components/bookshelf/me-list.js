@@ -1,12 +1,10 @@
 import React from 'react';
-import { Field, reduxForm } from 'redux-form';
-import { compose } from 'redux';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { DragDropContext } from 'react-beautiful-dnd';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import Column from '../column';
+import Column from './column';
 import LoaderHOC from '../isLoading';
 import Api from '../../services/api';
 
@@ -15,10 +13,8 @@ const ReactDnDArea = styled.div`
   justify-content: space-between;
 `;
 
-class UserList extends React.Component {
+class MeList extends React.Component {
   api = new Api().Resolve();
-
-  userId = window.location.pathname.split('/')[2];
 
   bookshelfId = window.location.pathname.split('/')[4];
 
@@ -28,14 +24,13 @@ class UserList extends React.Component {
       isLiked: true,
       likeCount: null,
       likedUsers: [],
-      comments: [],
     };
     this.onDragEnd = this.onDragEnd.bind(this);
   }
 
   componentDidMount() {
     // const bookshelfId = window.location.pathname.split('/')[4];
-    const { loggedInUserId } = this.props;
+    const { loggedInUserId, loggedInUserListId } = this.props;
 
     const data = {
       books: {},
@@ -59,17 +54,14 @@ class UserList extends React.Component {
       columnOrder: ['backlog', 'completed', 'current'],
     };
 
-    Promise.all([
-      fetch(`http://localhost:3001/user/list/likes/${loggedInUserId}/${this.bookshelfId}`),
-      fetch(`http://localhost:3001/user/bookshelf/${this.bookshelfId}`),
-      fetch(`http://localhost:3001/bookshelf/comments/${this.bookshelfId}`)]).then((res) => {
-      Promise.all([res[0].json(), res[1].json(), res[2].json()]).then((res2) => {
+
+    Promise.all([fetch(`http://localhost:3001/user/list/likes/${loggedInUserId}/${loggedInUserListId}`), fetch(`http://localhost:3001/user/bookshelf/${loggedInUserListId}`)]).then((res) => {
+      Promise.all([res[0].json(), res[1].json()]).then((res2) => {
         const isLiked = res2[0].voted;
         const likeCount = res2[0].count;
         const { likedUsers } = res2[0];
         const books = [...res2[1][0].backlog, ...res2[1][0].currently, ...res2[1][0].completed];
         const booksObj = {};
-        const { comments } = res2[2];
 
         books.map((book, index) => {
           booksObj[`book-${index + 1}`] = {
@@ -103,7 +95,7 @@ class UserList extends React.Component {
         };
 
         this.setState({
-          isLiked, likeCount, data, likedUsers, comments,
+          isLiked, likeCount, data, likedUsers,
         });
       });
     });
@@ -222,33 +214,19 @@ class UserList extends React.Component {
 
   onHandleLike() {
     const { isLiked } = this.state;
-    const { loggedInUserId } = this.props;
-    const listId = window.location.pathname.split('/')[4];
+    const { loggedInUserId, loggedInUserListId } = this.props;
 
     if (isLiked) {
-      console.log('remove like');
       this.setState({ isLiked: !isLiked }, async () => {
         // remove record from likes table
-        const bookshelfInfo = await this.api.addUserLikeBookshelf({ user_id: loggedInUserId, list_id: this.bookshelfId });
+        const bookshelfInfo = await this.api.addUserLikeBookshelf({ user_id: loggedInUserId, list_id: loggedInUserListId });
+        console.log('liked:', bookshelfInfo);
         this.setState({ likeCount: bookshelfInfo.count });
-        // fetch('http://localhost:3001/user/update/list/likes', {
-        //   method: 'DELETE',
-        //   headers: {
-        //     'Content-Type': 'application/json',
-        //   },
-        //   body: JSON.stringify({
-        //     user_id: loggedInUserId,
-        //     list_id: listId,
-        //   }),
-        // }).then(res => res.json()).then((data) => {
-        //   this.setState({ likeCount: data.count });
-        // });
       });
 
       return;
     }
 
-    console.log('add like');
     this.setState({ isLiked: !isLiked }, () => {
       // add id to likes table
       fetch('http://localhost:3001/user/update/list/likes', {
@@ -258,39 +236,14 @@ class UserList extends React.Component {
         },
         body: JSON.stringify({
           user_id: loggedInUserId,
-          list_id: listId,
+          list_id: loggedInUserListId,
         }),
       }).then(res => res.json()).then((data) => {
+        console.log('unliked:', data);
         this.setState({ likeCount: data.count });
       });
     });
   }
-
-  onFormSubmit(values) {
-    const { loggedInUserId } = this.props;
-    const { comment } = values;
-
-    const data = {
-      comment,
-      user_id: loggedInUserId,
-      list_id: this.bookshelfId,
-    };
-
-    this.api.submitBookshelfComment(data);
-  }
-
-  renderField = ({
-    input, label, type, meta: { touched, error },
-  }) => (
-    <div>
-      <label>{label}</label> {/* eslint-disable-line */}
-      <div>
-        <input {...input} placeholder={label} type={type} />
-        {touched
-          && ((error && <span>{error}</span>))}
-      </div>
-    </div>
-  )
 
   render() {
     const {
@@ -298,10 +251,9 @@ class UserList extends React.Component {
       likeCount,
       isLiked,
       likedUsers,
-      comments,
     } = this.state;
 
-    const { handleSubmit, error, loggedInUserId } = this.props;
+    const { loggedInUserId } = this.props;
 
     if (!data) return null;
 
@@ -313,10 +265,10 @@ class UserList extends React.Component {
           {likedUsers.map((user) => {
             if (user.id === loggedInUserId) {
               /* eslint jsx-quotes: ["error", "prefer-single"] */
-              return <li><Link to='/me'>{user.name}</Link></li>;
+              return <li key={user.name}><Link to='/me'>{user.name}</Link></li>;
             }
 
-            return <li><Link to={`/user/${user.id}`}>{user.name}</Link></li>;
+            return <li key={user.name}><Link to={`/user/${user.id}`}>{user.name}</Link></li>;
           })}
         </ul>
 
@@ -334,22 +286,6 @@ class UserList extends React.Component {
             })}
           </DragDropContext>
         </ReactDnDArea>
-        <p>
-          Comments (
-          {comments.length}
-          )
-        </p>
-        <form onSubmit={handleSubmit(this.onFormSubmit.bind(this))}>
-          <Field component={this.renderField} type='input' name='comment' label='Message' />
-          <button type='submit'>Send</button>
-          {error}
-        </form>
-        {comments.map(comment => (
-          <div>
-            <p>{comment.name}</p>
-            <p>{comment.comment}</p>
-          </div>
-        ))}
       </div>
     );
   }
@@ -358,34 +294,14 @@ class UserList extends React.Component {
 function mapStateToProps(state) {
   return {
     loggedInUserId: state.getUser.id,
-    loggedInUserListId: state.loggedInUserListId,
+    loggedInUserListId: state.getUser.list_id,
   };
 }
 
-const validate = (values) => {
-  const errors = {};
-  if (!values.comment) {
-    errors.comment = 'Comment cannot be blank';
-  }
-
-  return errors;
-};
-
-// export default connect(mapStateToProps, null)(LoaderHOC('loggedInUserId')(UserList));
+export default connect(mapStateToProps, null)(LoaderHOC('loggedInUserId')(MeList));
 
 
-export default compose(
-  reduxForm({
-    form: 'comments',
-    fields: ['comment'],
-    validate,
-  }),
-  connect(mapStateToProps, null),
-)(LoaderHOC('loggedInUserId')(UserList));
-
-
-UserList.propTypes = {
+MeList.propTypes = {
   loggedInUserId: PropTypes.number.isRequired,
-  error: PropTypes.shape({}).isRequired,
-  handleSubmit: PropTypes.func.isRequired,
+  loggedInUserListId: PropTypes.number.isRequired,
 };
