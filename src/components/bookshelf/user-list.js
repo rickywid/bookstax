@@ -6,14 +6,38 @@ import { connect } from 'react-redux';
 import { DragDropContext } from 'react-beautiful-dnd';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import { Modal } from 'antd';
 import Column from './column';
 import LoaderHOC from '../isLoading';
 import Api from '../../services/api';
+import { ReactComponent as Like } from '../../assets/icons/like.svg';
+import { ReactComponent as Unlike } from '../../assets/icons/unlike.svg';
 
 const ReactDnDArea = styled.div`
   display: flex;
   justify-content: space-between;
 `;
+
+const LikeWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+`;
+
+const svgStyle = {
+  height: '30px',
+  width: 'auto',
+  marginRight: '0.5rem',
+};
+
+const btnStyle = {
+  display: 'inline-block',
+  marginBottom: 0,
+  fontWeight: 'bold',
+  background: 'none',
+  border: 'none',
+};
 
 class UserList extends React.Component {
   api = new Api().Resolve();
@@ -29,8 +53,10 @@ class UserList extends React.Component {
       likeCount: null,
       likedUsers: [],
       comments: [],
+      visible: false,
     };
     this.onDragEnd = this.onDragEnd.bind(this);
+    this.onHandleLike = this.onHandleLike.bind(this);
   }
 
   componentDidMount() {
@@ -279,6 +305,26 @@ class UserList extends React.Component {
     this.api.submitBookshelfComment(data);
   }
 
+  showModal = () => {
+    this.setState({
+      visible: true,
+    });
+  };
+
+  handleOk = (e) => {
+    console.log(e);
+    this.setState({
+      visible: false,
+    });
+  };
+
+  handleCancel = (e) => {
+    console.log(e);
+    this.setState({
+      visible: false,
+    });
+  };
+
   renderField = ({
     input, label, type, meta: { touched, error },
   }) => (
@@ -299,6 +345,7 @@ class UserList extends React.Component {
       isLiked,
       likedUsers,
       comments,
+      visible,
     } = this.state;
 
     const { handleSubmit, error, loggedInUserId } = this.props;
@@ -307,19 +354,10 @@ class UserList extends React.Component {
 
     return (
       <div>
-        <button type='button' onClick={this.onHandleLike.bind(this)}>{!isLiked ? 'Like' : 'Unlike'}</button>
-        <p>{likeCount}</p>
-        <ul>
-          {likedUsers.map((user) => {
-            if (user.id === loggedInUserId) {
-              /* eslint jsx-quotes: ["error", "prefer-single"] */
-              return <li><Link to='/me'>{user.name}</Link></li>;
-            }
-
-            return <li><Link to={`/user/${user.id}`}>{user.name}</Link></li>;
-          })}
-        </ul>
-
+        <LikeWrapper>
+          {!isLiked ? <Unlike onClick={this.onHandleLike} style={svgStyle} /> : <Like onClick={this.onHandleLike} style={svgStyle} />}
+          <button type='button' onClick={this.showModal} style={btnStyle}>{likeCount}</button>
+        </LikeWrapper>
         <ReactDnDArea>
           <DragDropContext
             // onDragStart
@@ -350,6 +388,24 @@ class UserList extends React.Component {
             <p>{comment.comment}</p>
           </div>
         ))}
+        <Modal
+          title=''
+          visible={visible}
+          onOk={this.handleOk}
+          onCancel={this.handleCancel}
+        >
+          liked users
+          <ul>
+            {likedUsers.map((user) => {
+              if (user.id === loggedInUserId) {
+                /* eslint jsx-quotes: ["error", "prefer-single"] */
+                return <li key={user.name}><Link to='/me'>{user.name}</Link></li>;
+              }
+
+              return <li key={user.name}><Link to={`/user/${user.id}`}>{user.name}</Link></li>;
+            })}
+          </ul>
+        </Modal>
       </div>
     );
   }
