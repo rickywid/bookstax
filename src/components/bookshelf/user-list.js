@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { DragDropContext } from 'react-beautiful-dnd';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { Modal } from 'antd';
+import { Modal, Button } from 'antd';
 import Column from './column';
 import LoaderHOC from '../isLoading';
 import Api from '../../services/api';
@@ -23,6 +23,14 @@ const LikeWrapper = styled.div`
   align-items: center;
   justify-content: flex-end;
   margin-bottom: 1rem;
+`;
+
+const CommentsWrapper = styled.div`
+  margin-top: 3rem;
+`;
+
+const UserComments = styled.div`
+  margin-top: 3rem;
 `;
 
 const svgStyle = {
@@ -338,6 +346,19 @@ class UserList extends React.Component {
     </div>
   )
 
+  renderTextArea = ({
+    input, label, type, meta: { touched, error },
+  }) => (
+    <div>
+      <label>{label}</label> {/* eslint-disable-line */}
+      <div>
+        <textarea {...input} placeholder={label} type={type} rows='5' cols='50' />
+        {touched
+          && ((error && <span>{error}</span>))}
+      </div>
+    </div>
+  )
+
   render() {
     const {
       data,
@@ -372,22 +393,29 @@ class UserList extends React.Component {
             })}
           </DragDropContext>
         </ReactDnDArea>
-        <p>
-          Comments (
-          {comments.length}
-          )
-        </p>
-        <form onSubmit={handleSubmit(this.onFormSubmit.bind(this))}>
-          <Field component={this.renderField} type='input' name='comment' label='Message' />
-          <button type='submit'>Send</button>
-          {error}
-        </form>
-        {comments.map(comment => (
-          <div>
-            <p>{comment.name}</p>
-            <p>{comment.comment}</p>
-          </div>
-        ))}
+        <CommentsWrapper>
+          <p style={{ fontWeight: 'bold' }}>
+            Comments (
+            {comments.length}
+            )
+          </p>
+          <form onSubmit={handleSubmit(this.onFormSubmit.bind(this))}>
+            <Field component={this.renderTextArea} name='comment' label='Message' />
+            <Button default htmlType='submit'>Send</Button>
+            {error}
+          </form>
+          <UserComments>
+            {comments.map((comment) => {
+              console.log(comment);
+              return (
+                <div>
+                  <p>{comment.name}</p>
+                  <p>{comment.comment}</p>
+                </div>
+              );
+            })}
+          </UserComments>
+        </CommentsWrapper>
         <Modal
           title=''
           visible={visible}
