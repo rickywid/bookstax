@@ -146,7 +146,7 @@ Bookshelf
           <NavRightSide>
             <Form onSubmit={handleSubmit(this.onFormSubmit.bind(this))}>
               <Field component={this.renderField} type='text' name='search' label='search title, author, isbn' />
-              <Button default type='submit'>Search</Button>
+              <Button default htmlType='submit'>Search</Button>
             </Form>
             <NavList>{this.renderNavLinks()}</NavList>
           </NavRightSide>

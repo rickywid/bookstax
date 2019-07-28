@@ -4,27 +4,31 @@ import PropTypes from 'prop-types';
 import { Draggable } from 'react-beautiful-dnd';
 
 const Container = styled.div`
-
+  background: #fff;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 4px;
+  box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.2);
 `;
 
 class BookItem extends React.Component {
   render() {
     const { book, index } = this.props;
     return (
-      <Draggable draggableId={book.id} index={index}>
-        {provided => (
-          <Container
-            {...provided.draggableProps}
-            {...provided.dragHandleProps}
-            ref={provided.innerRef}
-            // innerRef={provided.innerRef}
-          >
-            <img src={book.content.cover} alt="cover" />
-            <p>{book.content.title}</p>
-            <p>{book.content.author}</p>
-          </Container>
-        )}
-      </Draggable>
+      <div>
+        <Draggable draggableId={book.id} index={index}>
+          {provided => (
+            <Container
+              {...provided.draggableProps}
+              {...provided.dragHandleProps}
+              ref={provided.innerRef}
+              // innerRef={provided.innerRef}
+            >
+              <p style={{ margin: 0 }}>{book.content.title}</p>
+            </Container>
+          )}
+        </Draggable>
+      </div>
     );
   }
 }
