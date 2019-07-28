@@ -142,7 +142,7 @@ Bookshelf
     return (
       <div className='App'>
         <NavBar>
-          <Link to='/'><img src={Logo} alt='logo' /></Link>
+          <Link to='/'><img style={{ width: '65%' }} src={Logo} alt='logo' /></Link>
           <NavRightSide>
             <Form onSubmit={handleSubmit(this.onFormSubmit.bind(this))}>
               <Field component={this.renderField} type='text' name='search' label='search title, author, isbn' />

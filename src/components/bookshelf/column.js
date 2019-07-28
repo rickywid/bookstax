@@ -7,9 +7,8 @@ import BookItem from './bookItem';
 
 const Container = styled.div`
   min-height: 300px;
-  margin: 0 10px;
   padding: 10px;
-  flex: 1;
+  width: 32%;
   background: #f5f5f5;
 
   &:nth-child(1) {
