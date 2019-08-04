@@ -6,14 +6,48 @@ import { connect } from 'react-redux';
 import { DragDropContext } from 'react-beautiful-dnd';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import Column from '../column';
+import { Modal, Button } from 'antd';
+import moment from 'moment';
+import Column from './column';
 import LoaderHOC from '../isLoading';
 import Api from '../../services/api';
+import { ReactComponent as Like } from '../../assets/icons/like.svg';
+import { ReactComponent as Unlike } from '../../assets/icons/unlike.svg';
+import BookshelfLikes from '../modals/bookshelf-likes';
 
 const ReactDnDArea = styled.div`
   display: flex;
   justify-content: space-between;
 `;
+
+const LikeWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+`;
+
+const CommentsWrapper = styled.div`
+  margin-top: 3rem;
+`;
+
+const UserComments = styled.div`
+  margin-top: 3rem;
+`;
+
+const svgStyle = {
+  height: '30px',
+  width: 'auto',
+  marginRight: '0.5rem',
+};
+
+const btnStyle = {
+  display: 'inline-block',
+  marginBottom: 0,
+  fontWeight: 'bold',
+  background: 'none',
+  border: 'none',
+};
 
 class UserList extends React.Component {
   api = new Api().Resolve();
@@ -29,8 +63,10 @@ class UserList extends React.Component {
       likeCount: null,
       likedUsers: [],
       comments: [],
+      visible: false,
     };
     this.onDragEnd = this.onDragEnd.bind(this);
+    this.onHandleLike = this.onHandleLike.bind(this);
   }
 
   componentDidMount() {
@@ -226,7 +262,6 @@ class UserList extends React.Component {
     const listId = window.location.pathname.split('/')[4];
 
     if (isLiked) {
-      console.log('remove like');
       this.setState({ isLiked: !isLiked }, async () => {
         // remove record from likes table
         const bookshelfInfo = await this.api.addUserLikeBookshelf({ user_id: loggedInUserId, list_id: this.bookshelfId });
@@ -248,7 +283,6 @@ class UserList extends React.Component {
       return;
     }
 
-    console.log('add like');
     this.setState({ isLiked: !isLiked }, () => {
       // add id to likes table
       fetch('http://localhost:3001/user/update/list/likes', {
@@ -279,6 +313,24 @@ class UserList extends React.Component {
     this.api.submitBookshelfComment(data);
   }
 
+  showModal = () => {
+    this.setState({
+      visible: true,
+    });
+  };
+
+  handleOk = () => {
+    this.setState({
+      visible: false,
+    });
+  };
+
+  handleCancel = () => {
+    this.setState({
+      visible: false,
+    });
+  };
+
   renderField = ({
     input, label, type, meta: { touched, error },
   }) => (
@@ -292,6 +344,19 @@ class UserList extends React.Component {
     </div>
   )
 
+  renderTextArea = ({
+    input, label, type, meta: { touched, error },
+  }) => (
+    <div>
+      <label>{label}</label> {/* eslint-disable-line */}
+      <div>
+        <textarea {...input} placeholder={label} type={type} rows="5" cols="50" />
+        {touched
+          && ((error && <span>{error}</span>))}
+      </div>
+    </div>
+  )
+
   render() {
     const {
       data,
@@ -299,6 +364,7 @@ class UserList extends React.Component {
       isLiked,
       likedUsers,
       comments,
+      visible,
     } = this.state;
 
     const { handleSubmit, error, loggedInUserId } = this.props;
@@ -307,19 +373,10 @@ class UserList extends React.Component {
 
     return (
       <div>
-        <button type='button' onClick={this.onHandleLike.bind(this)}>{!isLiked ? 'Like' : 'Unlike'}</button>
-        <p>{likeCount}</p>
-        <ul>
-          {likedUsers.map((user) => {
-            if (user.id === loggedInUserId) {
-              /* eslint jsx-quotes: ["error", "prefer-single"] */
-              return <li><Link to='/me'>{user.name}</Link></li>;
-            }
-
-            return <li><Link to={`/user/${user.id}`}>{user.name}</Link></li>;
-          })}
-        </ul>
-
+        <LikeWrapper>
+          {!isLiked ? <Unlike onClick={this.onHandleLike} style={svgStyle} /> : <Like onClick={this.onHandleLike} style={svgStyle} />}
+          <button type="button" onClick={this.showModal} style={btnStyle}>{likeCount}</button>
+        </LikeWrapper>
         <ReactDnDArea>
           <DragDropContext
             // onDragStart
@@ -328,28 +385,50 @@ class UserList extends React.Component {
           >
             {data.columnOrder.map((columnId) => {
               const column = data.columns[columnId];
-              const tasksArr = column.bookIds.map(bookId => data.books[bookId]);
+              const booksArr = column.bookIds.map(bookId => data.books[bookId]);
 
-              return <Column key={column.id} column={column} tasks={tasksArr} />;
+              return <Column key={column.id} column={column} books={booksArr} />;
             })}
           </DragDropContext>
         </ReactDnDArea>
-        <p>
-          Comments (
-          {comments.length}
-          )
-        </p>
-        <form onSubmit={handleSubmit(this.onFormSubmit.bind(this))}>
-          <Field component={this.renderField} type='input' name='comment' label='Message' />
-          <button type='submit'>Send</button>
-          {error}
-        </form>
-        {comments.map(comment => (
-          <div>
-            <p>{comment.name}</p>
-            <p>{comment.comment}</p>
-          </div>
-        ))}
+        <CommentsWrapper>
+          <p style={{ fontWeight: 'bold' }}>
+            Comments (
+            {comments.length}
+            )
+          </p>
+          <form onSubmit={handleSubmit(this.onFormSubmit.bind(this))}>
+            <Field component={this.renderTextArea} name="comment" label="Message" />
+            <Button default htmlType="submit">Send</Button>
+            {error}
+          </form>
+          <UserComments>
+            {comments.map((comment) => {
+              let link;
+
+              if (loggedInUserId === comment.user_id) {
+                link = <Link to="/me">{comment.name}</Link>;
+              } else {
+                link = <Link to={`/user/${comment.id}`}>{comment.name}</Link>;
+              }
+              return (
+                <div key={comment.comment}>
+                  {link}
+                  <p>{moment(comment.created_at).fromNow()}</p>
+                  <p>{comment.comment}</p>
+                </div>
+              );
+            })}
+          </UserComments>
+        </CommentsWrapper>
+        <Modal
+          title="Likes"
+          visible={visible}
+          onOk={this.handleOk}
+          onCancel={this.handleCancel}
+        >
+          <BookshelfLikes users={likedUsers} loggedInUserId={loggedInUserId} />
+        </Modal>
       </div>
     );
   }
@@ -386,6 +465,10 @@ export default compose(
 
 UserList.propTypes = {
   loggedInUserId: PropTypes.number.isRequired,
-  error: PropTypes.shape({}).isRequired,
+  error: PropTypes.shape({}),
   handleSubmit: PropTypes.func.isRequired,
+};
+
+UserList.defaultProps = {
+  error: null,
 };

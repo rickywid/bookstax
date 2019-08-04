@@ -31,11 +31,13 @@ class BookProfile extends React.Component {
         title: book.title,
         author: book.authors[0],
         cover: book.imageLinks.smallThumbnail,
+        description: book.description,
+        avgRating: book.averageRating,
+        pageCount: book.pageCount,
         isbn: book.industryIdentifiers[0].identifier,
         status: 'backlog',
       },
     };
-
     // save book to user's backlog
     fetch('http://localhost:3000/user/addbook/1', {
       method: 'POST',
@@ -49,7 +51,6 @@ class BookProfile extends React.Component {
 
   render() {
     const { results, saveBookState } = this.state;
-
     if (results[0].items.length === 0) return <div>loading</div>;
 
     const {

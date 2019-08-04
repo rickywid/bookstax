@@ -142,11 +142,11 @@ Bookshelf
     return (
       <div className='App'>
         <NavBar>
-          <Link to='/'><img src={Logo} alt='logo' /></Link>
+          <Link to='/'><img style={{ width: '65%' }} src={Logo} alt='logo' /></Link>
           <NavRightSide>
             <Form onSubmit={handleSubmit(this.onFormSubmit.bind(this))}>
               <Field component={this.renderField} type='text' name='search' label='search title, author, isbn' />
-              <Button default type='submit'>Search</Button>
+              <Button default htmlType='submit'>Search</Button>
             </Form>
             <NavList>{this.renderNavLinks()}</NavList>
           </NavRightSide>
@@ -185,8 +185,12 @@ App.propTypes = {
   searchResults: PropTypes.func.isRequired,
   history: PropTypes.shape({}).isRequired,
   handleSubmit: PropTypes.func.isRequired,
-  error: PropTypes.shape({}).isRequired,
+  error: PropTypes.func,
   reset: PropTypes.func.isRequired,
+};
+
+App.defaultProps = {
+  error: PropTypes.func,
 };
 
 export default compose(
