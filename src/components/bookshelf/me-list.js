@@ -52,6 +52,7 @@ class MeList extends React.Component {
     };
     this.onDragEnd = this.onDragEnd.bind(this);
     this.onHandleLike = this.onHandleLike.bind(this);
+    this.deleteBook = this.deleteBook.bind(this);
   }
 
   componentDidMount() {
@@ -96,6 +97,9 @@ class MeList extends React.Component {
               title: book.title,
               author: book.author,
               cover: book.cover,
+              description: book.description,
+              avgRating: book.avgRating,
+              pageCount: book.pageCount,
               isbn: book.isbn,
               status: book.status,
             },
@@ -246,7 +250,6 @@ class MeList extends React.Component {
       this.setState({ isLiked: !isLiked }, async () => {
         // remove record from likes table
         const bookshelfInfo = await this.api.addUserLikeBookshelf({ user_id: loggedInUserId, list_id: loggedInUserListId });
-        console.log('liked:', bookshelfInfo);
         this.setState({ likeCount: bookshelfInfo.count });
       });
 
@@ -265,7 +268,6 @@ class MeList extends React.Component {
           list_id: loggedInUserListId,
         }),
       }).then(res => res.json()).then((data) => {
-        console.log('unliked:', data);
         this.setState({ likeCount: data.count });
       });
     });
@@ -277,19 +279,65 @@ class MeList extends React.Component {
     });
   };
 
-  handleOk = (e) => {
-    console.log(e);
+  handleOk = () => {
     this.setState({
       visible: false,
     });
   };
 
-  handleCancel = (e) => {
-    console.log(e);
+  handleCancel = () => {
     this.setState({
       visible: false,
     });
   };
+
+  deleteBook(id, bookId) {
+    this.setState(async (prevState) => {
+      const state = prevState;
+      const backlogIds = [];
+      const completedIds = [];
+      const currentIds = [];
+
+      const booksObj = {};
+
+      delete state.data.books[bookId];
+
+      const keys = Object.keys(state.data.books); // book-1, book-2 etc...
+      keys.map((key, index) => {
+        booksObj[`book-${index + 1}`] = {
+          id: `book-${index + 1}`,
+          content: state.data.books[key].content,
+        };
+        // console.log(booksObj)
+        if (state.data.books[key].content.status === 'backlog') {
+          backlogIds.push(`book-${index + 1}`);
+        }
+
+        if (state.data.books[key].content.status === 'completed') {
+          completedIds.push(`book-${index + 1}`);
+        }
+
+        if (state.data.books[key].content.status === 'current') {
+          currentIds.push(`book-${index + 1}`);
+        }
+
+        return null;
+      });
+
+      state.data.columns.backlog.bookIds = backlogIds;
+      state.data.columns.current.bookIds = currentIds;
+      state.data.columns.completed.bookIds = completedIds;
+      state.data.books = booksObj;
+
+      const backlog = state.data.columns.backlog.bookIds.map(book => state.data.books[book].content);
+      const current = state.data.columns.completed.bookIds.map(book => state.data.books[book].content);
+      const completed = state.data.columns.current.bookIds.map(book => state.data.books[book].content);
+
+      this.api.updateUserBookshelf(this.bookshelfId, { data: [backlog, completed, current] });
+
+      return state;
+    });
+  }
 
   render() {
     const {
@@ -316,11 +364,10 @@ class MeList extends React.Component {
             // onDragupdate
             onDragEnd={this.onDragEnd}
           >
-            {data.columnOrder.map((columnId) => {
+            {data.columnOrder.map((columnId, index) => {
               const column = data.columns[columnId];
               const booksArr = column.bookIds.map(bookId => data.books[bookId]);
-
-              return <Column key={column.id} column={column} books={booksArr} />;
+              return <Column key={column.id} column={column} index={index} deleteBook={this.deleteBook} books={booksArr} />;
             })}
           </DragDropContext>
         </ReactDnDArea>

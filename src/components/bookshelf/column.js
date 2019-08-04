@@ -2,8 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import { Droppable } from 'react-beautiful-dnd';
 import PropTypes from 'prop-types';
-import { Badge, Modal } from 'antd';
+import { Badge, Modal, Button } from 'antd';
 import BookItem from './bookItem';
+import BookshelfBookItem from '../modals/bookshelf-book';
 
 const Container = styled.div`
   min-height: 300px;
@@ -41,6 +42,7 @@ class Column extends React.Component {
     this.state = {
       visible: false,
       selectedBook: null,
+      isDeleting: false,
     };
   }
 
@@ -51,24 +53,22 @@ class Column extends React.Component {
     });
   };
 
-  handleOk = (e) => {
-    console.log(e);
+  handleOk = () => {
     this.setState({
       visible: false,
     });
   };
 
-  handleCancel = (e) => {
-    console.log(e);
-    this.setState({
-      visible: false,
-    });
-  };
+  handleDelete = () => {
+    const { deleteBook, index, books } = this.props;
+    deleteBook(index, books[0].id);
+    this.setState({ visible: false });
+  }
 
   render() {
-    const { visible, selectedBook } = this.state;
+    const { visible, selectedBook, isDeleting } = this.state;
     const { column, books } = this.props;
-    const modalBook = books[selectedBook];
+    const modalBook = books[selectedBook] || {};
 
     return (
       <Container>
@@ -83,20 +83,30 @@ class Column extends React.Component {
               // innerRef={provided.innerRef}
               {...provided.droppableProps}
             >
-              {books.map((book, index) => <div role="button" tabIndex="0" onClick={this.showModal.bind(this, index)} onKeyDown={this.showModal.bind(this, index)}><BookItem key={book.id} book={book} index={index} /></div>)}
+              {books.map((book, index) => (
+                <div key={book.id} role="button" tabIndex="0" onClick={this.showModal.bind(this, index)} onKeyDown={this.showModal.bind(this, index)}>
+                  <BookItem key={book.id} book={book} index={index} />
+                </div>
+              ))}
               {provided.placeholder}
             </BookList>
           )}
         </Droppable>
         <Modal
+          width={800}
+          closable={false}
           title=""
           visible={visible}
-          onOk={this.handleOk}
-          onCancel={this.handleCancel}
+          footer={[
+            <Button key="close" onClick={this.handleOk}>
+              Close
+            </Button>,
+            <Button key="delete" type="primary" loading={isDeleting} onClick={this.handleDelete}>
+              Remove Book
+            </Button>,
+          ]}
         >
-          <img src={modalBook ? modalBook.content.cover : ''} alt="book cover" />
-          <p>{modalBook ? modalBook.content.title : '' }</p>
-          <p>{modalBook ? modalBook.content.author : '' }</p>
+          <BookshelfBookItem {...modalBook} />
         </Modal>
       </Container>
     );
@@ -105,13 +115,29 @@ class Column extends React.Component {
 
 Column.propTypes = {
   books: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.string.isRequired,
     content: PropTypes.shape({
       cover: PropTypes.string.isRequired,
       title: PropTypes.string.isRequired,
       author: PropTypes.string.isRequired,
+      description: PropTypes.string,
+      pageCount: PropTypes.number,
+      avgRating: PropTypes.number,
+    }).isRequired,
+  })),
+  column: PropTypes.shape({ title: PropTypes.string, id: PropTypes.string }).isRequired,
+  deleteBook: PropTypes.func.isRequired,
+  index: PropTypes.number.isRequired,
+};
+
+Column.defaultProps = {
+  books: PropTypes.arrayOf(PropTypes.shape({
+    content: PropTypes.shape({
+      description: '',
+      pageCount: '',
+      avgRating: '',
     }).isRequired,
   })).isRequired,
-  column: PropTypes.shape({ title: PropTypes.string, id: PropTypes.string }).isRequired,
 };
 
 export default Column;
