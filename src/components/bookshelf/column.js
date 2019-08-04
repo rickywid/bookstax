@@ -126,8 +126,8 @@ Column.propTypes = {
     }).isRequired,
   })),
   column: PropTypes.shape({ title: PropTypes.string, id: PropTypes.string }).isRequired,
-  deleteBook: PropTypes.func.isRequired,
-  index: PropTypes.number.isRequired,
+  deleteBook: PropTypes.func,
+  index: PropTypes.number,
 };
 
 Column.defaultProps = {
@@ -138,6 +138,8 @@ Column.defaultProps = {
       avgRating: '',
     }).isRequired,
   })).isRequired,
+  deleteBook: null,
+  index: null,
 };
 
 export default Column;

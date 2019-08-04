@@ -7,6 +7,7 @@ import { DragDropContext } from 'react-beautiful-dnd';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Modal, Button } from 'antd';
+import moment from 'moment';
 import Column from './column';
 import LoaderHOC from '../isLoading';
 import Api from '../../services/api';
@@ -260,7 +261,6 @@ class UserList extends React.Component {
     const listId = window.location.pathname.split('/')[4];
 
     if (isLiked) {
-      console.log('remove like');
       this.setState({ isLiked: !isLiked }, async () => {
         // remove record from likes table
         const bookshelfInfo = await this.api.addUserLikeBookshelf({ user_id: loggedInUserId, list_id: this.bookshelfId });
@@ -282,7 +282,6 @@ class UserList extends React.Component {
       return;
     }
 
-    console.log('add like');
     this.setState({ isLiked: !isLiked }, () => {
       // add id to likes table
       fetch('http://localhost:3001/user/update/list/likes', {
@@ -319,15 +318,13 @@ class UserList extends React.Component {
     });
   };
 
-  handleOk = (e) => {
-    console.log(e);
+  handleOk = () => {
     this.setState({
       visible: false,
     });
   };
 
-  handleCancel = (e) => {
-    console.log(e);
+  handleCancel = () => {
     this.setState({
       visible: false,
     });
@@ -406,10 +403,17 @@ class UserList extends React.Component {
           </form>
           <UserComments>
             {comments.map((comment) => {
-              console.log(comment);
+              let link;
+
+              if (loggedInUserId === comment.user_id) {
+                link = <Link to='/me'>{comment.name}</Link>;
+              } else {
+                link = <Link to={`/user/${comment.id}`}>{comment.name}</Link>;
+              }
               return (
-                <div>
-                  <p>{comment.name}</p>
+                <div key={comment.comment}>
+                  {link}
+                  <p>{moment(comment.created_at).fromNow()}</p>
                   <p>{comment.comment}</p>
                 </div>
               );
@@ -470,6 +474,10 @@ export default compose(
 
 UserList.propTypes = {
   loggedInUserId: PropTypes.number.isRequired,
-  error: PropTypes.shape({}).isRequired,
+  error: PropTypes.shape({}),
   handleSubmit: PropTypes.func.isRequired,
+};
+
+UserList.defaultProps = {
+  error: null,
 };
