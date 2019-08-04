@@ -87,7 +87,7 @@ class MeList extends React.Component {
         const isLiked = res2[0].voted;
         const likeCount = res2[0].count;
         const { likedUsers } = res2[0];
-        const books = [...res2[1][0].backlog, ...res2[1][0].currently, ...res2[1][0].completed];
+        const books = [...res2[1][0].backlog, ...res2[1][0].completed, ...res2[1][0].currently];
         const booksObj = {};
 
         books.map((book, index) => {
