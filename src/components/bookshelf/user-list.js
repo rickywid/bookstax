@@ -13,6 +13,7 @@ import LoaderHOC from '../isLoading';
 import Api from '../../services/api';
 import { ReactComponent as Like } from '../../assets/icons/like.svg';
 import { ReactComponent as Unlike } from '../../assets/icons/unlike.svg';
+import BookshelfLikes from '../modals/bookshelf-likes';
 
 const ReactDnDArea = styled.div`
   display: flex;
@@ -349,7 +350,7 @@ class UserList extends React.Component {
     <div>
       <label>{label}</label> {/* eslint-disable-line */}
       <div>
-        <textarea {...input} placeholder={label} type={type} rows='5' cols='50' />
+        <textarea {...input} placeholder={label} type={type} rows="5" cols="50" />
         {touched
           && ((error && <span>{error}</span>))}
       </div>
@@ -374,7 +375,7 @@ class UserList extends React.Component {
       <div>
         <LikeWrapper>
           {!isLiked ? <Unlike onClick={this.onHandleLike} style={svgStyle} /> : <Like onClick={this.onHandleLike} style={svgStyle} />}
-          <button type='button' onClick={this.showModal} style={btnStyle}>{likeCount}</button>
+          <button type="button" onClick={this.showModal} style={btnStyle}>{likeCount}</button>
         </LikeWrapper>
         <ReactDnDArea>
           <DragDropContext
@@ -397,8 +398,8 @@ class UserList extends React.Component {
             )
           </p>
           <form onSubmit={handleSubmit(this.onFormSubmit.bind(this))}>
-            <Field component={this.renderTextArea} name='comment' label='Message' />
-            <Button default htmlType='submit'>Send</Button>
+            <Field component={this.renderTextArea} name="comment" label="Message" />
+            <Button default htmlType="submit">Send</Button>
             {error}
           </form>
           <UserComments>
@@ -406,7 +407,7 @@ class UserList extends React.Component {
               let link;
 
               if (loggedInUserId === comment.user_id) {
-                link = <Link to='/me'>{comment.name}</Link>;
+                link = <Link to="/me">{comment.name}</Link>;
               } else {
                 link = <Link to={`/user/${comment.id}`}>{comment.name}</Link>;
               }
@@ -421,22 +422,12 @@ class UserList extends React.Component {
           </UserComments>
         </CommentsWrapper>
         <Modal
-          title=''
+          title="Likes"
           visible={visible}
           onOk={this.handleOk}
           onCancel={this.handleCancel}
         >
-          liked users
-          <ul>
-            {likedUsers.map((user) => {
-              if (user.id === loggedInUserId) {
-                /* eslint jsx-quotes: ["error", "prefer-single"] */
-                return <li key={user.name}><Link to='/me'>{user.name}</Link></li>;
-              }
-
-              return <li key={user.name}><Link to={`/user/${user.id}`}>{user.name}</Link></li>;
-            })}
-          </ul>
+          <BookshelfLikes users={likedUsers} loggedInUserId={loggedInUserId} />
         </Modal>
       </div>
     );
