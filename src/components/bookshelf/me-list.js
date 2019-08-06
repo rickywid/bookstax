@@ -78,7 +78,7 @@ class MeList extends React.Component {
           bookIds: [],
         },
       },
-      columnOrder: ['backlog', 'completed', 'current'],
+      columnOrder: ['backlog', 'current', 'completed'],
     };
 
 
