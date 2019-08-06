@@ -4,17 +4,45 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import moment from 'moment';
-import { Modal } from 'antd';
+import { Modal, Button } from 'antd';
 import Api from '../../services/api';
 import LoaderHOC from '../isLoading';
 import CurrentlyReading from './currently-reading';
 import { ReactComponent as Medal } from '../../assets/icons/medal.svg';
+import { ReactComponent as Avatar } from '../../assets/icons/avatar.svg';
 
 const Wrapper = styled.div`
-  display: flex;
+  
 `;
-const UserInfo = styled.div``;
-const UserDetails = styled.div``;
+const UserInfoWrapper = styled.div`
+  h3 {
+    font-weight: bold;
+  }
+  p {
+    margin: 0;
+  }
+`;
+const UserInfo = styled.div`
+    display: flex;
+    align-items: center;
+`;
+const UserDetails = styled.div`
+`;
+const StatsWrapper = styled.div`
+  li {
+    display: inline-block;
+    border-right: 1px solid #d5d5d5;
+    padding: 0 15px;
+  }
+`;
+const InnerWrapper = styled.div`
+  flex-grow: 1;
+  display: flex;
+  justify-content: space-between;
+`;
+const Stat = styled.p`
+  font-size: 24px;
+`;
 
 class Me extends React.Component {
   api = new Api().Resolve();
@@ -57,15 +85,25 @@ class Me extends React.Component {
   };
 
   async markBookCompleted(index) {
-    const { list } = this.state;
+    const list = this.state;
     const book = list.user.bookshelf[0].currently.splice(index, 1);
     book[0].status = 'completed';
-    const { backlog } = list.user.bookshelf[0].backlog;
+    const backlog = list.user.bookshelf[0].backlog; {/* eslint-disable-line */}
     const current = list.user.bookshelf[0].currently;
-    const completed = [book[0], ...list.completed];
+    const completed = [book[0], ...list.user.bookshelf[0].completed];
 
     await this.api.updateUserBookshelf(this.bookshelfId, { data: [backlog, completed, current] });
     this.setState({ displayCongratssModal: true });
+  }
+
+  renderCurrentBooks() {
+    const { user } = this.state;
+
+    if (user.bookshelf[0].currently.length) {
+      return user.bookshelf[0].currently.map((book, index) => <CurrentlyReading key={book.isbn} index={index} book={book} markBookCompleted={this.markBookCompleted} />);
+    }
+
+    return <div>you&apos;re not reading any books at the moment</div>;
   }
 
   render() {
@@ -74,20 +112,45 @@ class Me extends React.Component {
 
     return (
       <Wrapper>
-        <UserInfo>
-          <p>{user.name}</p>
+        <UserInfoWrapper>
+          <UserInfo>
+            <Avatar style={{ height: '100px', marginRight: '2rem' }} />
+            <InnerWrapper>
+              <div>
+                <h3>{user.name}</h3>
+                <Button><Link to="/user/edit">Edit Profile</Link></Button>
+              </div>
+              <StatsWrapper>
+                <ul>
+                  <li>
+                    <Stat>{user.bookshelf[0].backlog.length}</Stat>
+                    <p>Backlog</p>
+                  </li>
+                  <li>
+                    <Stat>{user.bookshelf[0].currently.length}</Stat>
+                    <p>Current</p>
+                  </li>
+                  <li>
+                    <Stat>{user.bookshelf[0].completed.length}</Stat>
+                    <p>Completed</p>
+                  </li>
+                </ul>
+              </StatsWrapper>
+            </InnerWrapper>
+          </UserInfo>
           <p>{user.email}</p>
           <p>
             Joined
-            { moment(user.created_at).fromNow()}
+            <span> </span>
+            {moment(user.created_at).fromNow()}
           </p>
+          <p><Link to="/me-list">Bookshelf</Link></p>
           <button type="button">Send e-mail</button>
-        </UserInfo>
+        </UserInfoWrapper>
         <UserDetails>
           <h4>Currently Reading</h4>
-          {user.bookshelf[0].currently.map((book, index) => <CurrentlyReading key={book.isbn} index={index} book={book} markBookCompleted={this.markBookCompleted} />)}
+          {this.renderCurrentBooks()}
         </UserDetails>
-        <Link to="/me-list">Bookshelf</Link>
         <Modal
           title=""
           visible={displayCongratssModal}

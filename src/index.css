@@ -37,12 +37,24 @@ label {
   background: white;
 }
 
-.congrats-modal {
+.congrats-modal .ant-modal-close {
   border-radius: 100%;
   padding: 10px;
   right: -17px;
   position: absolute;
   top: -18px;
+  background: #f89393;
+}
+
+.congrats-modal .ant-modal-close-x {
+  width: 20px;
+  height: 20px;
+  line-height: 1;
+  display: flex;
+}
+
+.congrats-modal .ant-modal-close-x i {
+  margin: auto;
 }
 
 .congrats-modal .ant-modal-content h3 {

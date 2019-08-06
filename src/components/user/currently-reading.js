@@ -29,7 +29,7 @@ const BookDescriptionTitle = styled.small`
   font-weight: bold;
   margin-top: 1rem;
 `;
-const BookDescription = styled.p`
+const BookDescription = styled.div`
   min-height: 150px;
 `;
 const BookPageCount = styled.small`
@@ -41,6 +41,10 @@ const RatingTitle = styled.small`
   font-size: 70%;
   display: block;  
 `;
+const ReadMoreBtn = styled.button`
+  background: none;
+  border: none;
+`;
 
 class CurrentlyReading extends Component {
   constructor(props) {
@@ -48,6 +52,7 @@ class CurrentlyReading extends Component {
 
     this.state = {
       book: [],
+      visible: false,
     };
   }
 
@@ -63,6 +68,28 @@ class CurrentlyReading extends Component {
     };
   }
 
+  handleOk = () => {
+    this.setState({
+      visible: false,
+    });
+  };
+
+  handleCancel = () => {
+    this.setState({
+      visible: false,
+    });
+  };
+
+  readMore() {
+    this.setState({ visible: true }, () => console.log(this.state));
+  }
+
+  confirmation() {
+    const { markBookCompleted, index } = this.props;
+
+    markBookCompleted(index);
+  }
+
   modalConfirm(title) {
     Modal.confirm({
       title: 'Confirm',
@@ -71,12 +98,6 @@ class CurrentlyReading extends Component {
       cancelText: 'Cancel',
       onOk: this.confirmation.bind(this),
     });
-  }
-
-  confirmation() {
-    const { markBookCompleted, index } = this.props;
-
-    markBookCompleted(index);
   }
 
   render() {
@@ -88,6 +109,8 @@ class CurrentlyReading extends Component {
       pageCount,
       title,
     } = this.state.book; {/* eslint-disable-line */}
+
+    const { visible } = this.state;
 
     return (
       <Wrapper>
@@ -107,9 +130,27 @@ class CurrentlyReading extends Component {
             {pageCount}
           </BookPageCount>
           <BookDescriptionTitle>Description</BookDescriptionTitle>
-          <BookDescription>{description}</BookDescription>
+          <BookDescription>
+            {description.length < 200 ? description : (
+              <div>
+                {`${description.slice(0, 200)}...`}
+                <ReadMoreBtn onClick={() => this.readMore(description)}>Read more</ReadMoreBtn>
+              </div>
+            )}
+          </BookDescription>
           <Button type="primary" icon="check" onClick={() => this.modalConfirm(title)}>Complete</Button>
         </BookInfo>
+        <Modal
+          title=""
+          visible={visible}
+          onOk={this.handleOk}
+          onCancel={this.handleCancel}
+          footer={null}
+        >
+          <div>
+            {description}
+          </div>
+        </Modal>
       </Wrapper>
     );
   }
