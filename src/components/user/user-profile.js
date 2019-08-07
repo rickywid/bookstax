@@ -9,6 +9,8 @@ import Api from '../../services/api';
 // import LoaderHOC from '../isLoading';
 import CurrentlyReading from './currently-reading';
 import { ReactComponent as Avatar } from '../../assets/icons/avatar.svg';
+import BookshelfList from './bookshelf-list';
+import FavouriteBooks from './favourite-books';
 
 const Wrapper = styled.div`
   
@@ -42,6 +44,21 @@ const InnerWrapper = styled.div`
 const Stat = styled.p`
   font-size: 24px;
 `;
+const TabsWrapper = styled.ul`
+  margin: 0;
+  padding: 0;
+`;
+const Tabs = styled.li`
+  display: inline-block;
+  margin-right: 1rem;
+  button {
+    font-weight: ${props => (props.index === props.tabState ? 'bold' : 'normal')};  
+  }
+`;
+const TabBtn = styled.button`
+  background: none;
+  border: none;
+`;
 
 class UserProfile extends React.Component {
   api = new Api().Resolve();
@@ -51,6 +68,7 @@ class UserProfile extends React.Component {
 
     this.state = {
       user: {},
+      activeTab: 0,
     };
   }
 
@@ -60,14 +78,21 @@ class UserProfile extends React.Component {
     const data = await fetch(`http://localhost:3001/user/bookshelf/${user[0].list_id}`);
     const userList = await data.json();
 
+    const data2 = await fetch(`http://localhost:3001/favourites/${userId}`);
+    const userFavourites = await data2.json();
+
     this.setState((prevState) => {
       const state = prevState;
       state.user = user[0]; {/* eslint-disable-line */}
       state.user.bookshelf = userList[0]; {/* eslint-disable-line */}
+      state.user.favourites = userFavourites;
 
       return state;
     });
-    // this.setState({ user: user[0] });
+  }
+
+  toggleTabs(index) {
+    this.setState({ activeTab: index });
   }
 
   renderCurrentBooks() {
@@ -81,7 +106,8 @@ class UserProfile extends React.Component {
   }
 
   render() {
-    const { user } = this.state;
+    const { user, activeTab } = this.state;
+    const isAuthorized = window.location.pathname.split('/')[1] === 'me';
 
     if (Object.keys(user).length === 0 && user.constructor === Object) return <div />;
 
@@ -93,7 +119,7 @@ class UserProfile extends React.Component {
             <InnerWrapper>
               <div>
                 <h3>{user.name}</h3>
-                <Button><Link to="/user/edit">Edit Profile</Link></Button>
+                {isAuthorized ? <Button><Link to="/user/edit">Edit Profile</Link></Button> : ''}
               </div>
               <StatsWrapper>
                 <ul>
@@ -119,12 +145,15 @@ class UserProfile extends React.Component {
             <span> </span>
             {moment(user.created_at).fromNow()}
           </p>
-          <p><Link to="/me-list">Bookshelf</Link></p>
+          <p><Link to={`/user/${user.id}/list/${user.list_id}`}>Bookshelf</Link></p>
           <button type="button">Send e-mail</button>
         </UserInfoWrapper>
         <UserDetails>
-          <h4>Currently Reading</h4>
-          {this.renderCurrentBooks()}
+          <TabsWrapper>
+            <Tabs index={0} tabState={activeTab}><TabBtn onClick={() => this.toggleTabs(0)}>Bookshelf</TabBtn></Tabs>
+            <Tabs index={1} tabState={activeTab}><TabBtn onClick={() => this.toggleTabs(1)}>Favourite Books</TabBtn></Tabs>
+          </TabsWrapper>
+          {activeTab === 0 ? <BookshelfList isAuthorized={isAuthorized} bookshelf={[user.bookshelf]} markBookCompleted={this.markBookCompleted} /> : <FavouriteBooks favourites={user.favourites} />}
         </UserDetails>
       </Wrapper>
     );

@@ -75,6 +75,7 @@ class CurrentlyReading extends Component {
       bookId,
     } = this.state.book; {/* eslint-disable-line */}
     const { visible } = this.state;
+    const { isAuthorized } = this.props;
 
     return (
       <Wrapper>
@@ -83,7 +84,7 @@ class CurrentlyReading extends Component {
             <img src={cover} alt="" />
           </CoverWrapper>
         </Link>
-        {status === 'current' ? <Button type="primary" icon="check" onClick={() => this.modalConfirm(title)}>Complete</Button> : ''}
+        {status === 'current' && isAuthorized ? <Button type="primary" icon="check" onClick={() => this.modalConfirm(title)}>Complete</Button> : ''}
         <Modal
           title=""
           visible={visible}
@@ -104,6 +105,11 @@ export default CurrentlyReading;
 
 
 CurrentlyReading.propTypes = {
-  markBookCompleted: PropTypes.func.isRequired,
+  markBookCompleted: PropTypes.func,
   index: PropTypes.number.isRequired,
+  isAuthorized: PropTypes.bool.isRequired,
+};
+
+CurrentlyReading.defaultProps = {
+  markBookCompleted: null,
 };

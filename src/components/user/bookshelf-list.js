@@ -4,23 +4,23 @@ import CurrentlyReading from './currently-reading';
 
 class BookshelfList extends Component {
   renderBooks(type) {
-    const { bookshelf, markBookCompleted } = this.props;
+    const { bookshelf, markBookCompleted, isAuthorized } = this.props;
 
     if (type === 'current') {
       if (bookshelf[0].currently.length) {
-        return bookshelf[0].currently.map((book, index) => <CurrentlyReading key={book.isbn} index={index} book={book} markBookCompleted={markBookCompleted} />);
+        return bookshelf[0].currently.map((book, index) => <CurrentlyReading key={book.isbn} index={index} book={book} markBookCompleted={markBookCompleted} isAuthorized={isAuthorized} />);
       }
     }
 
     if (type === 'backlog') {
       if (bookshelf[0].backlog.length) {
-        return bookshelf[0].backlog.map((book, index) => <CurrentlyReading key={book.isbn} index={index} book={book} markBookCompleted={markBookCompleted} />);
+        return bookshelf[0].backlog.map((book, index) => <CurrentlyReading key={book.isbn} index={index} book={book} markBookCompleted={markBookCompleted} isAuthorized={isAuthorized} />);
       }
     }
 
     if (type === 'complete') {
       if (bookshelf[0].completed.length) {
-        return bookshelf[0].completed.map((book, index) => <CurrentlyReading key={book.isbn} index={index} book={book} markBookCompleted={markBookCompleted} />);
+        return bookshelf[0].completed.map((book, index) => <CurrentlyReading key={book.isbn} index={index} book={book} markBookCompleted={markBookCompleted} isAuthorized={isAuthorized} />);
       }
     }
 
@@ -55,5 +55,10 @@ BookshelfList.propTypes = {
     backlog: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
     completed: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   })).isRequired,
-  markBookCompleted: PropTypes.func.isRequired,
+  markBookCompleted: PropTypes.func,
+  isAuthorized: PropTypes.bool.isRequired,
+};
+
+BookshelfList.defaultProps = {
+  markBookCompleted: null,
 };

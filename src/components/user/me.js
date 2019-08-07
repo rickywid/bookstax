@@ -125,6 +125,7 @@ class Me extends React.Component {
 
   render() {
     const { user, displayCongratssModal, activeTab } = this.state;
+    const isAuthorized = window.location.pathname.split('/')[1] === 'me';
 
     if (Object.keys(user).length === 0 && user.constructor === Object) return <div />;
 
@@ -136,7 +137,7 @@ class Me extends React.Component {
             <InnerWrapper>
               <div>
                 <h3>{user.name}</h3>
-                <Button><Link to="/user/edit">Edit Profile</Link></Button>
+                {isAuthorized ? <Button><Link to={`/user/${user.id}/edit`}>Edit Profile</Link></Button> : ''}
               </div>
               <StatsWrapper>
                 <ul>
@@ -170,7 +171,7 @@ class Me extends React.Component {
             <Tabs index={0} tabState={activeTab}><TabBtn onClick={() => this.toggleTabs(0)}>Bookshelf</TabBtn></Tabs>
             <Tabs index={1} tabState={activeTab}><TabBtn onClick={() => this.toggleTabs(1)}>Favourite Books</TabBtn></Tabs>
           </TabsWrapper>
-          {activeTab === 0 ? <BookshelfList bookshelf={user.bookshelf} markBookCompleted={this.markBookCompleted} /> : <FavouriteBooks favourites={user.favourites} />}
+          {activeTab === 0 ? <BookshelfList isAuthorized={isAuthorized} bookshelf={user.bookshelf} markBookCompleted={this.markBookCompleted} /> : <FavouriteBooks favourites={user.favourites} />}
         </UserDetails>
         <Modal
           title=""
