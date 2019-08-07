@@ -1,49 +1,15 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import { Modal, Button, Rate } from 'antd';
+import { Modal, Button } from 'antd';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
 const Wrapper = styled.div`
-  display: flex;
+  display: inline-block;
+  margin-right: 1rem;
   margin-bottom: 1rem;
 `;
 const CoverWrapper = styled.div`
-  margin: 0rem 1rem 1rem 0rem;
-`;
-const BookInfo = styled.div`
-  background: #eeeeee;
-  border-radius: 5px;
-  padding: 20px;
-`;
-const BookTitle = styled.h2`
-  margin-bottom: 0;
-`;
-const BookAuthor = styled.small`
-  margin-right: 1rem;
-  span {
-    font-weight: bold;
-  }
-`;
-const BookDescriptionTitle = styled.small`
-  display: block;
-  font-weight: bold;
-  margin-top: 1rem;
-`;
-const BookDescription = styled.div`
-  min-height: 150px;
-`;
-const BookPageCount = styled.small`
-  span {
-    font-weight: bold;
-  }
-`;
-const RatingTitle = styled.small`
-  font-size: 70%;
-  display: block;  
-`;
-const ReadMoreBtn = styled.button`
-  background: none;
-  border: none;
 `;
 
 class CurrentlyReading extends Component {
@@ -103,43 +69,21 @@ class CurrentlyReading extends Component {
   render() {
     const {
       cover,
-      author,
-      avgRating,
       description,
-      pageCount,
       title,
+      status,
+      bookId,
     } = this.state.book; {/* eslint-disable-line */}
-
     const { visible } = this.state;
 
     return (
       <Wrapper>
-        <CoverWrapper>
-          <img src={cover} alt="" />
-          <Rate allowHalf disabled defaultValue={avgRating} />
-          <RatingTitle>Rating</RatingTitle>
-        </CoverWrapper>
-        <BookInfo>
-          <BookTitle>{title}</BookTitle>
-          <BookAuthor>
-            <span>Author </span>
-            {author}
-          </BookAuthor>
-          <BookPageCount>
-            <span>Pages </span>
-            {pageCount}
-          </BookPageCount>
-          <BookDescriptionTitle>Description</BookDescriptionTitle>
-          <BookDescription>
-            {description.length < 200 ? description : (
-              <div>
-                {`${description.slice(0, 200)}...`}
-                <ReadMoreBtn onClick={() => this.readMore(description)}>Read more</ReadMoreBtn>
-              </div>
-            )}
-          </BookDescription>
-          <Button type="primary" icon="check" onClick={() => this.modalConfirm(title)}>Complete</Button>
-        </BookInfo>
+        <Link to={`/book/${bookId}`}>
+          <CoverWrapper>
+            <img src={cover} alt="" />
+          </CoverWrapper>
+        </Link>
+        {status === 'current' ? <Button type="primary" icon="check" onClick={() => this.modalConfirm(title)}>Complete</Button> : ''}
         <Modal
           title=""
           visible={visible}

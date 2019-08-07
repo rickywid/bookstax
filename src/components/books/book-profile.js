@@ -27,7 +27,7 @@ class BookProfile extends React.Component {
 
 
   saveBook = (book) => {
-    const { bookId } = this.props.match.params.book_id; {/* eslint-disable-line */}
+    const bookId = this.props.match.params.book_id; {/* eslint-disable-line */}
     const { loggedInUserListId, loggedInUserId } = this.props;
 
     const data = {

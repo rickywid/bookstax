@@ -7,9 +7,10 @@ import moment from 'moment';
 import { Modal, Button } from 'antd';
 import Api from '../../services/api';
 import LoaderHOC from '../isLoading';
-import CurrentlyReading from './currently-reading';
 import { ReactComponent as Medal } from '../../assets/icons/medal.svg';
 import { ReactComponent as Avatar } from '../../assets/icons/avatar.svg';
+import BookshelfList from './bookshelf-list';
+import FavouriteBooks from './favourite-books';
 
 const Wrapper = styled.div`
   
@@ -43,6 +44,21 @@ const InnerWrapper = styled.div`
 const Stat = styled.p`
   font-size: 24px;
 `;
+const TabsWrapper = styled.ul`
+  margin: 0;
+  padding: 0;
+`;
+const Tabs = styled.li`
+  display: inline-block;
+  margin-right: 1rem;
+  button {
+    font-weight: ${props => (props.index === props.tabState ? 'bold' : 'normal')};  
+  }
+`;
+const TabBtn = styled.button`
+  background: none;
+  border: none;
+`;
 
 class Me extends React.Component {
   api = new Api().Resolve();
@@ -53,6 +69,7 @@ class Me extends React.Component {
     this.state = {
       user: {},
       displayCongratssModal: false,
+      activeTab: 0,
     };
 
     this.markBookCompleted = this.markBookCompleted.bind(this);
@@ -102,18 +119,12 @@ class Me extends React.Component {
     this.setState({ displayCongratssModal: true });
   }
 
-  renderCurrentBooks() {
-    const { user } = this.state;
-
-    if (user.bookshelf[0].currently.length) {
-      return user.bookshelf[0].currently.map((book, index) => <CurrentlyReading key={book.isbn} index={index} book={book} markBookCompleted={this.markBookCompleted} />);
-    }
-
-    return <div>you&apos;re not reading any books at the moment</div>;
+  toggleTabs(index) {
+    this.setState({ activeTab: index });
   }
 
   render() {
-    const { user, displayCongratssModal } = this.state;
+    const { user, displayCongratssModal, activeTab } = this.state;
 
     if (Object.keys(user).length === 0 && user.constructor === Object) return <div />;
 
@@ -155,10 +166,11 @@ class Me extends React.Component {
           <button type="button">Send e-mail</button>
         </UserInfoWrapper>
         <UserDetails>
-          <h4>Currently Reading</h4>
-          {this.renderCurrentBooks()}
-          <p>favourites</p>
-          {user.favourites.map(book => <div key={book.bookId}><Link to={`/book/${book.bookId}`}><img src={book.cover} alt="" /></Link></div>)}
+          <TabsWrapper>
+            <Tabs index={0} tabState={activeTab}><TabBtn onClick={() => this.toggleTabs(0)}>Bookshelf</TabBtn></Tabs>
+            <Tabs index={1} tabState={activeTab}><TabBtn onClick={() => this.toggleTabs(1)}>Favourite Books</TabBtn></Tabs>
+          </TabsWrapper>
+          {activeTab === 0 ? <BookshelfList bookshelf={user.bookshelf} markBookCompleted={this.markBookCompleted} /> : <FavouriteBooks favourites={user.favourites} />}
         </UserDetails>
         <Modal
           title=""
