@@ -40,7 +40,7 @@ const btnStyle = {
 class MeList extends React.Component {
   api = new Api().Resolve();
 
-  bookshelfId = window.location.pathname.split('/')[4];
+  bookshelfId = this.props.loggedInUserListId; /* eslint-disable-line */
 
   constructor(props) {
     super(props);
@@ -82,18 +82,24 @@ class MeList extends React.Component {
     };
 
 
-    Promise.all([fetch(`http://localhost:3001/user/list/likes/${loggedInUserId}/${loggedInUserListId}`), fetch(`http://localhost:3001/user/bookshelf/${loggedInUserListId}`)]).then((res) => {
-      Promise.all([res[0].json(), res[1].json()]).then((res2) => {
+    Promise.all([
+      fetch(`http://localhost:3001/user/list/likes/${loggedInUserId}/${loggedInUserListId}`),
+      fetch(`http://localhost:3001/user/bookshelf/${loggedInUserListId}`),
+      fetch(`http://localhost:3001/favourites/${loggedInUserId}`),
+    ]).then((res) => {
+      Promise.all([res[0].json(), res[1].json(), res[2].json()]).then((res2) => {
         const isLiked = res2[0].voted;
         const likeCount = res2[0].count;
         const { likedUsers } = res2[0];
         const books = [...res2[1][0].backlog, ...res2[1][0].completed, ...res2[1][0].currently];
         const booksObj = {};
+        const favourites = res2[2];
 
         books.map((book, index) => {
           booksObj[`book-${index + 1}`] = {
             id: `book-${index + 1}`,
             content: {
+              bookId: book.bookId,
               title: book.title,
               author: book.author,
               cover: book.cover,
@@ -125,7 +131,7 @@ class MeList extends React.Component {
         };
 
         this.setState({
-          isLiked, likeCount, data, likedUsers,
+          isLiked, likeCount, data, likedUsers, favourites,
         });
       });
     });
@@ -195,7 +201,6 @@ class MeList extends React.Component {
         const backlog = newState.data.columns.backlog.bookIds.map(id => newState.data.books[id].content);
         const completed = newState.data.columns.completed.bookIds.map(id => newState.data.books[id].content);
         const current = newState.data.columns.current.bookIds.map(id => newState.data.books[id].content);
-
         const bookshelf = await this.api.updateUserBookshelf(this.bookshelfId, { data: [backlog, completed, current] });
 
         this.setState((prevState) => {
@@ -346,6 +351,7 @@ class MeList extends React.Component {
       isLiked,
       likedUsers,
       visible,
+      favourites,
     } = this.state;
 
     const { loggedInUserId } = this.props;
@@ -367,7 +373,7 @@ class MeList extends React.Component {
             {data.columnOrder.map((columnId, index) => {
               const column = data.columns[columnId];
               const booksArr = column.bookIds.map(bookId => data.books[bookId]);
-              return <Column key={column.id} column={column} index={index} deleteBook={this.deleteBook} books={booksArr} />;
+              return <Column key={column.id} favourites={favourites} column={column} index={index} deleteBook={this.deleteBook} books={booksArr} />;
             })}
           </DragDropContext>
         </ReactDnDArea>

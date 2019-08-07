@@ -60,13 +60,18 @@ class Me extends React.Component {
 
   async componentDidMount() {
     const { user } = this.props;
+
     const data = await fetch(`http://localhost:3001/user/bookshelf/${user.list_id}`);
     const userList = await data.json();
+
+    const data2 = await fetch(`http://localhost:3001/favourites/${user.id}`);
+    const userFavourites = await data2.json();
 
     this.setState((prevState) => {
       const state = prevState;
       state.user = user;
       state.user.bookshelf = userList;
+      state.user.favourites = userFavourites;
 
       return state;
     });
@@ -85,6 +90,7 @@ class Me extends React.Component {
   };
 
   async markBookCompleted(index) {
+    const { user } = this.props;
     const list = this.state;
     const book = list.user.bookshelf[0].currently.splice(index, 1);
     book[0].status = 'completed';
@@ -92,7 +98,7 @@ class Me extends React.Component {
     const current = list.user.bookshelf[0].currently;
     const completed = [book[0], ...list.user.bookshelf[0].completed];
 
-    await this.api.updateUserBookshelf(this.bookshelfId, { data: [backlog, completed, current] });
+    await this.api.updateUserBookshelf(user.list_id, { data: [backlog, completed, current] });
     this.setState({ displayCongratssModal: true });
   }
 
@@ -108,6 +114,7 @@ class Me extends React.Component {
 
   render() {
     const { user, displayCongratssModal } = this.state;
+
     if (Object.keys(user).length === 0 && user.constructor === Object) return <div />;
 
     return (
@@ -150,6 +157,8 @@ class Me extends React.Component {
         <UserDetails>
           <h4>Currently Reading</h4>
           {this.renderCurrentBooks()}
+          <p>favourites</p>
+          {user.favourites.map(book => <div key={book.bookId}><Link to={`/book/${book.bookId}`}><img src={book.cover} alt="" /></Link></div>)}
         </UserDetails>
         <Modal
           title=""
@@ -180,6 +189,7 @@ export default connect(mapStateToProps, null)(LoaderHOC('user')(Me));
 
 Me.propTypes = {
   user: PropTypes.shape({
+    id: PropTypes.number.isRequired,
     name: PropTypes.string.isRequired,
     created_at: PropTypes.string.isRequired,
     list_id: PropTypes.number.isRequired,

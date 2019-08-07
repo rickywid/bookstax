@@ -1,5 +1,6 @@
 import React from 'react';
-// import styled from 'styled-components';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 class BookProfile extends React.Component {
   constructor(props) {
@@ -10,7 +11,7 @@ class BookProfile extends React.Component {
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const bookId = window.location.pathname.split('/')[2];
 
     if (localStorage.getItem('token')) {
@@ -19,15 +20,20 @@ class BookProfile extends React.Component {
       this.setState({ saveBookState: true });
     }
 
-    fetch(`https://www.googleapis.com/books/v1/volumes?q=${bookId}`).then(res => res.json()).then((json) => {
+    await fetch(`https://www.googleapis.com/books/v1/volumes?q=${bookId}`).then(res => res.json()).then((json) => {
       this.setState({ results: [json] });
     });
   }
 
 
   saveBook = (book) => {
+    const { bookId } = this.props.match.params.book_id; {/* eslint-disable-line */}
+    const { loggedInUserListId, loggedInUserId } = this.props;
+
     const data = {
+      id: loggedInUserListId,
       content: {
+        bookId,
         title: book.title,
         author: book.authors[0],
         cover: book.imageLinks.smallThumbnail,
@@ -38,8 +44,9 @@ class BookProfile extends React.Component {
         status: 'backlog',
       },
     };
+
     // save book to user's backlog
-    fetch('http://localhost:3000/user/addbook/1', {
+    fetch(`http://localhost:3000/user/addbook/${loggedInUserId}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -52,7 +59,6 @@ class BookProfile extends React.Component {
   render() {
     const { results, saveBookState } = this.state;
     if (results[0].items.length === 0) return <div>loading</div>;
-
     const {
       authors, averageRating, categories, description, imageLinks, pageCount, title,
     } = results[0].items[0].volumeInfo;
@@ -62,7 +68,7 @@ class BookProfile extends React.Component {
         <h3>{title}</h3>
         <img src={imageLinks.smallThumbnail} alt="cover" />
         {authors.map(author => <p key={author}>{author}</p>)}
-        {categories.map(category => <p key={category}>{category}</p>)}
+        {categories !== undefined ? categories.map(category => <p key={category}>{category}</p>) : ''}
         <p>{description}</p>
         <p>
           Rating:
@@ -78,4 +84,21 @@ class BookProfile extends React.Component {
   }
 }
 
-export default BookProfile;
+function mapStateToProps(state) {
+  return {
+    loggedInUserId: state.getUser.id,
+    loggedInUserListId: state.getUser.list_id,
+  };
+}
+
+export default connect(mapStateToProps, null)(BookProfile);
+
+BookProfile.propTypes = {
+  loggedInUserListId: PropTypes.number.isRequired,
+  loggedInUserId: PropTypes.number.isRequired,
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      book_id: PropTypes.number.isRequired,
+    }),
+  }).isRequired,
+};
