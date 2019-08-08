@@ -24,13 +24,14 @@ const UserInfoWrapper = styled.div`
 const UserInfo = styled.div`
     display: flex;
     align-items: center;
+    margin-bottom: 1.5rem;
 `;
 const UserDetails = styled.div`
 `;
 const StatsWrapper = styled.div`
   li {
     display: inline-block;
-    border-right: 1px solid #d5d5d5;
+    border-right: 1px solid #0000000d;
     padding: 0 15px;
   }
 `;
@@ -39,19 +40,30 @@ const InnerWrapper = styled.div`
   display: flex;
   justify-content: space-between;
 `;
+const Joined = styled.p`
+  font-size: 12px;
+`;
+const StyledLink = styled(Link)`
+  display: block;
+  font-size: 12px;
+`;
 const Stat = styled.p`
-  font-size: 24px;
+  font-size: 40px;
 `;
 const TabsWrapper = styled.ul`
   margin: 0;
-  padding: 0;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  border-top: 1px solid #8b8b8b82;
+  border-bottom: 1px solid #8b8b8b82;
 `;
 const Tabs = styled.li`
   display: inline-block;
   margin-right: 1rem;
-  button {
-    font-weight: ${props => (props.index === props.tabState ? 'bold' : 'normal')};  
-  }
+  padding: 6px 12px;
+  border-left: ${props => (props.index === props.tabState ? '1px solid #8b8b8b82' : 'none')};;
+  border-right: ${props => (props.index === props.tabState ? '1px solid #8b8b8b82' : 'none')};
+  background: ${props => (props.index === props.tabState ? '#d8e1ef' : 'none')};
 `;
 const TabBtn = styled.button`
   background: none;
@@ -117,11 +129,13 @@ class UserProfile extends React.Component {
             <InnerWrapper>
               <div>
                 <h3>{user.name}</h3>
-                <p>
+                <Joined>
                   Joined
                   <span> </span>
                   {moment(user.created_at).fromNow()}
-                </p>
+                </Joined>
+                <StyledLink to={`/user/${user.id}/list/${user.list_id}`}>My Bookshelf</StyledLink>
+                <StyledLink>Send email</StyledLink>
               </div>
               <StatsWrapper>
                 <ul>
@@ -141,10 +155,6 @@ class UserProfile extends React.Component {
               </StatsWrapper>
             </InnerWrapper>
           </UserInfo>
-          <p>{user.email}</p>
-
-          <p><Link to={`/user/${user.id}/list/${user.list_id}`}>Bookshelf</Link></p>
-          <button type="button">Send e-mail</button>
         </UserInfoWrapper>
         <UserDetails>
           <TabsWrapper>

@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import CurrentlyReading from './currently-reading';
+import { Header2 } from '../../styled-components/header';
 
+const Wrapper = styled.div`
+  margin-bottom: 2rem;
+`;
 class BookshelfList extends Component {
   renderBooks(type) {
     const { bookshelf, markBookCompleted, isAuthorized } = this.props;
@@ -30,18 +35,18 @@ class BookshelfList extends Component {
   render() {
     return (
       <div>
-        <h2>CURRENT</h2>
-        <div className="wrap">
+        <Header2>CURRENT</Header2>
+        <Wrapper>
           {this.renderBooks('current')}
-        </div>
-        <h2>BACKLOG</h2>
-        <div className="wrap">
+        </Wrapper>
+        <Header2>BACKLOG</Header2>
+        <Wrapper>
           {this.renderBooks('backlog')}
-        </div>
-        <h2>COMPLETED</h2>
-        <div className="wrap">
+        </Wrapper>
+        <Header2>COMPLETED</Header2>
+        <Wrapper>
           {this.renderBooks('complete')}
-        </div>
+        </Wrapper>
       </div>
     );
   }

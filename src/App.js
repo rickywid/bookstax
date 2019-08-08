@@ -14,6 +14,7 @@ const NavBar = styled.nav`
   display: flex;
   justify-content: space-between;
   padding: 1rem 2rem;
+  margin-bottom: 3rem;
 `;
 
 const NavList = styled.ul`

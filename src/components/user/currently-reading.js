@@ -10,6 +10,13 @@ const Wrapper = styled.div`
   margin-bottom: 1rem;
 `;
 const CoverWrapper = styled.div`
+  img {
+    border-radius: 5px;
+  }
+`;
+const StyledLink = styled(Link)`
+  display: block;
+  margin-bottom: 1rem;
 `;
 
 class CurrentlyReading extends Component {
@@ -79,11 +86,11 @@ class CurrentlyReading extends Component {
 
     return (
       <Wrapper>
-        <Link to={`/book/${bookId}`}>
+        <StyledLink to={`/book/${bookId}`}>
           <CoverWrapper>
             <img src={cover} alt="" />
           </CoverWrapper>
-        </Link>
+        </StyledLink>
         {status === 'current' && isAuthorized ? <Button type="primary" icon="check" onClick={() => this.modalConfirm(title)}>Complete</Button> : ''}
         <Modal
           title=""

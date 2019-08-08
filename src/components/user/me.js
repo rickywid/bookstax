@@ -33,7 +33,7 @@ const UserDetails = styled.div`
 const StatsWrapper = styled.div`
   li {
     display: inline-block;
-    border-right: 1px solid #d5d5d5;
+    border-right: 1px solid #0000000d;
     padding: 0 15px;
   }
 `;
@@ -41,26 +41,39 @@ const InnerWrapper = styled.div`
   flex-grow: 1;
   display: flex;
   justify-content: space-between;
+
+  a {
+    font-size: 12px;
+  }
+`;
+const Joined = styled.p`
+  font-size: 12px;
+`;
+const StyledLink = styled(Link)`
+  display: block;
+  font-size: 12px;
 `;
 const Stat = styled.p`
-  font-size: 24px;
+  font-size: 40px;
+`;
+const StatTitle = styled.p`
+  font-size: 12px;
+  color: #00000073;
 `;
 const TabsWrapper = styled.ul`
   margin: 0;
   margin-bottom: 1.5rem;
-  background: #f2b8b84d;
   text-align: center;
-  border-top: 1px solid #f2b8b882;
-  border-bottom: 1px solid #f2b8b882;
+  border-top: 1px solid #8b8b8b82;
+  border-bottom: 1px solid #8b8b8b82;
 `;
 const Tabs = styled.li`
   display: inline-block;
   margin-right: 1rem;
   padding: 6px 12px;
-  button {
-    font-weight: ${props => (props.index === props.tabState ? 'bold' : 'normal')};
-  }
-  background: ${props => (props.index === props.tabState ? '#f2b8b882' : 'none')};
+  border-left: ${props => (props.index === props.tabState ? '1px solid #8b8b8b82' : 'none')};;
+  border-right: ${props => (props.index === props.tabState ? '1px solid #8b8b8b82' : 'none')};
+  background: ${props => (props.index === props.tabState ? '#d8e1ef' : 'none')};
 `;
 const TabBtn = styled.button`
   background: none;
@@ -144,26 +157,27 @@ class Me extends React.Component {
             <InnerWrapper>
               <div>
                 <h3>{user.name}</h3>
-                <p>
+                <Joined>
                   Joined
                   <span> </span>
                   {moment(user.created_at).fromNow()}
-                </p>
-                {isAuthorized ? <Link to={`/user/${user.id}/edit`}>Edit Profile</Link> : ''}
+                </Joined>
+                <StyledLink to="me-list">My Bookshelf</StyledLink>
+                {isAuthorized ? <StyledLink to={`/user/${user.id}/edit`}>Edit Profile</StyledLink> : ''}
               </div>
               <StatsWrapper>
                 <ul>
                   <li>
                     <Stat>{user.bookshelf[0].backlog.length}</Stat>
-                    <p>Backlog</p>
+                    <StatTitle>Backlog</StatTitle>
                   </li>
                   <li>
                     <Stat>{user.bookshelf[0].currently.length}</Stat>
-                    <p>Current</p>
+                    <StatTitle>Current</StatTitle>
                   </li>
                   <li>
                     <Stat>{user.bookshelf[0].completed.length}</Stat>
-                    <p>Completed</p>
+                    <StatTitle>Completed</StatTitle>
                   </li>
                 </ul>
               </StatsWrapper>
