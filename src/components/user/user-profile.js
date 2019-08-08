@@ -4,9 +4,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import moment from 'moment';
-import { Button } from 'antd';
 import Api from '../../services/api';
-// import LoaderHOC from '../isLoading';
 import CurrentlyReading from './currently-reading';
 import { ReactComponent as Avatar } from '../../assets/icons/avatar.svg';
 import BookshelfList from './bookshelf-list';
@@ -119,7 +117,11 @@ class UserProfile extends React.Component {
             <InnerWrapper>
               <div>
                 <h3>{user.name}</h3>
-                {isAuthorized ? <Button><Link to="/user/edit">Edit Profile</Link></Button> : ''}
+                <p>
+                  Joined
+                  <span> </span>
+                  {moment(user.created_at).fromNow()}
+                </p>
               </div>
               <StatsWrapper>
                 <ul>
@@ -140,11 +142,7 @@ class UserProfile extends React.Component {
             </InnerWrapper>
           </UserInfo>
           <p>{user.email}</p>
-          <p>
-            Joined
-            <span> </span>
-            {moment(user.created_at).fromNow()}
-          </p>
+
           <p><Link to={`/user/${user.id}/list/${user.list_id}`}>Bookshelf</Link></p>
           <button type="button">Send e-mail</button>
         </UserInfoWrapper>

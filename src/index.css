@@ -1,6 +1,15 @@
+/*
+  GLOBAL CSS STYLES
+*/
 body {
-  font-family: 'Darker Grotesque', sans-serif;
+  font-family: 'Raleway', sans-serif !important;
 }
+
+h2 {
+  font-size: 14px;
+}
+
+button:focus {outline:0;}
 
 .error {
   position: fixed;

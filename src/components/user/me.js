@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import moment from 'moment';
-import { Modal, Button } from 'antd';
+import { Modal } from 'antd';
 import Api from '../../services/api';
 import LoaderHOC from '../isLoading';
 import { ReactComponent as Medal } from '../../assets/icons/medal.svg';
@@ -26,6 +26,7 @@ const UserInfoWrapper = styled.div`
 const UserInfo = styled.div`
     display: flex;
     align-items: center;
+    margin-bottom: 1.5rem;
 `;
 const UserDetails = styled.div`
 `;
@@ -46,14 +47,20 @@ const Stat = styled.p`
 `;
 const TabsWrapper = styled.ul`
   margin: 0;
-  padding: 0;
+  margin-bottom: 1.5rem;
+  background: #f2b8b84d;
+  text-align: center;
+  border-top: 1px solid #f2b8b882;
+  border-bottom: 1px solid #f2b8b882;
 `;
 const Tabs = styled.li`
   display: inline-block;
   margin-right: 1rem;
+  padding: 6px 12px;
   button {
-    font-weight: ${props => (props.index === props.tabState ? 'bold' : 'normal')};  
+    font-weight: ${props => (props.index === props.tabState ? 'bold' : 'normal')};
   }
+  background: ${props => (props.index === props.tabState ? '#f2b8b882' : 'none')};
 `;
 const TabBtn = styled.button`
   background: none;
@@ -137,7 +144,12 @@ class Me extends React.Component {
             <InnerWrapper>
               <div>
                 <h3>{user.name}</h3>
-                {isAuthorized ? <Button><Link to={`/user/${user.id}/edit`}>Edit Profile</Link></Button> : ''}
+                <p>
+                  Joined
+                  <span> </span>
+                  {moment(user.created_at).fromNow()}
+                </p>
+                {isAuthorized ? <Link to={`/user/${user.id}/edit`}>Edit Profile</Link> : ''}
               </div>
               <StatsWrapper>
                 <ul>
@@ -157,14 +169,6 @@ class Me extends React.Component {
               </StatsWrapper>
             </InnerWrapper>
           </UserInfo>
-          <p>{user.email}</p>
-          <p>
-            Joined
-            <span> </span>
-            {moment(user.created_at).fromNow()}
-          </p>
-          <p><Link to="/me-list">Bookshelf</Link></p>
-          <button type="button">Send e-mail</button>
         </UserInfoWrapper>
         <UserDetails>
           <TabsWrapper>

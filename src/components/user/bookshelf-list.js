@@ -30,15 +30,15 @@ class BookshelfList extends Component {
   render() {
     return (
       <div>
-        <h3>Currently</h3>
+        <h2>CURRENT</h2>
         <div className="wrap">
           {this.renderBooks('current')}
         </div>
-        <h3>Backlog</h3>
+        <h2>BACKLOG</h2>
         <div className="wrap">
           {this.renderBooks('backlog')}
         </div>
-        <h3>Completed</h3>
+        <h2>COMPLETED</h2>
         <div className="wrap">
           {this.renderBooks('complete')}
         </div>
