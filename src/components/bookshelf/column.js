@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Droppable } from 'react-beautiful-dnd';
 import PropTypes from 'prop-types';
 import { Badge, Modal, Button } from 'antd';
+import { connect } from 'react-redux';
 import BookItem from './bookItem';
 import BookshelfBookItem from '../modals/bookshelf-book';
 
@@ -42,14 +43,22 @@ class Column extends React.Component {
     this.state = {
       visible: false,
       selectedBook: null,
+      isCompletedColumn: false,
       isDeleting: false,
+      favourites: [],
     };
   }
 
-  showModal = (id) => {
+  componentDidMount() {
+    const { favourites } = this.props;
+    this.setState({ favourites });
+  }
+
+  showModal = (id, column) => {
     this.setState({
       visible: true,
       selectedBook: id,
+      isCompletedColumn: column.title === 'Completed',
     });
   };
 
@@ -65,8 +74,59 @@ class Column extends React.Component {
     this.setState({ visible: false });
   }
 
+  updateFavourite = (book, action) => {
+    const { favourites } = this.state;
+    const { id, userId } = this.props;
+    let data;
+
+    if (action === 'add') {
+      let books = favourites;
+      books = [...books, book];
+
+      data = {
+        id,
+        book: JSON.stringify(books),
+      };
+    } else {
+      const bookId = book.bookId; {/* eslint-disable-line */}
+      const books = favourites.filter(item => item.bookId !== bookId);
+
+      data = {
+        id,
+        book: JSON.stringify(books),
+      };
+    }
+
+    fetch(`http://localhost:3001/favourites/add/${userId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    }).then(res => res.json()).then(res2 => this.setState({ favourites: res2.books }));
+  }
+
+  checkIsFavourite(book) {
+    const { favourites } = this.state;
+    const id = book.content.bookId;
+
+    const match = favourites.filter(item => item.bookId === id);
+
+
+    if (match.length) {
+      return <Button key="favourite" type="primary" onClick={() => this.updateFavourite(book.content, 'remove')}>Remove from Favourites</Button>;
+    }
+
+    return <Button key="favourite" type="primary" onClick={() => this.updateFavourite(book.content, 'add')}>Save to Favourites</Button>;
+  }
+
   render() {
-    const { visible, selectedBook, isDeleting } = this.state;
+    const {
+      visible,
+      selectedBook,
+      isDeleting,
+      isCompletedColumn,
+    } = this.state;
     const { column, books } = this.props;
     const modalBook = books[selectedBook] || {};
 
@@ -84,7 +144,7 @@ class Column extends React.Component {
               {...provided.droppableProps}
             >
               {books.map((book, index) => (
-                <div key={book.id} role="button" tabIndex="0" onClick={this.showModal.bind(this, index)} onKeyDown={this.showModal.bind(this, index)}>
+                <div key={book.id} role="button" tabIndex="0" onClick={this.showModal.bind(this, index, column)} onKeyDown={this.showModal.bind(this, index)}>
                   <BookItem key={book.id} book={book} index={index} />
                 </div>
               ))}
@@ -101,6 +161,7 @@ class Column extends React.Component {
             <Button key="close" onClick={this.handleOk}>
               Close
             </Button>,
+            isCompletedColumn ? this.checkIsFavourite(modalBook) : '',
             <Button key="delete" type="primary" loading={isDeleting} onClick={this.handleDelete}>
               Remove Book
             </Button>,
@@ -128,6 +189,9 @@ Column.propTypes = {
   column: PropTypes.shape({ title: PropTypes.string, id: PropTypes.string }).isRequired,
   deleteBook: PropTypes.func,
   index: PropTypes.number,
+  favourites: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  id: PropTypes.number.isRequired,
+  userId: PropTypes.number.isRequired,
 };
 
 Column.defaultProps = {
@@ -142,4 +206,12 @@ Column.defaultProps = {
   index: null,
 };
 
-export default Column;
+
+function mapStateToProps(state) {
+  return {
+    userId: state.getUser.id,
+    id: state.getUser.favourite_books_id,
+  };
+}
+
+export default connect(mapStateToProps, null)(Column);

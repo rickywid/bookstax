@@ -14,9 +14,11 @@ const Container = styled.div`
 class BookItem extends React.Component {
   render() {
     const { book, index } = this.props;
+    const isDraggable = window.location.pathname.indexOf('me-list') < 1;
+
     return (
       <div>
-        <Draggable draggableId={book.id} index={index}>
+        <Draggable isDragDisabled={isDraggable} draggableId={book.id} index={index}>
           {provided => (
             <Container
               {...provided.draggableProps}

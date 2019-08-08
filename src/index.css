@@ -1,6 +1,15 @@
+/*
+  GLOBAL CSS STYLES
+*/
 body {
-  font-family: 'Darker Grotesque', sans-serif;
+  font-family: 'Raleway', sans-serif !important;
 }
+
+h2 {
+  font-size: 14px;
+}
+
+button:focus {outline:0;}
 
 .error {
   position: fixed;
@@ -19,5 +28,59 @@ label {
 .ant-rate {
   color: #faab14 !important;
   font-size: 15px !important;
-  margin: 10px 0 0 0;
+  margin: 10px 0 0 0 !important;
+  display: block !important;
+}
+
+.ant-modal.congrats-modal {
+  top: 0;
+  left: 0;
+  height: 100vh;
+  display: flex;
+}
+
+.congrats-modal .ant-modal-content {
+  background: transparent;
+  box-shadow: none;
+  margin: auto;
+  background: white;
+}
+
+.congrats-modal .ant-modal-close {
+  border-radius: 100%;
+  padding: 10px;
+  right: -17px;
+  position: absolute;
+  top: -18px;
+  background: #f89393;
+}
+
+.congrats-modal .ant-modal-close-x {
+  width: 20px;
+  height: 20px;
+  line-height: 1;
+  display: flex;
+}
+
+.congrats-modal .ant-modal-close-x i {
+  margin: auto;
+}
+
+.congrats-modal .ant-modal-content h3 {
+  color: #3e3e3ed9;
+  font-weight: bold;
+}
+
+.congrats-modal .ant-modal-content .ant-modal-body svg{
+  height: 200px;
+}
+
+.congrats-modal .ant-modal-content .ant-modal-footer {
+  border: none;
+}
+
+.congrats-modal .ant-modal-content .ant-modal-body div {
+  display: flex;
+  text-align: center;
+  flex-direction: column;
 }
