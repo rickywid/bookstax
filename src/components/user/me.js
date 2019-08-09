@@ -163,7 +163,17 @@ class Me extends React.Component {
                   {moment(user.created_at).fromNow()}
                 </Joined>
                 <StyledLink to="me-list">My Bookshelf</StyledLink>
-                {isAuthorized ? <StyledLink to={`/user/${user.id}/edit`}>Edit Profile</StyledLink> : ''}
+                {isAuthorized
+                  ? (
+                    <StyledLink to={{
+                      pathname: `/user/${user.id}/edit`,
+                      state: { user },
+                    }}
+                    >
+                      Edit Profile
+                    </StyledLink>
+                  )
+                  : ''}
               </div>
               <StatsWrapper>
                 <ul>
