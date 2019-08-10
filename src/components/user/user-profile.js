@@ -5,10 +5,13 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import moment from 'moment';
 import Api from '../../services/api';
-import CurrentlyReading from './currently-reading';
+import BookItem from './book-item';
 import { ReactComponent as Avatar } from '../../assets/icons/avatar.svg';
 import BookshelfList from './bookshelf-list';
 import FavouriteBooks from './favourite-books';
+import UserGenres from './user-genres';
+import UserBio from './user-bio';
+import UserSocial from './user-social';
 
 const Wrapper = styled.div`
   
@@ -41,6 +44,7 @@ const InnerWrapper = styled.div`
   justify-content: space-between;
 `;
 const Joined = styled.p`
+  margin-top: 1rem;
   font-size: 12px;
 `;
 const StyledLink = styled(Link)`
@@ -68,6 +72,18 @@ const Tabs = styled.li`
 const TabBtn = styled.button`
   background: none;
   border: none;
+`;
+const ContentWrapper = styled.div`
+  display: flex;
+`;
+const Sidebar = styled.aside`
+  flex-basis: 30%;
+  padding: 0 1rem;
+`;
+const DisplayName = styled.h2`
+    font-size: 30px;
+    margin-bottom: 0;
+    font-weight: bold;
 `;
 
 class UserProfile extends React.Component {
@@ -109,7 +125,7 @@ class UserProfile extends React.Component {
     const { user } = this.state;
 
     if (user.bookshelf.currently.length) {
-      return user.bookshelf.currently.map((book, index) => <CurrentlyReading key={book.isbn} index={index} book={book} markBookCompleted={this.markBookCompleted} />);
+      return user.bookshelf.currently.map((book, index) => <BookItem key={book.isbn} index={index} book={book} markBookCompleted={this.markBookCompleted} />);
     }
 
     return <div>you&apos;re not reading any books at the moment</div>;
@@ -128,12 +144,7 @@ class UserProfile extends React.Component {
             <Avatar style={{ height: '100px', marginRight: '2rem' }} />
             <InnerWrapper>
               <div>
-                <h3>{user.name}</h3>
-                <Joined>
-                  Joined
-                  <span> </span>
-                  {moment(user.created_at).fromNow()}
-                </Joined>
+                <DisplayName>{user.name}</DisplayName>
                 <StyledLink to={`/user/${user.id}/list/${user.list_id}`}>My Bookshelf</StyledLink>
                 <StyledLink>Send email</StyledLink>
               </div>
@@ -161,7 +172,19 @@ class UserProfile extends React.Component {
             <Tabs index={0} tabState={activeTab}><TabBtn onClick={() => this.toggleTabs(0)}>Bookshelf</TabBtn></Tabs>
             <Tabs index={1} tabState={activeTab}><TabBtn onClick={() => this.toggleTabs(1)}>Favourite Books</TabBtn></Tabs>
           </TabsWrapper>
-          {activeTab === 0 ? <BookshelfList isAuthorized={isAuthorized} bookshelf={[user.bookshelf]} markBookCompleted={this.markBookCompleted} /> : <FavouriteBooks favourites={user.favourites} />}
+          <ContentWrapper>
+            {activeTab === 0 ? <BookshelfList isAuthorized={isAuthorized} bookshelf={[user.bookshelf]} markBookCompleted={this.markBookCompleted} /> : <FavouriteBooks favourites={user.favourites} />}
+            <Sidebar>
+              <UserSocial user={user} />
+              <UserBio user={user} />
+              <UserGenres user={user} />
+              <Joined>
+                Joined
+                <span> </span>
+                {moment(user.created_at).fromNow()}
+              </Joined>
+            </Sidebar>
+          </ContentWrapper>
         </UserDetails>
       </Wrapper>
     );
@@ -178,7 +201,14 @@ export default connect(mapStateToProps, null)(UserProfile);
 
 UserProfile.propTypes = {
   user: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    created_at: PropTypes.string.isRequired,
-  }).isRequired,
+    name: PropTypes.string,
+    created_at: PropTypes.string,
+  }),
+};
+
+UserProfile.defaultProps = {
+  user: PropTypes.shape({
+    name: '',
+    created_at: '',
+  }),
 };

@@ -56,6 +56,7 @@ class UserEdit extends React.Component {
       if (!err) {
         await this.api.updateUserProfile(user.id, values);
         message.success('Your profile has been successfully updated');
+
         history.push({
           pathname: '/me',
           state: values,
