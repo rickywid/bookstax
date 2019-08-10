@@ -1,8 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { compose } from 'redux';
-import { Field, reduxForm } from 'redux-form';
-import { Button } from 'antd';
+import {
+  Form,
+  Icon,
+  Input,
+  Button,
+} from 'antd';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { getUserProfile } from '../actions/simpleAction';
@@ -10,23 +13,9 @@ import { ReactComponent as GoogleIcon } from '../assets/icons/google.svg';
 import { ReactComponent as FacebookIcon } from '../assets/icons/facebook.svg';
 import { ReactComponent as ReadingSVG } from '../assets/images/reading.svg';
 
-const Form = styled.form`
-  
-  margin: 0 auto;
-`;
-const InputWrapper = styled.div`
-  input {
-    height: 44px;
-    width: 100%;
-    padding: 5px;
-    margin-bottom: 1rem;
-    border-radius: 4px;
-    border: 1px solid #d9d9d9;
-  }
-`;
 const LandingWrapper = styled.div`
   display: flex;  
-  height: calc(100vh - 66px);
+  height: calc(100vh - 113px);
 `;
 const LandingLeft = styled.div`
   flex: 1;
@@ -95,32 +84,23 @@ class Landing extends React.Component {
     console.log('landing');
   }
 
-  onFormSubmit(values) {
-    console.log(values);
-    const { reset } = this.props;
-    // searchResults(values, history);
-    reset();
-  }
+  handleSubmit = (e) => {
+    const { validateFields } = this.props.form; {/* eslint-disable-line */}
+    e.preventDefault();
+    validateFields((err, values) => {
+      if (!err) {
+        console.log('Received values of form: ', values);
+      }
+    });
+  };
 
   handleSignIn = () => {
     window.open('http://localhost:3001/signin', '_self');
   }
 
-  renderField = ({
-    input, label, type, meta: { touched, error },
-  }) => (
-    <div>
-      <label>{label}</label> {/* eslint-disable-line */}
-      <InputWrapper>
-        <input {...input} type={type} />
-        {touched
-          && ((error && <p className="error">{error}</p>))}
-      </InputWrapper>
-    </div>
-  )
-
   render() {
-    const { handleSubmit, error } = this.props;
+    const { getFieldDecorator } = this.props.form; {/* eslint-disable-line */}
+
     return (
       <LandingWrapper>
         <LandingLeft>
@@ -130,12 +110,34 @@ class Landing extends React.Component {
         </LandingLeft>
         <LandingRight>
           <LoginWrapper>
-            <Form onSubmit={handleSubmit(this.onFormSubmit.bind(this))}>
-              <Field component={this.renderField} type="text" name="email" label="Email" />
-              <Field component={this.renderField} type="password" name="Password" label="Password" />
-              <Button style={{ fontWeight: 'bold' }} default type="submit">Sign In</Button>
+            <Form onSubmit={this.handleSubmit} className="login-form">
+              <Form.Item>
+                {getFieldDecorator('email', {
+                  rules: [{ required: true, message: 'Please input your email!' }],
+                })(
+                  <Input
+                    prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                    placeholder="Username"
+                  />,
+                )}
+              </Form.Item>
+              <Form.Item>
+                {getFieldDecorator('password', {
+                  rules: [{ required: true, message: 'Please input your Password!' }],
+                })(
+                  <Input
+                    prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                    type="password"
+                    placeholder="Password"
+                  />,
+                )}
+              </Form.Item>
+              <Form.Item>
+                <Button type="primary" htmlType="submit" className="login-form-button">
+                  Log in
+                </Button>
+              </Form.Item>
             </Form>
-            {error}
             <p style={style1}>
               <span style={style2}>OR</span>
             </p>
@@ -160,31 +162,15 @@ const mapDispatchToProps = dispatch => ({
   getUserProfile: () => dispatch(getUserProfile()),
 });
 
-const validate = (values) => {
-  const errors = { values };
-  if (!values.email) {
-    errors.email = 'Cannot be blank';
-  }
+const WrappedNormalLoginForm = Form.create({ name: 'normal_login' })(Landing);
 
-  if (!values.password) {
-    errors.password = 'Cannot be blank';
-  }
-
-  return errors;
-};
-
-export default compose(
-  reduxForm({
-    form: 'signin',
-    fields: ['email', 'password'],
-    validate,
-  }),
-  connect(null, mapDispatchToProps),
-)(Landing);
+export default connect(null, mapDispatchToProps)(WrappedNormalLoginForm);
 
 
 Landing.propTypes = {
-  handleSubmit: PropTypes.func.isRequired,
   error: PropTypes.shape({}).isRequired,
-  reset: PropTypes.func.isRequired,
+  form: PropTypes.shape({
+    validateFields: PropTypes.func.isRequired,
+    getFieldDecorator: PropTypes.func.isRequired,
+  }).isRequired,
 };

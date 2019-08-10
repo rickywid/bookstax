@@ -44,7 +44,7 @@ export const signOut = () => (dispatch) => {
 };
 
 export const searchResults = (data, history) => (dispatch) => {
-  const query = data.search.split(' ').join('+');
+  const query = data.split(' ').join('+');
 
   fetch(`https://www.googleapis.com/books/v1/volumes?q=${query}?printType=books&maxResults=40`).then(res => res.json()).then((json) => {
     dispatch({
