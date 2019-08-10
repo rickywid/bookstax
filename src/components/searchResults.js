@@ -110,7 +110,7 @@ class SearchResults extends React.Component {
       return (
         <ItemWrapper key={item.id}>
           <CoverWrapper>
-            <Link to={`/book/${item.id}`}><img src={imgSrc} style={{ width: '128px' }} alt={item.volumeInfo.title} /></Link>
+            <Link to={`/book/${item.id}`}><img src={imgSrc} style={{ borderRadius: '4px', width: '128px' }} alt={item.volumeInfo.title} /></Link>
           </CoverWrapper>
           <InfoWrapper>
             <BookTitle>
@@ -145,10 +145,10 @@ class SearchResults extends React.Component {
 
   render() {
     const { data, currentPage, offset } = this.state;
-    let searchResultHeader = `TOP 40 MATCHES FOUND FOR "${window.location.search.split('?query=')[1]}"`;
+    let searchResultHeader = `TOP 40 MATCHES FOUND FOR "${window.location.search.split('?query=')[1].split('+').join(' ')}"`;
 
     if (data.length < 40) {
-      searchResultHeader = `${data.length} MATCHES FOUND FOR "${window.location.search.split('?query=')[1]}"`;
+      searchResultHeader = `${data.length} MATCHES FOUND FOR "${window.location.search.split('?query=')[1].split('+').join(' ')}"`;
     }
 
     return (
