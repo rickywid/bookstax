@@ -34,6 +34,7 @@ const NavItems = styled.li`
 const Container = styled.div`
   max-width: 1140px;
   margin: 0 auto;
+  padding-bottom: 5rem;
 `;
 
 const { Search } = Input;
@@ -61,14 +62,24 @@ class App extends React.Component {
     this.setState({ user: nextProps.user });
   }
 
-  onFormSubmit(e = {}, values = {}) {
+  async onFormSubmit(e = {}, values = {}) {
+    const { history } = this.props;
     let query = values;
     if (e) {
       query = e.target.value;
     }
 
-    const { searchResults, history } = this.props;
-    searchResults(query, history);
+    query = query.split(' ').join('+');
+    const request = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${query}?printType=books&maxResults=40`);
+    const data = await request.json();
+
+    history.push({
+      pathname: '/search',
+      search: `?query=${query}`,
+      state: {
+        data: data.items || [],
+      },
+    });
   }
 
   signout() {
@@ -151,8 +162,9 @@ App.propTypes = {
   isAuth: PropTypes.shape({ authenticated: PropTypes.bool.isRequired }).isRequired,
   signOut: PropTypes.func.isRequired,
   getLoggedInUserProfile: PropTypes.func.isRequired,
-  searchResults: PropTypes.func.isRequired,
-  history: PropTypes.shape({}).isRequired,
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
 };
 
 export default connect(mapStateToProps, actions)(withRouter(App));
