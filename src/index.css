@@ -29,7 +29,7 @@ label {
 .ant-rate {
   color: #faab14 !important;
   font-size: 15px !important;
-  margin: 10px 0 0 0 !important;
+  margin: 10px 0 !important;
   display: block !important;
 }
 
@@ -88,4 +88,17 @@ label {
 
 .ant-pagination.mini {
   text-align: center;
+}
+
+/* ant design collapse component */
+.ant-collapse > .ant-collapse-item > .ant-collapse-header .ant-collapse-arrow {
+  left: 0 !important;
+}
+
+.ant-collapse-content > .ant-collapse-content-box {
+  padding: 0 !important;
+}
+
+.ant-collapse > .ant-collapse-item > .ant-collapse-header {
+  padding: 12px 26px !important;
 }
