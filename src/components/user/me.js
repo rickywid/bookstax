@@ -11,6 +11,10 @@ import { ReactComponent as Medal } from '../../assets/icons/medal.svg';
 import { ReactComponent as Avatar } from '../../assets/icons/avatar.svg';
 import BookshelfList from './bookshelf-list';
 import FavouriteBooks from './favourite-books';
+import * as actions from '../../actions/simpleAction';
+import UserGenres from './user-genres';
+import UserBio from './user-bio';
+import UserSocial from './user-social';
 
 const Wrapper = styled.div`
   
@@ -48,6 +52,7 @@ const InnerWrapper = styled.div`
 `;
 const Joined = styled.p`
   font-size: 12px;
+  margin-top: 1rem;
 `;
 const StyledLink = styled(Link)`
   display: block;
@@ -79,6 +84,18 @@ const TabBtn = styled.button`
   background: none;
   border: none;
 `;
+const ContentWrapper = styled.div`
+  display: flex;
+`;
+const Sidebar = styled.aside`
+  flex-basis: 30%;
+  padding: 0 1rem;
+`;
+const DisplayName = styled.h2`
+    font-size: 30px;
+    margin-bottom: 0;
+    font-weight: bold;
+`;
 
 class Me extends React.Component {
   api = new Api().Resolve();
@@ -96,7 +113,20 @@ class Me extends React.Component {
   }
 
   async componentDidMount() {
-    const { user } = this.props;
+    const user = this.props.user; {/* eslint-disable-line */}
+    const { state } = this.props.location; {/* eslint-disable-line */}
+    const { getLoggedInUserProfile } = this.props;
+
+    if (state) {
+      getLoggedInUserProfile();
+      user.name = state.username;
+      user.location = state.country;
+      user.description = state.bio;
+      user.genres = state.genres;
+      user.instagram_id = state.instagram;
+      user.twitter_id = state.twitter;
+    }
+
 
     const data = await fetch(`http://localhost:3001/user/bookshelf/${user.list_id}`);
     const userList = await data.json();
@@ -104,13 +134,17 @@ class Me extends React.Component {
     const data2 = await fetch(`http://localhost:3001/favourites/${user.id}`);
     const userFavourites = await data2.json();
 
-    this.setState((prevState) => {
-      const state = prevState;
-      state.user = user;
-      state.user.bookshelf = userList;
-      state.user.favourites = userFavourites;
+    const data3 = await fetch(`http://localhost:3001/user/${user.id}/genre`);
+    const userGenres = await data3.json();
 
-      return state;
+    this.setState((prevState) => {
+      const state2 = prevState;
+      state2.user = user;
+      state2.user.bookshelf = userList;
+      state2.user.favourites = userFavourites;
+      state2.user.genres = userGenres;
+
+      return state2;
     });
   }
 
@@ -156,14 +190,19 @@ class Me extends React.Component {
             <Avatar style={{ height: '100px', marginRight: '2rem' }} />
             <InnerWrapper>
               <div>
-                <h3>{user.name}</h3>
-                <Joined>
-                  Joined
-                  <span> </span>
-                  {moment(user.created_at).fromNow()}
-                </Joined>
+                <DisplayName>{user.name}</DisplayName>
                 <StyledLink to="me-list">My Bookshelf</StyledLink>
-                {isAuthorized ? <StyledLink to={`/user/${user.id}/edit`}>Edit Profile</StyledLink> : ''}
+                {isAuthorized
+                  ? (
+                    <StyledLink to={{
+                      pathname: '/settings',
+                      state: { user },
+                    }}
+                    >
+                      Edit Profile
+                    </StyledLink>
+                  )
+                  : ''}
               </div>
               <StatsWrapper>
                 <ul>
@@ -189,7 +228,19 @@ class Me extends React.Component {
             <Tabs index={0} tabState={activeTab}><TabBtn onClick={() => this.toggleTabs(0)}>Bookshelf</TabBtn></Tabs>
             <Tabs index={1} tabState={activeTab}><TabBtn onClick={() => this.toggleTabs(1)}>Favourite Books</TabBtn></Tabs>
           </TabsWrapper>
-          {activeTab === 0 ? <BookshelfList isAuthorized={isAuthorized} bookshelf={user.bookshelf} markBookCompleted={this.markBookCompleted} /> : <FavouriteBooks favourites={user.favourites} />}
+          <ContentWrapper>
+            {activeTab === 0 ? <BookshelfList isAuthorized={isAuthorized} bookshelf={user.bookshelf} markBookCompleted={this.markBookCompleted} /> : <FavouriteBooks favourites={user.favourites} />}
+            <Sidebar>
+              <UserSocial user={user} />
+              <UserBio user={user} />
+              <UserGenres user={user} />
+              <Joined>
+                Joined
+                <span> </span>
+                {moment(user.created_at).fromNow()}
+              </Joined>
+            </Sidebar>
+          </ContentWrapper>
         </UserDetails>
         <Modal
           title=""
@@ -216,13 +267,53 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, null)(LoaderHOC('user')(Me));
+export default connect(mapStateToProps, actions)(LoaderHOC('user')(Me));
 
 Me.propTypes = {
   user: PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    name: PropTypes.string.isRequired,
-    created_at: PropTypes.string.isRequired,
-    list_id: PropTypes.number.isRequired,
-  }).isRequired,
+    id: PropTypes.number,
+    name: PropTypes.string,
+    created_at: PropTypes.string,
+    list_id: PropTypes.number,
+    location: PropTypes.string,
+    description: PropTypes.string,
+    genres: PropTypes.arrayOf(PropTypes.shape({})),
+    instagram_id: PropTypes.string,
+    twitter_id: PropTypes.string,
+  }),
+  location: PropTypes.shape({
+    state: PropTypes.shape({
+      username: PropTypes.string,
+      country: PropTypes.string,
+      bio: PropTypes.string,
+      genres: PropTypes.arrayOf(PropTypes.shape({})),
+      instagram: PropTypes.string,
+      twitter: PropTypes.string,
+    }),
+  }),
+  getLoggedInUserProfile: PropTypes.func.isRequired,
+};
+
+Me.defaultProps = {
+  user: {
+    id: null,
+    name: '',
+    created_at: '',
+    list_id: null,
+    location: '',
+    description: '',
+    genres: [],
+    instagram_id: '',
+    twitter_id: '',
+  },
+  location: {
+    state: {
+      username: '',
+      country: '',
+      bio: '',
+      genres: [],
+      instagram: '',
+      twitter: '',
+    },
+  },
 };

@@ -19,7 +19,7 @@ const StyledLink = styled(Link)`
   margin-bottom: 1rem;
 `;
 
-class CurrentlyReading extends Component {
+class BookItem extends Component {
   constructor(props) {
     super(props);
 
@@ -108,15 +108,15 @@ class CurrentlyReading extends Component {
   }
 }
 
-export default CurrentlyReading;
+export default BookItem;
 
 
-CurrentlyReading.propTypes = {
+BookItem.propTypes = {
   markBookCompleted: PropTypes.func,
   index: PropTypes.number.isRequired,
   isAuthorized: PropTypes.bool.isRequired,
 };
 
-CurrentlyReading.defaultProps = {
+BookItem.defaultProps = {
   markBookCompleted: null,
 };

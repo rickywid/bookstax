@@ -34,6 +34,17 @@ export class ApiService {
     );
   }
 
+  // update user's profile
+  updateUserProfile(userId, data) {
+    this.httpClient.post(
+      `http://localhost:3001/user/${userId}/update`,
+      {
+        'Content-Type': 'application/json',
+      },
+      data
+    )
+  }
+
   // get user's bookshelf
   getUserBookshelf() {}
 
