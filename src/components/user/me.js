@@ -11,6 +11,7 @@ import { ReactComponent as Medal } from '../../assets/icons/medal.svg';
 import { ReactComponent as Avatar } from '../../assets/icons/avatar.svg';
 import BookshelfList from './bookshelf-list';
 import FavouriteBooks from './favourite-books';
+import * as actions from '../../actions/simpleAction';
 
 const Wrapper = styled.div`
   
@@ -96,7 +97,15 @@ class Me extends React.Component {
   }
 
   async componentDidMount() {
-    const { user } = this.props;
+    const user = this.props.user; {/* eslint-disable-line */}
+    const { state } = this.props.location; {/* eslint-disable-line */}
+    const { getLoggedInUserProfile } = this.props;
+
+    if (state) {
+      getLoggedInUserProfile();
+      user.name = state.username;
+    }
+
 
     const data = await fetch(`http://localhost:3001/user/bookshelf/${user.list_id}`);
     const userList = await data.json();
@@ -104,13 +113,17 @@ class Me extends React.Component {
     const data2 = await fetch(`http://localhost:3001/favourites/${user.id}`);
     const userFavourites = await data2.json();
 
-    this.setState((prevState) => {
-      const state = prevState;
-      state.user = user;
-      state.user.bookshelf = userList;
-      state.user.favourites = userFavourites;
+    const data3 = await fetch(`http://localhost:3001/user/${user.id}/genre`);
+    const userGenres = await data3.json();
 
-      return state;
+    this.setState((prevState) => {
+      const state2 = prevState;
+      state2.user = user;
+      state2.user.bookshelf = userList;
+      state2.user.favourites = userFavourites;
+      state2.user.genres = userGenres;
+
+      return state2;
     });
   }
 
@@ -148,7 +161,6 @@ class Me extends React.Component {
     const isAuthorized = window.location.pathname.split('/')[1] === 'me';
 
     if (Object.keys(user).length === 0 && user.constructor === Object) return <div />;
-
     return (
       <Wrapper>
         <UserInfoWrapper>
@@ -166,7 +178,7 @@ class Me extends React.Component {
                 {isAuthorized
                   ? (
                     <StyledLink to={{
-                      pathname: `/user/${user.id}/edit`,
+                      pathname: '/settings',
                       state: { user },
                     }}
                     >
@@ -226,7 +238,7 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, null)(LoaderHOC('user')(Me));
+export default connect(mapStateToProps, actions)(LoaderHOC('user')(Me));
 
 Me.propTypes = {
   user: PropTypes.shape({
@@ -235,4 +247,10 @@ Me.propTypes = {
     created_at: PropTypes.string.isRequired,
     list_id: PropTypes.number.isRequired,
   }).isRequired,
+  location: PropTypes.shape({
+    state: PropTypes.shape({
+      username: PropTypes.string.isRequired,
+    }).isRequired,
+  }).isRequired,
+  getLoggedInUserProfile: PropTypes.func.isRequired,
 };

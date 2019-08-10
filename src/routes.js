@@ -25,7 +25,7 @@ const Routes = (
     <Route exact path="/me-list" component={RequireAuth(MeList)} />
     <Route exact path="/user/:user_id" component={RequireAuth(UserProfile)} />
     <Route exact path="/user/:user_id/list/:userlist_id" component={RequireAuth(UserList)} />
-    <Route exact path="/user/:user_id/edit" component={RequireAuth(UserEdit)} />
+    <Route exact path="/settings" component={RequireAuth(UserEdit)} />
     <Route exact path="/search" component={SearchResults} />
     <Route exact path="/redirect" component={Redirect} />
     <Route component={NoMatch} />
