@@ -10,7 +10,7 @@ const Container = styled.div`
 `;
 const Wrapper = styled.div`
   margin-bottom: 2rem;
-  min-height: 260px;
+  min-height: 150px;
 `;
 
 class BookshelfList extends Component {

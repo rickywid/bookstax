@@ -89,6 +89,8 @@ const DisplayName = styled.h2`
 class UserProfile extends React.Component {
   api = new Api().Resolve();
 
+  userId = window.location.pathname.split('/')[3];
+
   constructor(props) {
     super(props);
 
@@ -99,12 +101,11 @@ class UserProfile extends React.Component {
   }
 
   async componentDidMount() {
-    const userId = window.location.pathname.split('/')[2];
-    const user = await this.api.getUserProfile(userId);
+    const user = await this.api.getUserProfile(this.userId);
     const data = await fetch(`http://localhost:3001/user/bookshelf/${user[0].list_id}`);
     const userList = await data.json();
 
-    const data2 = await fetch(`http://localhost:3001/favourites/${userId}`);
+    const data2 = await fetch(`http://localhost:3001/favourites/${this.userId}`);
     const userFavourites = await data2.json();
 
     this.setState((prevState) => {

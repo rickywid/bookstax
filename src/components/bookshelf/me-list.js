@@ -10,6 +10,7 @@ import LoaderHOC from '../isLoading';
 import Api from '../../services/api';
 import { ReactComponent as Like } from '../../assets/icons/like.svg';
 import { ReactComponent as Unlike } from '../../assets/icons/unlike.svg';
+import { Header2 } from '../../styled-components/header';
 
 const ReactDnDArea = styled.div`
   display: flex;
@@ -20,13 +21,12 @@ const LikeWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  margin-bottom: 1rem;
+  margin: 1rem 0;
 `;
 
 const svgStyle = {
-  height: '30px',
+  height: '20px',
   width: 'auto',
-  marginRight: '0.5rem',
 };
 
 const btnStyle = {
@@ -360,10 +360,10 @@ class MeList extends React.Component {
 
     return (
       <div>
-        <LikeWrapper>
-          {!isLiked ? <Unlike onClick={this.onHandleLike} style={svgStyle} /> : <Like onClick={this.onHandleLike} style={svgStyle} />}
-          <button type='button' onClick={this.showModal} style={btnStyle}>{likeCount}</button>
-        </LikeWrapper>
+        <Header2>
+          My Bookshelf
+        </Header2>
+        <p>Remove, update and rearrange your books.</p>
         <ReactDnDArea>
           <DragDropContext
             // onDragStart
@@ -377,6 +377,10 @@ class MeList extends React.Component {
             })}
           </DragDropContext>
         </ReactDnDArea>
+        <LikeWrapper>
+          {!isLiked ? <Unlike onClick={this.onHandleLike} style={svgStyle} /> : <Like onClick={this.onHandleLike} style={svgStyle} />}
+          <button type='button' onClick={this.showModal} style={btnStyle}>{likeCount}</button>
+        </LikeWrapper>
         <Modal
           title=''
           visible={visible}

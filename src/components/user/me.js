@@ -190,7 +190,7 @@ class Me extends React.Component {
             <Avatar style={{ height: '100px', marginRight: '2rem' }} />
             <InnerWrapper>
               <div>
-                <DisplayName>{user.name}</DisplayName>
+                <DisplayName>{user.username}</DisplayName>
                 <StyledLink to="me-list">My Bookshelf</StyledLink>
                 {isAuthorized
                   ? (

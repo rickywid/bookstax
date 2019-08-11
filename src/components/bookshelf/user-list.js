@@ -24,7 +24,7 @@ const LikeWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  margin-bottom: 1rem;
+  margin: 1rem 0;
 `;
 
 const CommentsWrapper = styled.div`
@@ -53,9 +53,8 @@ const FormStyle = styled.form`
 const CommentWrapper = styled.div``;
 
 const svgStyle = {
-  height: '30px',
+  height: '20px',
   width: 'auto',
-  marginRight: '0.5rem',
 };
 
 const btnStyle = {
@@ -71,9 +70,11 @@ const { TextArea } = Input;
 class UserList extends React.Component {
   api = new Api().Resolve();
 
-  userId = window.location.pathname.split('/')[2];
+  userId = window.location.pathname.split('/')[3];
 
-  bookshelfId = window.location.pathname.split('/')[4];
+  bookshelfId = window.location.pathname.split('/')[5];
+
+  username = window.location.pathname.split('/')[2];
 
   constructor(props) {
     super(props);
@@ -397,7 +398,13 @@ class UserList extends React.Component {
 
     return (
       <div>
-        <Header2>Bookshelf</Header2>
+        <Header2>
+          <Link to={`/user/${this.username}/${this.userId}`}>
+            {this.username}
+            &apos;s
+          </Link>
+          Bookshelf
+        </Header2>
         <ReactDnDArea>
           <DragDropContext
             // onDragStart
