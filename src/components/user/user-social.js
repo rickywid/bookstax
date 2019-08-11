@@ -54,7 +54,7 @@ class UserSocial extends Component {
             ? (
               <SocialWrapper>
                 <InstagramSVGStyle />
-                <a target="_blank" rel="noopener noreferrer" href={`https://www.instagram.com/${user.instagram}/`}>{user.instagram_id}</a>
+                <a target="_blank" rel="noopener noreferrer" href={`https://www.instagram.com/${user.instagram_id}/`}>{user.instagram_id}</a>
               </SocialWrapper>
             )
             : ''
