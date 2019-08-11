@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { DragDropContext } from 'react-beautiful-dnd';
 import styled from 'styled-components';
@@ -11,6 +10,7 @@ import Api from '../../services/api';
 import { ReactComponent as Like } from '../../assets/icons/like.svg';
 import { ReactComponent as Unlike } from '../../assets/icons/unlike.svg';
 import { Header2 } from '../../styled-components/header';
+import BookshelfLikes from '../modals/bookshelf-likes';
 
 const ReactDnDArea = styled.div`
   display: flex;
@@ -374,7 +374,7 @@ class MeList extends React.Component {
         <TopWrapper>
           <LikeWrapper>
             {!isLiked ? <Unlike onClick={this.onHandleLike} style={svgStyle} /> : <Like onClick={this.onHandleLike} style={svgStyle} />}
-            <button type='button' onClick={this.showModal} style={btnStyle}>{likeCount}</button>
+            <button type="button" onClick={this.showModal} style={btnStyle}>{likeCount}</button>
           </LikeWrapper>
         </TopWrapper>
         <ReactDnDArea>
@@ -391,22 +391,12 @@ class MeList extends React.Component {
           </DragDropContext>
         </ReactDnDArea>
         <Modal
-          title=''
+          title="Likes"
           visible={visible}
           onOk={this.handleOk}
           onCancel={this.handleCancel}
         >
-          liked users
-          <ul>
-            {likedUsers.map((user) => {
-              if (user.id === loggedInUserId) {
-                /* eslint jsx-quotes: ["error", "prefer-single"] */
-                return <li key={user.name}><Link to='/me'>{user.name}</Link></li>;
-              }
-
-              return <li key={user.name}><Link to={`/user/${user.id}`}>{user.name}</Link></li>;
-            })}
-          </ul>
+          <BookshelfLikes users={likedUsers} loggedInUserId={loggedInUserId} />
         </Modal>
       </div>
     );

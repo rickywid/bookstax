@@ -388,6 +388,7 @@ class UserList extends React.Component {
     } = this.state;
 
     const { loggedInUserId } = this.props;
+    const displayLikeBtn = parseInt(likeCount, 10) ? <button type="button" onClick={this.showModal} style={btnStyle}>{likeCount}</button> : '';
 
     if (!data) return null;
 
@@ -404,7 +405,7 @@ class UserList extends React.Component {
         <TopWrapper>
           <LikeWrapper>
             {!isLiked ? <Unlike onClick={this.onHandleLike} style={svgStyle} /> : <Like onClick={this.onHandleLike} style={svgStyle} />}
-            <button type="button" onClick={this.showModal} style={btnStyle}>{likeCount}</button>
+            {displayLikeBtn}
           </LikeWrapper>
         </TopWrapper>
         <ReactDnDArea>

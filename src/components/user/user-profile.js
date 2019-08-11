@@ -146,7 +146,7 @@ class UserProfile extends React.Component {
             <InnerWrapper>
               <div>
                 <DisplayName>{user.name}</DisplayName>
-                <StyledLink to={`/user/${user.id}/list/${user.list_id}`}>My Bookshelf</StyledLink>
+                <StyledLink to={`/user/${user.username}/${user.id}/list/${user.list_id}`}>My Bookshelf</StyledLink>
                 <StyledLink>Send email</StyledLink>
               </div>
               <StatsWrapper>
