@@ -84,6 +84,35 @@ class SearchResults extends React.Component {
     this.setState({ currentPage: page });
   }
 
+  saveBook = (book) => {
+    const bookId = book.id; {/* eslint-disable-line */}
+    const { loggedInUserListId, loggedInUserId } = this.props;
+
+    const data = {
+      id: loggedInUserListId,
+      content: {
+        bookId,
+        title: book.volumeInfo.title,
+        author: book.volumeInfo.authors[0],
+        cover: book.volumeInfo.imageLinks.smallThumbnail,
+        description: book.volumeInfo.description,
+        avgRating: book.volumeInfo.averageRating,
+        pageCount: book.volumeInfo.pageCount,
+        isbn: book.volumeInfo.industryIdentifiers[0].identifier,
+        status: 'backlog',
+      },
+    };
+
+    // save book to user's backlog
+    fetch(`http://localhost:3000/user/addbook/${loggedInUserId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    }).then(res => console.log(res));
+  }
+
   renderItems() {
     const {
       currentPage,
@@ -134,7 +163,7 @@ class SearchResults extends React.Component {
                 : ''}
             </AuthorList>
             <p>{textSnippet}</p>
-            <Button disabled={saveBookState}>Save To Bookshelf</Button>
+            <Button onClick={() => this.saveBook(item)} disabled={saveBookState}>{saveBookState ? 'Log in to save book' : 'Save To Bookshelf' }</Button>
           </InfoWrapper>
         </ItemWrapper>
       );
@@ -174,7 +203,11 @@ class SearchResults extends React.Component {
 }
 
 function mapStateToProps(state) {
-  return { searchResults: state.searchResults };
+  return {
+    loggedInUserId: state.getUser.id,
+    loggedInUserListId: state.getUser.list_id,
+    searchResults: state.searchResults,
+  };
 }
 
 export default connect(mapStateToProps, null)(SearchResults);
@@ -187,6 +220,8 @@ SearchResults.propTypes = {
       data: PropTypes.arrayOf({}),
     }),
   }),
+  loggedInUserListId: PropTypes.number.isRequired,
+  loggedInUserId: PropTypes.number.isRequired,
 };
 
 SearchResults.defaultProps = {
