@@ -98,12 +98,12 @@ class SearchResults extends React.Component {
 
     const items = currentTodos.map((item) => {
       const hasPropImgLinks = Object.prototype.hasOwnProperty.call(item.volumeInfo, 'imageLinks');
-      const hasPropTextSnippet = Object.prototype.hasOwnProperty.call(item.searchInfo, 'textSnippet');
+      const hasPropTextSnippet = Object.prototype.hasOwnProperty.call(item, 'searchInfo');
       const hasPropAuthors = Object.prototype.hasOwnProperty.call(item.volumeInfo, 'authors');
       const hasPropPublishedDate = Object.prototype.hasOwnProperty.call(item.volumeInfo, 'publishedDate');
 
       const imgSrc = hasPropImgLinks ? item.volumeInfo.imageLinks.smallThumbnail : 'https://d827xgdhgqbnd.cloudfront.net/wp-content/uploads/2016/04/09121712/book-cover-placeholder.png';
-      const textSnippet = hasPropTextSnippet ? item.searchInfo.textSnippet : '';
+      const textSnippet = hasPropTextSnippet ? item.searchInfo.textSnippet : 'No Description';
       const authors = hasPropAuthors ? item.volumeInfo.authors.map(author => author) : [];
       const publishedDate = hasPropPublishedDate ? item.volumeInfo.publishedDate : '';
 
