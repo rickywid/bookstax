@@ -10,6 +10,7 @@ const Container = styled.div`
 `;
 const Wrapper = styled.div`
   margin-bottom: 2rem;
+  min-height: 260px;
 `;
 
 class BookshelfList extends Component {
@@ -20,18 +21,21 @@ class BookshelfList extends Component {
       if (bookshelf[0].currently.length) {
         return bookshelf[0].currently.map((book, index) => <BookItem key={book.isbn} index={index} book={book} markBookCompleted={markBookCompleted} isAuthorized={isAuthorized} />);
       }
+      return <p>You are not currently reading any books</p>;
     }
 
     if (type === 'backlog') {
       if (bookshelf[0].backlog.length) {
         return bookshelf[0].backlog.map((book, index) => <BookItem key={book.isbn} index={index} book={book} markBookCompleted={markBookCompleted} isAuthorized={isAuthorized} />);
       }
+      return <p>You are no books in your backlog</p>;
     }
 
     if (type === 'complete') {
       if (bookshelf[0].completed.length) {
         return bookshelf[0].completed.map((book, index) => <BookItem key={book.isbn} index={index} book={book} markBookCompleted={markBookCompleted} isAuthorized={isAuthorized} />);
       }
+      return <p>You have not completed any books yet</p>;
     }
 
     return null;
