@@ -20,11 +20,19 @@ const ReactDnDArea = styled.div`
   justify-content: space-between;
 `;
 
+const TopWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  margin: 1rem 0;
+  p {
+    margin: 0;
+  }
+`;
+
 const LikeWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  margin: 1rem 0;
 `;
 
 const CommentsWrapper = styled.div`
@@ -279,25 +287,12 @@ class UserList extends React.Component {
   onHandleLike() {
     const { isLiked } = this.state;
     const { loggedInUserId } = this.props;
-    const listId = window.location.pathname.split('/')[4];
 
     if (isLiked) {
       this.setState({ isLiked: !isLiked }, async () => {
         // remove record from likes table
         const bookshelfInfo = await this.api.addUserLikeBookshelf({ user_id: loggedInUserId, list_id: this.bookshelfId });
         this.setState({ likeCount: bookshelfInfo.count });
-        // fetch('http://localhost:3001/user/update/list/likes', {
-        //   method: 'DELETE',
-        //   headers: {
-        //     'Content-Type': 'application/json',
-        //   },
-        //   body: JSON.stringify({
-        //     user_id: loggedInUserId,
-        //     list_id: listId,
-        //   }),
-        // }).then(res => res.json()).then((data) => {
-        //   this.setState({ likeCount: data.count });
-        // });
       });
 
       return;
@@ -312,7 +307,7 @@ class UserList extends React.Component {
         },
         body: JSON.stringify({
           user_id: loggedInUserId,
-          list_id: listId,
+          list_id: this.bookshelfId,
         }),
       }).then(res => res.json()).then((data) => {
         this.setState({ likeCount: data.count });
@@ -403,8 +398,15 @@ class UserList extends React.Component {
             {this.username}
             &apos;s
           </Link>
+          &nbsp;
           Bookshelf
         </Header2>
+        <TopWrapper>
+          <LikeWrapper>
+            {!isLiked ? <Unlike onClick={this.onHandleLike} style={svgStyle} /> : <Like onClick={this.onHandleLike} style={svgStyle} />}
+            <button type="button" onClick={this.showModal} style={btnStyle}>{likeCount}</button>
+          </LikeWrapper>
+        </TopWrapper>
         <ReactDnDArea>
           <DragDropContext
             // onDragStart
@@ -419,10 +421,6 @@ class UserList extends React.Component {
             })}
           </DragDropContext>
         </ReactDnDArea>
-        <LikeWrapper>
-          {!isLiked ? <Unlike onClick={this.onHandleLike} style={svgStyle} /> : <Like onClick={this.onHandleLike} style={svgStyle} />}
-          <button type="button" onClick={this.showModal} style={btnStyle}>{likeCount}</button>
-        </LikeWrapper>
         <CommentsWrapper>
           <Header2>Leave a comment</Header2>
           <FormStyle onSubmit={this.onFormSubmit}>

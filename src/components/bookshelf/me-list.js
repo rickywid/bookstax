@@ -21,7 +21,6 @@ const LikeWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  margin: 1rem 0;
 `;
 
 const svgStyle = {
@@ -36,6 +35,15 @@ const btnStyle = {
   background: 'none',
   border: 'none',
 };
+
+const TopWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  margin: 1rem 0;
+  p {
+    margin: 0;
+  }
+`;
 
 class MeList extends React.Component {
   api = new Api().Resolve();
@@ -363,7 +371,12 @@ class MeList extends React.Component {
         <Header2>
           My Bookshelf
         </Header2>
-        <p>Remove, update and rearrange your books.</p>
+        <TopWrapper>
+          <LikeWrapper>
+            {!isLiked ? <Unlike onClick={this.onHandleLike} style={svgStyle} /> : <Like onClick={this.onHandleLike} style={svgStyle} />}
+            <button type='button' onClick={this.showModal} style={btnStyle}>{likeCount}</button>
+          </LikeWrapper>
+        </TopWrapper>
         <ReactDnDArea>
           <DragDropContext
             // onDragStart
@@ -377,10 +390,6 @@ class MeList extends React.Component {
             })}
           </DragDropContext>
         </ReactDnDArea>
-        <LikeWrapper>
-          {!isLiked ? <Unlike onClick={this.onHandleLike} style={svgStyle} /> : <Like onClick={this.onHandleLike} style={svgStyle} />}
-          <button type='button' onClick={this.showModal} style={btnStyle}>{likeCount}</button>
-        </LikeWrapper>
         <Modal
           title=''
           visible={visible}
