@@ -2,10 +2,8 @@ import React from 'react';
 import {
   Tabs,
   Form,
-  Icon,
   Input,
   Button,
-  Tooltip,
   Select,
   Checkbox,
   Row,
@@ -79,9 +77,18 @@ class UserEdit extends React.Component {
           <TabPane tab="Profile" key="1">
             <Form onSubmit={this.handleSubmit}>
 
+              {/* NAME */}
+
+              <Form.Item label="Name">
+                {getFieldDecorator('name', {
+                  initialValue: user.name,
+                  rules: [{ required: false, message: 'Please input a name', whitespace: true }],
+                })(<Input />)}
+              </Form.Item>
+
               {/* USER NAME */}
 
-              <Form.Item
+              {/* <Form.Item
                 label={
                   (
                     <span>
@@ -94,10 +101,10 @@ class UserEdit extends React.Component {
                 }
               >
                 {getFieldDecorator('username', {
-                  initialValue: user.name,
+                  initialValue: user.username,
                   rules: [{ required: false, message: 'Please input a display name', whitespace: true }],
                 })(<Input />)}
-              </Form.Item>
+              </Form.Item>* /}
 
               {/* EMAIL */}
 

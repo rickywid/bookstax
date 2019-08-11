@@ -1,44 +1,68 @@
 import React from 'react';
-import { Field, reduxForm } from 'redux-form';
-import { compose } from 'redux';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { DragDropContext } from 'react-beautiful-dnd';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { Modal, Button } from 'antd';
+import { Modal, Button, Input } from 'antd';
 import moment from 'moment';
 import Column from './column';
 import LoaderHOC from '../isLoading';
 import Api from '../../services/api';
+import { ReactComponent as Avatar } from '../../assets/icons/avatar.svg';
 import { ReactComponent as Like } from '../../assets/icons/like.svg';
 import { ReactComponent as Unlike } from '../../assets/icons/unlike.svg';
 import BookshelfLikes from '../modals/bookshelf-likes';
+import { Header2 } from '../../styled-components/header';
 
 const ReactDnDArea = styled.div`
   display: flex;
   justify-content: space-between;
 `;
 
+const TopWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  margin: 1rem 0;
+  p {
+    margin: 0;
+  }
+`;
+
 const LikeWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  margin-bottom: 1rem;
 `;
 
 const CommentsWrapper = styled.div`
   margin-top: 3rem;
 `;
 
+const CommentDetail = styled.div`
+  display: inline-block;
+  width: 600px;
+`;
+
 const UserComments = styled.div`
   margin-top: 3rem;
 `;
 
+const AvatarStyle = styled(Avatar)`
+  width: 30px;
+  margin-right: 1rem;
+  float: left;
+`;
+
+const FormStyle = styled.form`
+  width: 300px;
+`;
+
+const CommentWrapper = styled.div``;
+
 const svgStyle = {
-  height: '30px',
+  height: '20px',
   width: 'auto',
-  marginRight: '0.5rem',
 };
 
 const btnStyle = {
@@ -49,16 +73,21 @@ const btnStyle = {
   border: 'none',
 };
 
+const { TextArea } = Input;
+
 class UserList extends React.Component {
   api = new Api().Resolve();
 
-  userId = window.location.pathname.split('/')[2];
+  userId = window.location.pathname.split('/')[3];
 
-  bookshelfId = window.location.pathname.split('/')[4];
+  bookshelfId = window.location.pathname.split('/')[5];
+
+  username = window.location.pathname.split('/')[2];
 
   constructor(props) {
     super(props);
     this.state = {
+      comment: '',
       isLiked: true,
       likeCount: null,
       likedUsers: [],
@@ -70,7 +99,6 @@ class UserList extends React.Component {
   }
 
   componentDidMount() {
-    // const bookshelfId = window.location.pathname.split('/')[4];
     const { loggedInUserId } = this.props;
 
     const data = {
@@ -259,25 +287,12 @@ class UserList extends React.Component {
   onHandleLike() {
     const { isLiked } = this.state;
     const { loggedInUserId } = this.props;
-    const listId = window.location.pathname.split('/')[4];
 
     if (isLiked) {
       this.setState({ isLiked: !isLiked }, async () => {
         // remove record from likes table
         const bookshelfInfo = await this.api.addUserLikeBookshelf({ user_id: loggedInUserId, list_id: this.bookshelfId });
         this.setState({ likeCount: bookshelfInfo.count });
-        // fetch('http://localhost:3001/user/update/list/likes', {
-        //   method: 'DELETE',
-        //   headers: {
-        //     'Content-Type': 'application/json',
-        //   },
-        //   body: JSON.stringify({
-        //     user_id: loggedInUserId,
-        //     list_id: listId,
-        //   }),
-        // }).then(res => res.json()).then((data) => {
-        //   this.setState({ likeCount: data.count });
-        // });
       });
 
       return;
@@ -292,7 +307,7 @@ class UserList extends React.Component {
         },
         body: JSON.stringify({
           user_id: loggedInUserId,
-          list_id: listId,
+          list_id: this.bookshelfId,
         }),
       }).then(res => res.json()).then((data) => {
         this.setState({ likeCount: data.count });
@@ -300,9 +315,14 @@ class UserList extends React.Component {
     });
   }
 
-  onFormSubmit(values) {
+  handleChange = (e) => {
+    this.setState({ comment: e.target.value });
+  }
+
+  onFormSubmit = async (e) => {
+    e.preventDefault();
     const { loggedInUserId } = this.props;
-    const { comment } = values;
+    const { comment } = this.state;
 
     const data = {
       comment,
@@ -310,7 +330,7 @@ class UserList extends React.Component {
       list_id: this.bookshelfId,
     };
 
-    this.api.submitBookshelfComment(data);
+    await this.api.submitBookshelfComment(data);
   }
 
   showModal = () => {
@@ -367,16 +387,27 @@ class UserList extends React.Component {
       visible,
     } = this.state;
 
-    const { handleSubmit, error, loggedInUserId } = this.props;
+    const { loggedInUserId } = this.props;
+    const displayLikeBtn = parseInt(likeCount, 10) ? <button type="button" onClick={this.showModal} style={btnStyle}>{likeCount}</button> : '';
 
     if (!data) return null;
 
     return (
       <div>
-        <LikeWrapper>
-          {!isLiked ? <Unlike onClick={this.onHandleLike} style={svgStyle} /> : <Like onClick={this.onHandleLike} style={svgStyle} />}
-          <button type="button" onClick={this.showModal} style={btnStyle}>{likeCount}</button>
-        </LikeWrapper>
+        <Header2>
+          <Link to={`/user/${this.username}/${this.userId}`}>
+            {this.username}
+            &apos;s
+          </Link>
+          &nbsp;
+          Bookshelf
+        </Header2>
+        <TopWrapper>
+          <LikeWrapper>
+            {!isLiked ? <Unlike onClick={this.onHandleLike} style={svgStyle} /> : <Like onClick={this.onHandleLike} style={svgStyle} />}
+            {displayLikeBtn}
+          </LikeWrapper>
+        </TopWrapper>
         <ReactDnDArea>
           <DragDropContext
             // onDragStart
@@ -392,17 +423,17 @@ class UserList extends React.Component {
           </DragDropContext>
         </ReactDnDArea>
         <CommentsWrapper>
-          <p style={{ fontWeight: 'bold' }}>
-            Comments (
-            {comments.length}
-            )
-          </p>
-          <form onSubmit={handleSubmit(this.onFormSubmit.bind(this))}>
-            <Field component={this.renderTextArea} name="comment" label="Message" />
-            <Button default htmlType="submit">Send</Button>
-            {error}
-          </form>
+          <Header2>Leave a comment</Header2>
+          <FormStyle onSubmit={this.onFormSubmit}>
+            <TextArea rows={4} onChange={this.handleChange} />
+            <Button onClick={this.onFormSubmit}>Send</Button>
+          </FormStyle>
           <UserComments>
+            <p style={{ fontWeight: 'bold' }}>
+              Comments (
+              {comments.length}
+              )
+            </p>
             {comments.map((comment) => {
               let link;
 
@@ -412,11 +443,15 @@ class UserList extends React.Component {
                 link = <Link to={`/user/${comment.id}`}>{comment.name}</Link>;
               }
               return (
-                <div key={comment.comment}>
-                  {link}
-                  <p>{moment(comment.created_at).fromNow()}</p>
-                  <p>{comment.comment}</p>
-                </div>
+                <CommentWrapper key={comment.comment}>
+                  <AvatarStyle />
+                  <CommentDetail>
+                    {link}
+                    &nbsp;
+                    <small>{moment(comment.created_at).fromNow()}</small>
+                    <p>{comment.comment}</p>
+                  </CommentDetail>
+                </CommentWrapper>
               );
             })}
           </UserComments>
@@ -441,26 +476,10 @@ function mapStateToProps(state) {
   };
 }
 
-const validate = (values) => {
-  const errors = {};
-  if (!values.comment) {
-    errors.comment = 'Comment cannot be blank';
-  }
-
-  return errors;
-};
-
 // export default connect(mapStateToProps, null)(LoaderHOC('loggedInUserId')(UserList));
 
 
-export default compose(
-  reduxForm({
-    form: 'comments',
-    fields: ['comment'],
-    validate,
-  }),
-  connect(mapStateToProps, null),
-)(LoaderHOC('loggedInUserId')(UserList));
+export default connect(mapStateToProps, null)(LoaderHOC('loggedInUserId')(UserList));
 
 
 UserList.propTypes = {

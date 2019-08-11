@@ -97,7 +97,7 @@ class App extends React.Component {
           <NavItems>
             {/* eslint jsx-quotes: ["error", "prefer-single"] */}
             <Link to='/me'>
-              {user.name}
+              {user.username}
               {' '}
               {user.id}
             </Link>

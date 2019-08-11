@@ -5,6 +5,7 @@ import {
   Collapse,
   Button,
   Rate,
+  message,
 } from 'antd';
 import styled from 'styled-components';
 import moment from 'moment';
@@ -97,7 +98,7 @@ class BookProfile extends React.Component {
   }
 
 
-  saveBook = (book) => {
+  saveBook = async (book) => {
     const bookId = this.props.match.params.book_id; {/* eslint-disable-line */}
     const { loggedInUserListId, loggedInUserId } = this.props;
 
@@ -117,13 +118,13 @@ class BookProfile extends React.Component {
     };
 
     // save book to user's backlog
-    fetch(`http://localhost:3000/user/addbook/${loggedInUserId}`, {
+    await fetch(`http://localhost:3000/user/addbook/${loggedInUserId}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
-    }).then(res => console.log(res));
+    }).then(() => message.success(`${book.title} successfully added to your backlog`));
   }
 
 

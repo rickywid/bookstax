@@ -1,15 +1,16 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { DragDropContext } from 'react-beautiful-dnd';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { Modal } from 'antd';
+import { Modal, message } from 'antd';
 import Column from './column';
 import LoaderHOC from '../isLoading';
 import Api from '../../services/api';
 import { ReactComponent as Like } from '../../assets/icons/like.svg';
 import { ReactComponent as Unlike } from '../../assets/icons/unlike.svg';
+import { Header2 } from '../../styled-components/header';
+import BookshelfLikes from '../modals/bookshelf-likes';
 
 const ReactDnDArea = styled.div`
   display: flex;
@@ -20,13 +21,11 @@ const LikeWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  margin-bottom: 1rem;
 `;
 
 const svgStyle = {
-  height: '30px',
+  height: '20px',
   width: 'auto',
-  marginRight: '0.5rem',
 };
 
 const btnStyle = {
@@ -36,6 +35,15 @@ const btnStyle = {
   background: 'none',
   border: 'none',
 };
+
+const TopWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  margin: 1rem 0;
+  p {
+    margin: 0;
+  }
+`;
 
 class MeList extends React.Component {
   api = new Api().Resolve();
@@ -338,8 +346,8 @@ class MeList extends React.Component {
       const current = state.data.columns.completed.bookIds.map(book => state.data.books[book].content);
       const completed = state.data.columns.current.bookIds.map(book => state.data.books[book].content);
 
-      this.api.updateUserBookshelf(this.bookshelfId, { data: [backlog, completed, current] });
-
+      await this.api.updateUserBookshelf(this.bookshelfId, { data: [backlog, completed, current] });
+      message.success('Removed');
       return state;
     });
   }
@@ -360,10 +368,15 @@ class MeList extends React.Component {
 
     return (
       <div>
-        <LikeWrapper>
-          {!isLiked ? <Unlike onClick={this.onHandleLike} style={svgStyle} /> : <Like onClick={this.onHandleLike} style={svgStyle} />}
-          <button type='button' onClick={this.showModal} style={btnStyle}>{likeCount}</button>
-        </LikeWrapper>
+        <Header2>
+          My Bookshelf
+        </Header2>
+        <TopWrapper>
+          <LikeWrapper>
+            {!isLiked ? <Unlike onClick={this.onHandleLike} style={svgStyle} /> : <Like onClick={this.onHandleLike} style={svgStyle} />}
+            <button type="button" onClick={this.showModal} style={btnStyle}>{likeCount}</button>
+          </LikeWrapper>
+        </TopWrapper>
         <ReactDnDArea>
           <DragDropContext
             // onDragStart
@@ -378,22 +391,12 @@ class MeList extends React.Component {
           </DragDropContext>
         </ReactDnDArea>
         <Modal
-          title=''
+          title="Likes"
           visible={visible}
           onOk={this.handleOk}
           onCancel={this.handleCancel}
         >
-          liked users
-          <ul>
-            {likedUsers.map((user) => {
-              if (user.id === loggedInUserId) {
-                /* eslint jsx-quotes: ["error", "prefer-single"] */
-                return <li key={user.name}><Link to='/me'>{user.name}</Link></li>;
-              }
-
-              return <li key={user.name}><Link to={`/user/${user.id}`}>{user.name}</Link></li>;
-            })}
-          </ul>
+          <BookshelfLikes users={likedUsers} loggedInUserId={loggedInUserId} />
         </Modal>
       </div>
     );
