@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { DragDropContext } from 'react-beautiful-dnd';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { Modal } from 'antd';
+import { Modal, message } from 'antd';
 import Column from './column';
 import LoaderHOC from '../isLoading';
 import Api from '../../services/api';
@@ -338,8 +338,8 @@ class MeList extends React.Component {
       const current = state.data.columns.completed.bookIds.map(book => state.data.books[book].content);
       const completed = state.data.columns.current.bookIds.map(book => state.data.books[book].content);
 
-      this.api.updateUserBookshelf(this.bookshelfId, { data: [backlog, completed, current] });
-
+      await this.api.updateUserBookshelf(this.bookshelfId, { data: [backlog, completed, current] });
+      message.success('Removed');
       return state;
     });
   }

@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { Pagination, Button } from 'antd';
+import { Pagination, Button, message } from 'antd';
 import styled from 'styled-components';
 import moment from 'moment';
 
@@ -110,7 +110,7 @@ class SearchResults extends React.Component {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
-    }).then(res => console.log(res));
+    }).then(() => message.success(`${book.volumeInfo.title} successfully added to your backlog`));
   }
 
   renderItems() {
