@@ -2,10 +2,8 @@ import React from 'react';
 import {
   Tabs,
   Form,
-  Icon,
   Input,
   Button,
-  Tooltip,
   Select,
   Checkbox,
   Row,
@@ -82,15 +80,15 @@ class UserEdit extends React.Component {
               {/* NAME */}
 
               <Form.Item label="Name">
-                {getFieldDecorator('username', {
+                {getFieldDecorator('name', {
                   initialValue: user.name,
-                  rules: [{ required: false, message: 'Please input a display name', whitespace: true }],
+                  rules: [{ required: false, message: 'Please input a name', whitespace: true }],
                 })(<Input />)}
               </Form.Item>
 
               {/* USER NAME */}
 
-              <Form.Item
+              {/* <Form.Item
                 label={
                   (
                     <span>
@@ -106,7 +104,7 @@ class UserEdit extends React.Component {
                   initialValue: user.username,
                   rules: [{ required: false, message: 'Please input a display name', whitespace: true }],
                 })(<Input />)}
-              </Form.Item>
+              </Form.Item>* /}
 
               {/* EMAIL */}
 
