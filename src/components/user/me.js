@@ -107,7 +107,7 @@ const AvatarWrapper = styled.div`
   border-radius: 50%;
   overflow: hidden;
   background-image: ${props => (props.img ? `url(${props.img})` : '')};
-  background-size: 100px 100px;
+  background-size: 100px auto;
   background-position: center;
 `;
 
