@@ -13,6 +13,7 @@ import {
 import PropTypes from 'prop-types';
 import Api from '../../services/api';
 import { genres, countries } from '../../const';
+import UploadFile from '../../helpers/upload';
 
 const { TabPane } = Tabs;
 const { Option } = Select;
@@ -31,6 +32,7 @@ class UserEdit extends React.Component {
       user: {
         genres: [],
       },
+      files: [],
     };
   }
 
@@ -47,21 +49,48 @@ class UserEdit extends React.Component {
 
   handleSubmit = (e) => {
     const { form, history } = this.props;
-    const { user } = this.state;
+    const { user, files } = this.state;
 
     e.preventDefault();
     form.validateFields(async (err, values) => {
+      const data = values;
+      data.file = user.avatar_url || files[0]; {/* eslint-disable-line */}
+
       if (!err) {
-        await this.api.updateUserProfile(user.id, values);
+        await this.api.updateUserProfile(user.id, data);
         message.success('Your profile has been successfully updated');
 
         history.push({
           pathname: '/me',
-          state: values,
+          state: data,
         });
       }
     });
   };
+
+  handleFileUpload = (action = 'add', filename) => {
+    this.setState((prevState) => {
+      const state = prevState;
+
+      if (action === 'remove') {
+        state.files = [];
+      } else {
+        state.files.push(filename);
+      }
+
+      return state;
+    });
+  }
+
+  removeAvatar = () => {
+    this.setState((prevState) => {
+      const state = prevState;
+      state.files = [];
+      state.user.avatar_url = '';
+
+      return state;
+    });
+  }
 
   callback(key) {
     console.log(this, key);
@@ -69,7 +98,7 @@ class UserEdit extends React.Component {
 
   render() {
     const { getFieldDecorator, getFieldsError } = this.props.form; {/* eslint-disable-line */}
-    const { user } = this.state;
+    const { user, files } = this.state;
 
     return (
       <div className="user-edit">
@@ -184,9 +213,14 @@ class UserEdit extends React.Component {
                   </Checkbox.Group>,
                 )}
               </Form.Item>
-
-              <button type="button">UPLOAD AVATAR</button>
-
+              <Form.Item>
+                {!user.avatar_url
+                  ? (
+                    <UploadFile files={files.length} handleFileUpload={this.handleFileUpload} />
+                  )
+                  : <Button onClick={this.removeAvatar}>Remove Avatar</Button>
+                }
+              </Form.Item>
               <Form.Item>
                 <Button type="primary" htmlType="submit" disabled={hasErrors(getFieldsError())}>
                   Save
