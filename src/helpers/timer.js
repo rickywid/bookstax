@@ -9,14 +9,17 @@ class Timer {
     this.interval = null;
     this.offset = null;
     this.seconds = 0;
+    this.min = 0;
   }
 
   update() {
     if (this.on) {
       this.time += this.delta();
-
       const { time } = this;
       this.seconds = new Date(time).getSeconds();
+      if (this.seconds === 59) {
+        this.min += 1;
+      }
     }
   }
 
@@ -24,12 +27,13 @@ class Timer {
     const currentTime = Date.now();
     const timePassed = currentTime - this.offset; // calculate elapsed time in milliseconds
     this.offset = currentTime;
+
     return timePassed;
   }
 
   start() {
     if (!this.on) {
-      this.interval = setInterval(this.update.bind(this), 1);
+      this.interval = setInterval(this.update.bind(this), 1000);
       this.offset = Date.now(); // current time in milliseconds
       this.on = true;
     }
@@ -39,8 +43,10 @@ class Timer {
     clearInterval(this.interval);
     this.offset = null;
     this.on = false;
-
-    return this.seconds;
+    return {
+      minutes: this.min,
+      seconds: this.seconds,
+    };
   }
 
   reset() {

@@ -1,6 +1,36 @@
 import React from 'react';
+import { Button, Table } from 'antd';
+import styled from 'styled-components';
 import Timer from '../../helpers/timer';
-// import styled from 'styled-components';
+import { data, dataSource, columns } from './data';
+
+
+const SelectWrapper = styled.div`
+  display: flex;
+  justify-content: space-around;
+  width: 800px;
+  padding-bottom: 5rem;
+  margin: 0 auto;
+
+  img {
+    width: 150px;
+  }
+`;
+const BookImg = styled.img`
+  outline: ${props => (props.index === props.selectedBook ? '5px solid pink' : 'none')};
+  transition: outline .2s;
+`;
+const ErrorMsg = styled.p`
+  color: red;
+`;
+const ButtonStyle = styled(Button)`
+  display: block !important;
+  width: 300px;
+  margin: 0 auto;
+`;
+const ResultWrapper = styled.div`
+  margin-top: 2rem;
+`;
 
 class ReadAssessment extends React.Component {
   constructor(props) {
@@ -10,6 +40,8 @@ class ReadAssessment extends React.Component {
       startTime: false,
       showResults: false,
       wpm: 0,
+      selectedBook: null,
+      showError: false,
     };
 
     this.timer = new Timer();
@@ -19,7 +51,18 @@ class ReadAssessment extends React.Component {
     console.log('read assessment mounted');
   }
 
-  onHandleStart() {
+  handleChange = (index) => {
+    this.setState({ selectedBook: index });
+  }
+
+  onHandleStart = () => {
+    const { selectedBook } = this.state;
+    if (selectedBook === null) {
+      this.setState({ showError: true });
+
+      return;
+    }
+
     this.setState((prevState) => {
       const state = prevState;
       state.showStartPage = !prevState.showStartPage;
@@ -30,19 +73,21 @@ class ReadAssessment extends React.Component {
     });
   }
 
-  onHandleStop() {
+  onHandleStop = () => {
     this.setState((prevState) => {
       const state = prevState;
       state.startTime = false;
       state.showResults = true;
-      const seconds = this.timer.stop();
+      const time = this.timer.stop();
 
-      state.wpm = this.calculateWpm(seconds);
+      state.wpm = this.calculateWpm(time);
       return state;
     });
   }
 
-  calculateWpm(seconds) {
+  calculateWpm(time) {
+    const { selectedBook } = this.state;
+    const seconds = (60 * time.minutes) + time.seconds;
     // wordCount = 944
     // seconds is 273
     // WordsPerSecond = wordCount / seconds = 3.64
@@ -50,57 +95,59 @@ class ReadAssessment extends React.Component {
 
     this.setState((prevState) => {
       const state = prevState;
-      state.wpm = (400 / seconds) * 60;
+      state.wpm = (data[selectedBook].wordCount / seconds) * 60;
       return state;
     });
   }
 
   render() {
-    const { showStartPage, showResults, wpm } = this.state;
+    const {
+      showStartPage,
+      showResults,
+      wpm,
+      showError,
+      selectedBook,
+    } = this.state;
+    const error = showError ? <ErrorMsg>Must select a book</ErrorMsg> : '';
 
     if (showStartPage) {
       return (
         <div>
-          instructions
-          <button onClick={this.onHandleStart.bind(this)} type="button">Start</button>
+          <h1>Reading Assessment</h1>
+
+          <p>
+            When it comes to your brain, researchers have found there&apos;s no better superfood than a book.
+          </p>
+          <p>
+            Quickly determine your reading speed and comprehension using themed and leveled reading comprehension tests.
+            Your ability to read at higher speeds with good comprehension can dramatically affect your ability to succeed in school and in your career. Efficient reading leads to efficient learning. In today&apos;s information world there is no skill that is more important.
+          </p>
+
+          <p>Select one of the following books</p>
+          <SelectWrapper>
+            {data.map((book, index) => <BookImg onClick={() => this.handleChange(index)} index={index} selectedBook={selectedBook} src={book.cover} alt={book.title} />)}
+          </SelectWrapper>
+          <ButtonStyle onClick={this.onHandleStart}>Start</ButtonStyle>
+          {error}
         </div>
       );
     }
 
     return (
       <div className="read-assessment">
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Id eaque, provident est earum illum odio voluptatibus nobis quibusdam assumenda ipsa vel iure explicabo temporibus consequuntur delectus molestias labore quis, impedit.
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Id eaque, provident est earum illum odio voluptatibus nobis quibusdam assumenda ipsa vel iure explicabo temporibus consequuntur delectus molestias labore quis, impedit.
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Id eaque, provident est earum illum odio voluptatibus nobis quibusdam assumenda ipsa vel iure explicabo temporibus consequuntur delectus molestias labore quis, impedit.
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Id eaque, provident est earum illum odio voluptatibus nobis quibusdam assumenda ipsa vel iure explicabo temporibus consequuntur delectus molestias labore quis, impedit.
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Id eaque, provident est earum illum odio voluptatibus nobis quibusdam assumenda ipsa vel iure explicabo temporibus consequuntur delectus molestias labore quis, impedit.
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Id eaque, provident est earum illum odio voluptatibus nobis quibusdam assumenda ipsa vel iure explicabo temporibus consequuntur delectus molestias labore quis, impedit.
-        </p>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Id eaque, provident est earum illum odio voluptatibus nobis quibusdam assumenda ipsa vel iure explicabo temporibus consequuntur delectus molestias labore quis, impedit.
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Id eaque, provident est earum illum odio voluptatibus nobis quibusdam assumenda ipsa vel iure explicabo temporibus consequuntur delectus molestias labore quis, impedit.
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Id eaque, provident est earum illum odio voluptatibus nobis quibusdam assumenda ipsa vel iure explicabo temporibus consequuntur delectus molestias labore quis, impedit.
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Id eaque, provident est earum illum odio voluptatibus nobis quibusdam assumenda ipsa vel iure explicabo temporibus consequuntur delectus molestias labore quis, impedit.
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Id eaque, provident est earum illum odio voluptatibus nobis quibusdam assumenda ipsa vel iure explicabo temporibus consequuntur delectus molestias labore quis, impedit.
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Id eaque, provident est earum illum odio voluptatibus nobis quibusdam assumenda ipsa vel iure explicabo temporibus consequuntur delectus molestias labore quis, impedit.
-        </p>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Id eaque, provident est earum illum odio voluptatibus nobis quibusdam assumenda ipsa vel iure explicabo temporibus consequuntur delectus molestias labore quis, impedit.
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Id eaque, provident est earum illum odio voluptatibus nobis quibusdam assumenda ipsa vel iure explicabo temporibus consequuntur delectus molestias labore quis, impedit.
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Id eaque, provident est earum illum odio voluptatibus nobis quibusdam assumenda ipsa vel iure explicabo temporibus consequuntur delectus molestias labore quis, impedit.
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Id eaque, provident est earum illum odio voluptatibus nobis quibusdam assumenda ipsa vel iure explicabo temporibus consequuntur delectus molestias labore quis, impedit.
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Id eaque, provident est earum illum odio voluptatibus nobis quibusdam assumenda ipsa vel iure explicabo temporibus consequuntur delectus molestias labore quis, impedit.
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Id eaque, provident est earum illum odio voluptatibus nobis quibusdam assumenda ipsa vel iure explicabo temporibus consequuntur delectus molestias labore quis, impedit.
-        </p>
-        <button onClick={this.onHandleStop.bind(this)} type="button">Stop</button>
-
+        <p style={{ fontWeight: 'bold' }}>{data[selectedBook].title}</p>
+        <div dangerouslySetInnerHTML={{ __html: data[selectedBook].excerpt }} />
+        <ButtonStyle onClick={this.onHandleStop} type="button">Stop</ButtonStyle>
         { showResults
           ? (
-            <div>
-              WPM:
-              { wpm }
-            </div>
+            <ResultWrapper>
+              <p>
+                You have a reading speed of&nbsp;
+                <span style={{ fontWeight: 'bold' }}>{ Math.floor(wpm) }</span>
+              </p>
+              <Table pagination={false} dataSource={dataSource} columns={columns} />
+              <small><a href="http://www.readingsoft.com/" target="_blank" rel="noreferrer noopener">source</a></small>
+            </ResultWrapper>
           )
           : <div />
         }
