@@ -19,7 +19,8 @@ export const getUserProfile = () => (dispatch) => {
 
 export const getLoggedInUserProfile = () => async (dispatch) => {
   // https://stackoverflow.com/questions/16434893/node-express-passport-req-user-undefined
-  const data = await api.getCurrentUserProfile();
+  const userId = localStorage.getItem('userID') || '';
+  const data = await api.getCurrentUserProfile(userId);
   dispatch({
     type: 'CURRENT_USER',
     payload: data[0],
@@ -33,6 +34,45 @@ export const userAuth = () => (dispatch) => {
     payload: true,
   });
 };
+
+export const signup = (values, history) => (
+  (dispatch) => {
+    fetch('http://localhost:3000/signup', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username: values.username,
+        email: values.email,
+        password: values.password,
+      }),
+    })
+      .then(response => response.json()).then((json) => {
+        if (json.errors) {
+          // call dispatch to AUTH_ERR reducer
+          dispatch({
+            type: 'AUTH_ERR',
+            payload: json.errors,
+          });
+
+          return;
+        }
+        // save token to local storage
+        localStorage.setItem('token', json.token);
+        localStorage.setItem('userID', json.id);
+
+        // call dispatch to AUTH_USER reducer
+        dispatch({
+          type: 'IS_AUTH',
+          payload: true,
+        });
+
+        history.push({ pathname: '/dashboard', state: { fromSignUp: true } });
+      });
+  }
+);
 
 export const signOut = () => (dispatch) => {
   dispatch({

@@ -12,12 +12,16 @@ import UserList from './components/bookshelf/user-list';
 import UserEdit from './components/user/user-edit';
 import Redirect from './components/redirect';
 import SearchResults from './components/searchResults';
+import SignIn from './components/signin';
+import SignUp from './components/signup';
 import NoMatch from './components/noMatch';
 import RequireAuth from './components/auth/require_auth';
 
 const Routes = (
   <Switch>
     <Route exact path="/" component={Main} />
+    <Route exact path="/signup" component={SignUp} />
+    <Route exact path="/signin" component={SignIn} />
     <Route exact path="/read-assessment" component={ReadAssessment} />
     <Route exact path="/book/:book_id" component={BookProfile} />
     <Route exact path="/dashboard" component={RequireAuth(Dashboard)} />

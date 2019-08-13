@@ -3,7 +3,7 @@ import { withRouter, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { Button, Input } from 'antd';
+import { Input } from 'antd';
 import Routes from './routes';
 import * as actions from './actions/simpleAction';
 import Logo from './assets/images/logo.png';
@@ -121,7 +121,7 @@ Bookshelf
         <NavItems>About</NavItems>
         <NavItems>About</NavItems>
         <NavItems><Link to='/read-assessment'>Reading Test</Link></NavItems>
-        <NavItems><Button>Sign In</Button></NavItems>
+        <NavItems><Link to='/signin'>Sign In</Link></NavItems>
       </React.Fragment>
     );
   }
