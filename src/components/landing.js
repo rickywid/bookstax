@@ -8,7 +8,8 @@ import {
 } from 'antd';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { getUserProfile } from '../actions/simpleAction';
+import { withRouter } from 'react-router-dom';
+import * as actions from '../actions/simpleAction';
 import { ReactComponent as GoogleIcon } from '../assets/icons/google.svg';
 import { ReactComponent as FacebookIcon } from '../assets/icons/facebook.svg';
 import { ReactComponent as ReadingSVG } from '../assets/images/reading.svg';
@@ -85,11 +86,12 @@ class Landing extends React.Component {
   }
 
   handleSubmit = (e) => {
+    const { signin, history } = this.props;
     const { validateFields } = this.props.form; {/* eslint-disable-line */}
     e.preventDefault();
     validateFields((err, values) => {
       if (!err) {
-        console.log('Received values of form: ', values);
+        signin(values, history);
       }
     });
   };
@@ -112,12 +114,12 @@ class Landing extends React.Component {
           <LoginWrapper>
             <Form onSubmit={this.handleSubmit} className="login-form">
               <Form.Item>
-                {getFieldDecorator('email', {
-                  rules: [{ required: true, message: 'Please input your email!' }],
+                {getFieldDecorator('login', {
+                  rules: [{ required: true, message: 'Please input your email or username' }],
                 })(
                   <Input
                     prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                    placeholder="Username"
+                    placeholder="Email/Username"
                   />,
                 )}
               </Form.Item>
@@ -158,13 +160,9 @@ class Landing extends React.Component {
   }
 }
 
-const mapDispatchToProps = dispatch => ({
-  getUserProfile: () => dispatch(getUserProfile()),
-});
-
 const WrappedNormalLoginForm = Form.create({ name: 'normal_login' })(Landing);
 
-export default connect(null, mapDispatchToProps)(WrappedNormalLoginForm);
+export default connect(null, actions)(withRouter(WrappedNormalLoginForm));
 
 
 Landing.propTypes = {
@@ -173,4 +171,6 @@ Landing.propTypes = {
     validateFields: PropTypes.func.isRequired,
     getFieldDecorator: PropTypes.func.isRequired,
   }).isRequired,
+  signin: PropTypes.func.isRequired,
+  history: PropTypes.func.isRequired,
 };

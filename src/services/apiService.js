@@ -12,9 +12,9 @@ export class ApiService {
   }
 
   // get current (logged in) user profile
-  getCurrentUserProfile() {
+  getCurrentUserProfile(id) {
     return this.httpClient.get(
-      'http://localhost:3001/user/auth',
+      `http://localhost:3001/user/auth?id=${id}`,
       {
         Accept: 'application/json',
         'Content-Type': 'application/json; charset=utf-8',

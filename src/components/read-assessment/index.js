@@ -1,9 +1,9 @@
 import React from 'react';
 import { Button, Table } from 'antd';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 import Timer from '../../helpers/timer';
 import { data, dataSource, columns } from './data';
-
 
 const SelectWrapper = styled.div`
   display: flex;
@@ -144,6 +144,8 @@ class ReadAssessment extends React.Component {
               <p>
                 You have a reading speed of&nbsp;
                 <span style={{ fontWeight: 'bold' }}>{ Math.floor(wpm) }</span>
+                .&nbsp;
+                <Link style={{ fontWeight: 'bold' }} to="/signup">Sign Up</Link>
               </p>
               <Table pagination={false} dataSource={dataSource} columns={columns} />
               <small><a href="http://www.readingsoft.com/" target="_blank" rel="noreferrer noopener">source</a></small>
