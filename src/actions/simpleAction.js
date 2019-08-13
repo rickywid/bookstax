@@ -81,6 +81,7 @@ export const signOut = () => (dispatch) => {
   });
 
   localStorage.removeItem('token');
+  localStorage.removeItem('userID');
 };
 
 export const searchResults = (data, history) => (dispatch) => {
@@ -98,6 +99,41 @@ export const searchResults = (data, history) => (dispatch) => {
   });
 };
 
+export const signin = (values, history) => (
+  (dispatch) => {
+    fetch('http://localhost:3001/signin/local', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        login: values.login,
+        password: values.password,
+      }),
+    })
+      .then(response => response.json()).then((json) => {
+        // save token to local storage
+        localStorage.setItem('token', json.token);
+        localStorage.setItem('userID', json.id);
+
+        // call dispatch to AUTH_USER reducer
+        dispatch({
+          type: 'IS_AUTH',
+          payload: true,
+        });
+
+        history.push({ pathname: '/dashboard', state: { fromSignUp: true } });
+      }).catch((err) => {
+        console.log(err);
+
+        // dispatch({
+        //   type: 'AUTH_ERR',
+        //   payload: 'Email or password is incorrect',
+        // });
+      });
+  }
+);
 export const googleSignIn = history => (
   (dispatch) => {
     dispatch({

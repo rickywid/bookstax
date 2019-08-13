@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
@@ -6,7 +7,15 @@ import {
   Input,
   Button,
 } from 'antd';
+import styled from 'styled-components';
 import * as actions from '../actions/simpleAction';
+
+const LoginWrapper = styled.div`
+  background: #d0e3ed;
+  width: 500px;
+  padding: 60px;
+  margin: 0 auto;
+`;
 
 class SignUp extends Component {
   state = {
@@ -53,59 +62,66 @@ class SignUp extends Component {
     const { errors } = this.props;
     return (
       <div>
-        <Form onSubmit={this.handleSubmit}>
-          <Form.Item label="E-mail">
-            {getFieldDecorator('email', {
-              rules: [
-                {
-                  type: 'email',
-                  message: 'The input is not valid E-mail!',
-                },
-                {
-                  required: true,
-                  message: 'Please input your E-mail!',
-                },
-              ],
-            })(<Input />)}
-          </Form.Item>
-          <Form.Item label="Password" hasFeedback>
-            {getFieldDecorator('password', {
-              rules: [
-                {
-                  required: true,
-                  message: 'Please input your password!',
-                },
-                {
-                  validator: this.validateToNextPassword,
-                },
-              ],
-            })(<Input.Password />)}
-          </Form.Item>
-          <Form.Item label="Confirm Password" hasFeedback>
-            {getFieldDecorator('confirm', {
-              rules: [
-                {
-                  required: true,
-                  message: 'Please confirm your password!',
-                },
-                {
-                  validator: this.compareToFirstPassword,
-                },
-              ],
-            })(<Input.Password onBlur={this.handleConfirmBlur} />)}
-          </Form.Item>
-          <Form.Item label="Username">
-            {getFieldDecorator('username', {
-              rules: [{ required: true, message: 'Please input your username', whitespace: true }],
-            })(<Input />)}
-          </Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit">
-              Register
-            </Button>
-          </Form.Item>
-        </Form>
-        {errors ? errors.map(error => <p>{error}</p>) : ''}
+        <h1 style={{ textAlign: 'center' }}>Sign Up</h1>
+        <LoginWrapper>
+          <Form onSubmit={this.handleSubmit}>
+            <Form.Item label="Username">
+              {getFieldDecorator('username', {
+                rules: [{ required: true, message: 'Please input your username', whitespace: true }],
+              })(<Input />)}
+            </Form.Item>
+            <Form.Item label="E-mail">
+              {getFieldDecorator('email', {
+                rules: [
+                  {
+                    type: 'email',
+                    message: 'The input is not valid E-mail!',
+                  },
+                  {
+                    required: true,
+                    message: 'Please input your E-mail!',
+                  },
+                ],
+              })(<Input />)}
+            </Form.Item>
+            <Form.Item label="Password" hasFeedback>
+              {getFieldDecorator('password', {
+                rules: [
+                  {
+                    required: true,
+                    message: 'Please input your password!',
+                  },
+                  {
+                    validator: this.validateToNextPassword,
+                  },
+                ],
+              })(<Input.Password />)}
+            </Form.Item>
+            <Form.Item label="Confirm Password" hasFeedback>
+              {getFieldDecorator('confirm', {
+                rules: [
+                  {
+                    required: true,
+                    message: 'Please confirm your password!',
+                  },
+                  {
+                    validator: this.compareToFirstPassword,
+                  },
+                ],
+              })(<Input.Password onBlur={this.handleConfirmBlur} />)}
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" htmlType="submit">
+                Register
+              </Button>
+            </Form.Item>
+          </Form>
+          {errors ? errors.map(error => <p>{error}</p>) : ''}
+        </LoginWrapper>
+        <p style={{ textAlign: 'center', marginTop: '1rem' }}>
+          Already have an account?
+          <Link to="/signin">Sign In</Link>
+        </p>
       </div>
     );
   }
