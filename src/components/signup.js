@@ -22,6 +22,12 @@ class SignUp extends Component {
     confirmDirty: false,
   };
 
+  componentDidMount() {
+    const { formErrors } = this.props;
+
+    formErrors();
+  }
+
   handleSubmit = (e) => {
     const { form, signup, history } = this.props;
 
@@ -116,10 +122,10 @@ class SignUp extends Component {
               </Button>
             </Form.Item>
           </Form>
-          {errors ? errors.map(error => <p>{error}</p>) : ''}
+          {errors ? errors.map(error => <p style={{ fontWeight: 'bold', color: 'red', textAlign: 'center' }}>{error}</p>) : ''}
         </LoginWrapper>
         <p style={{ textAlign: 'center', marginTop: '1rem' }}>
-          Already have an account?
+          Already have an account?&nbsp;
           <Link to="/signin">Sign In</Link>
         </p>
       </div>
@@ -150,4 +156,5 @@ SignUp.propTypes = {
   errors: PropTypes.shape({
     map: PropTypes.func.isRequired,
   }).isRequired,
+  formErrors: PropTypes.func.isRequired,
 };

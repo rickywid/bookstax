@@ -112,7 +112,16 @@ export const signin = (values, history) => (
         password: values.password,
       }),
     })
-      .then(response => response.json()).then((json) => {
+      .then((response) => {
+        if (!response.ok) {
+          dispatch({
+            type: 'AUTH_ERR',
+            payload: ['Incorrect username or email'],
+          });
+          return;
+        }
+        response.json();
+      }).then((json) => {
         // save token to local storage
         localStorage.setItem('token', json.token);
         localStorage.setItem('userID', json.id);
@@ -142,5 +151,14 @@ export const googleSignIn = history => (
     });
 
     history.push('/dashboard');
+  }
+);
+
+export const formErrors = () => (
+  (dispatch) => {
+    dispatch({
+      type: 'AUTH_ERR',
+      payload: [],
+    });
   }
 );

@@ -54,6 +54,12 @@ const style2 = {
 };
 
 class SignIn extends Component {
+  componentDidMount() {
+    const { formErrors } = this.props;
+
+    formErrors();
+  }
+
   handleSubmit = (e) => {
     const { validateFields } = this.props.form; {/* eslint-disable-line */}
     const { signin, history } = this.props;
@@ -71,6 +77,7 @@ class SignIn extends Component {
 
   render() {
     const { getFieldDecorator } = this.props.form; {/* eslint-disable-line */}
+    const { errors } = this.props;
     return (
       <div>
         <h1 style={{ textAlign: 'center' }}>Sign In</h1>
@@ -116,9 +123,10 @@ class SignIn extends Component {
               Sign In With Facebook
             </Button>
           </SocialLoginWrapper>
+          {errors ? <p style={{ fontWeight: 'bold', color: 'red', textAlign: 'center' }}>{errors}</p> : ''}
         </LoginWrapper>
         <p style={{ textAlign: 'center', marginTop: '1rem' }}>
-          Don&apos;t have an account?
+          Don&apos;t have an account?&nbsp;
           <Link to="/signup">Sign Up</Link>
         </p>
       </div>
@@ -126,11 +134,19 @@ class SignIn extends Component {
   }
 }
 
+function mapStateToProps(state) {
+  return {
+    errors: state.auth.errors,
+  };
+}
+
 const WrappedNormalLoginForm = Form.create({ name: 'normal_login' })(SignIn);
 
-export default connect(null, actions)(WrappedNormalLoginForm);
+export default connect(mapStateToProps, actions)(WrappedNormalLoginForm);
 
 SignIn.propTypes = {
   signin: PropTypes.func.isRequired,
   history: PropTypes.func.isRequired,
+  formErrors: PropTypes.func.isRequired,
+  errors: PropTypes.arrayOf().isRequired,
 };
