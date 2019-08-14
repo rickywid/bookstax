@@ -53,7 +53,18 @@ const AvatarStyle = styled(Avatar)`
   margin-right: 1rem;
   float: left;
 `;
-
+const AvatarWrapper = styled.div`
+  height: 30px !important;
+  width: 30px !important;
+  margin-right: 2rem !important;
+  border-radius: 50%;
+  overflow: hidden;
+  background-image: ${props => (props.img ? `url(${props.img})` : '')};
+  background-size: 30px auto;
+  background-position: center;
+  background-repeat: no-repeat;
+  float: left;
+`;
 const FormStyle = styled.form`
   width: 300px;
 `;
@@ -321,7 +332,7 @@ class UserList extends React.Component {
 
   onFormSubmit = async (e) => {
     e.preventDefault();
-    const { loggedInUserId } = this.props;
+    const { loggedInUserId, user } = this.props;
     const { comment } = this.state;
 
     const data = {
@@ -330,6 +341,21 @@ class UserList extends React.Component {
       list_id: this.bookshelfId,
     };
 
+    this.setState((prevState) => {
+      const state = prevState;
+      state.comment = '';
+
+      // push comment
+      const userComment = {
+        avatar_url: user.avatar_url,
+        username: user.username,
+        created_at: moment().toDate(),
+        comment,
+      };
+
+      state.comments.push(userComment);
+      return state;
+    });
     await this.api.submitBookshelfComment(data);
   }
 
@@ -351,32 +377,6 @@ class UserList extends React.Component {
     });
   };
 
-  renderField = ({
-    input, label, type, meta: { touched, error },
-  }) => (
-    <div>
-      <label>{label}</label> {/* eslint-disable-line */}
-      <div>
-        <input {...input} placeholder={label} type={type} />
-        {touched
-          && ((error && <span>{error}</span>))}
-      </div>
-    </div>
-  )
-
-  renderTextArea = ({
-    input, label, type, meta: { touched, error },
-  }) => (
-    <div>
-      <label>{label}</label> {/* eslint-disable-line */}
-      <div>
-        <textarea {...input} placeholder={label} type={type} rows="5" cols="50" />
-        {touched
-          && ((error && <span>{error}</span>))}
-      </div>
-    </div>
-  )
-
   render() {
     const {
       data,
@@ -384,6 +384,7 @@ class UserList extends React.Component {
       isLiked,
       likedUsers,
       comments,
+      comment,
       visible,
     } = this.state;
 
@@ -425,7 +426,7 @@ class UserList extends React.Component {
         <CommentsWrapper>
           <Header2>Leave a comment</Header2>
           <FormStyle onSubmit={this.onFormSubmit}>
-            <TextArea rows={4} onChange={this.handleChange} />
+            <TextArea rows={4} onChange={this.handleChange} value={comment} />
             <Button onClick={this.onFormSubmit}>Send</Button>
           </FormStyle>
           <UserComments>
@@ -434,22 +435,26 @@ class UserList extends React.Component {
               {comments.length}
               )
             </p>
-            {comments.map((comment) => {
+            {comments.map((userComment) => {
               let link;
 
-              if (loggedInUserId === comment.user_id) {
-                link = <Link to="/me">{comment.name}</Link>;
+              if (loggedInUserId === userComment.user_id) {
+                link = <Link to="/me">{userComment.username}</Link>;
               } else {
-                link = <Link to={`/user/${comment.id}`}>{comment.name}</Link>;
+                link = <Link to={`/user/${userComment.id}`}>{userComment.username}</Link>;
               }
               return (
-                <CommentWrapper key={comment.comment}>
-                  <AvatarStyle />
+                <CommentWrapper key={userComment.comment}>
+                  {userComment.avatar_url
+                    ? (
+                      <AvatarWrapper img={userComment.avatar_url} />
+                    )
+                    : <AvatarStyle />}
                   <CommentDetail>
                     {link}
                     &nbsp;
-                    <small>{moment(comment.created_at).fromNow()}</small>
-                    <p>{comment.comment}</p>
+                    <small>{moment(userComment.created_at).fromNow()}</small>
+                    <p>{userComment.comment}</p>
                   </CommentDetail>
                 </CommentWrapper>
               );
@@ -471,6 +476,7 @@ class UserList extends React.Component {
 
 function mapStateToProps(state) {
   return {
+    user: state.getUser,
     loggedInUserId: state.getUser.id,
     loggedInUserListId: state.loggedInUserListId,
   };
@@ -485,7 +491,10 @@ export default connect(mapStateToProps, null)(LoaderHOC('loggedInUserId')(UserLi
 UserList.propTypes = {
   loggedInUserId: PropTypes.number.isRequired,
   error: PropTypes.shape({}),
-  handleSubmit: PropTypes.func.isRequired,
+  user: PropTypes.shape({
+    avatar_url: PropTypes.string.isRequired,
+    username: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
 UserList.defaultProps = {
