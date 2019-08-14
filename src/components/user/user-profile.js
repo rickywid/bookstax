@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import moment from 'moment';
 import Api from '../../services/api';
 import BookItem from './book-item';
-import { ReactComponent as Avatar } from '../../assets/icons/avatar.svg';
+import { ReactComponent as AvatarPlaceholder } from '../../assets/icons/avatar.svg';
 import BookshelfList from './bookshelf-list';
 import FavouriteBooks from './favourite-books';
 import UserGenres from './user-genres';
@@ -86,6 +86,22 @@ const DisplayName = styled.h2`
     font-weight: bold;
 `;
 
+const AvatarPlaceholderStyle = styled(AvatarPlaceholder)`
+  height: 100px;
+  margin-right: 2rem;
+`;
+const AvatarWrapper = styled.div`
+  height: 100px !important;
+  width: 100px !important;
+  margin-right: 2rem !important;
+  border-radius: 50%;
+  overflow: hidden;
+  background-image: ${props => (props.img ? `url(${props.img})` : '')};
+  background-size: 100px auto;
+  background-position: center;
+  background-repeat: no-repeat;
+`;
+
 class UserProfile extends React.Component {
   api = new Api().Resolve();
 
@@ -142,10 +158,14 @@ class UserProfile extends React.Component {
       <Wrapper>
         <UserInfoWrapper>
           <UserInfo>
-            <Avatar style={{ height: '100px', marginRight: '2rem' }} />
+            {user.avatar_url
+              ? (
+                <AvatarWrapper img={user.avatar_url} />
+              )
+              : <AvatarPlaceholderStyle />}
             <InnerWrapper>
               <div>
-                <DisplayName>{user.name}</DisplayName>
+                <DisplayName>{user.username}</DisplayName>
                 <StyledLink to={`/user/${user.username}/${user.id}/list/${user.list_id}`}>My Bookshelf</StyledLink>
                 <StyledLink>Send email</StyledLink>
               </div>
