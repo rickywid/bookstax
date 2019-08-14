@@ -50,32 +50,41 @@ const ErrorMsg = styled.p`
   textAlign: center;
 `;
 
-const btnStyle = {
-  width: '85%',
-  fontWeight: 'bold',
-  background: '#fff',
-  marginBottom: '1rem',
-  height: 'auto',
-  display: 'flex',
-  alignItems: 'center',
-  padding: '7px 7px 7px 20px',
-  color: 'black',
-};
+const ButtonStyle = styled(Button)`
+  margin-right: 1rem;
+`;
 
-const socialIconStyle = {
-  height: '20px',
-  marginRight: '1rem',
-};
+const ButtonSocialStyle = styled(Button)`
+  width: 100%;
+  font-weight: bold;
+  background: #fff;
+  margin-bottom: 1rem;
+  height: auto;
+  display: flex !important;
+  text-align: initial;
+  align-items: center;
+  padding: 7px 7px 7px 20px;
+  color: black;
+`;
 
-const readingSVGStyle = {
-  height: 'auto',
-  width: '90%',
-};
+const GoogleIconStyle = styled(GoogleIcon)`
+  height: 20px
+  margin-right: 1rem
+`;
+const FacebookIconStyle = styled(FacebookIcon)`
+  height: 20px
+  margin-right: 1rem
+`;
+
+const ReadingSVGStyle = styled(ReadingSVG)`
+  height: auto;
+  width: 90%;
+`;
 
 const style1 = {
   width: '100%',
   textAlign: 'center',
-  borderBottom: '1px solid #000',
+  borderBottom: '1px solid #58646a',
   lineHeight: '0.1em',
   fontSize: '18px',
   fontWeight: 'bold',
@@ -84,6 +93,7 @@ const style1 = {
 const style2 = {
   background: '#d0e3ed',
   padding: '0 10px',
+  color: '#58646a',
 };
 
 class Landing extends React.Component {
@@ -113,9 +123,9 @@ class Landing extends React.Component {
     return (
       <LandingWrapper>
         <LandingLeft>
-          <Header>Grab A Book And Free Your Mind</Header>
+          <Header>Unlock Your Greatest Superpower</Header>
           <p>Keep track of all the past, present and future books you want to read. Check out other members profiles and see what books are on their list and maybe even recommend each other a book to read. </p>
-          <ReadingSVG style={readingSVGStyle} />
+          <ReadingSVGStyle />
         </LandingLeft>
         <LandingRight>
           <LoginWrapper>
@@ -143,9 +153,9 @@ class Landing extends React.Component {
                 )}
               </Form.Item>
               <Form.Item>
-                <Button style={{ marginRight: '1rem' }} type="primary" htmlType="submit" className="login-form-button">
+                <ButtonStyle type="primary" htmlType="submit" className="login-form-button">
                   Log in
-                </Button>
+                </ButtonStyle>
                 {errors ? errors.map(error => <ErrorMsg>{error}</ErrorMsg>) : ''}
               </Form.Item>
             </Form>
@@ -153,14 +163,14 @@ class Landing extends React.Component {
               <span style={style2}>OR</span>
             </p>
             <SocialLoginWrapper>
-              <Button style={btnStyle} onClick={this.handleSignIn}>
-                <GoogleIcon style={socialIconStyle} />
+              <ButtonSocialStyle onClick={this.handleSignIn}>
+                <GoogleIconStyle />
                 Sign In With Google
-              </Button>
-              <Button style={btnStyle} onClick={this.handleSignIn}>
-                <FacebookIcon style={socialIconStyle} />
+              </ButtonSocialStyle>
+              <ButtonSocialStyle onClick={this.handleSignIn}>
+                <FacebookIconStyle />
                 Sign In With Facebook
-              </Button>
+              </ButtonSocialStyle>
             </SocialLoginWrapper>
           </LoginWrapper>
         </LandingRight>
