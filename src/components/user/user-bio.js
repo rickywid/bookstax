@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Header2 } from '../../styled-components/header';
 
 const Wrapper = styled.div`
   margin-bottom: 1rem;
@@ -39,7 +38,6 @@ class UserBio extends Component {
 
     return (
       <Wrapper>
-        <Header2>Description</Header2>
         <p>{user.description ? user.description : text}</p>
       </Wrapper>
     );

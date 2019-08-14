@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import moment from 'moment';
-import { Modal } from 'antd';
+import { Modal, Button } from 'antd';
 import Api from '../../services/api';
 import LoaderHOC from '../isLoading';
 import { ReactComponent as Medal } from '../../assets/icons/medal.svg';
@@ -16,8 +16,7 @@ import UserGenres from './user-genres';
 import UserBio from './user-bio';
 import UserSocial from './user-social';
 
-const Wrapper = styled.div`
-  
+const Wrapper = styled.div`  
 `;
 const UserInfoWrapper = styled.div`
   h3 {
@@ -55,8 +54,7 @@ const Joined = styled.p`
   margin-top: 1rem;
 `;
 const StyledLink = styled(Link)`
-  display: block;
-  font-size: 12px;
+  
 `;
 const Stat = styled.p`
   font-size: 40px;
@@ -69,7 +67,6 @@ const TabsWrapper = styled.ul`
   margin: 0;
   margin-bottom: 1.5rem;
   text-align: center;
-  border-top: 1px solid #8b8b8b82;
   border-bottom: 1px solid #8b8b8b82;
 `;
 const Tabs = styled.li`
@@ -90,6 +87,7 @@ const ContentWrapper = styled.div`
 const Sidebar = styled.aside`
   flex-basis: 30%;
   padding: 0 1rem;
+  padding-right: 6rem;
 `;
 const DisplayName = styled.h2`
     font-size: 30px;
@@ -110,6 +108,11 @@ const AvatarWrapper = styled.div`
   background-size: 100px auto;
   background-position: center;
   background-repeat: no-repeat;
+`;
+const ButtonStyle = styled(Button)`
+  margin-top: 1rem;
+  display: block;
+  width: 100%;
 `;
 
 class Me extends React.Component {
@@ -211,18 +214,6 @@ class Me extends React.Component {
             <InnerWrapper>
               <div>
                 <DisplayName>{user.username}</DisplayName>
-                <StyledLink to="me-list">My Bookshelf</StyledLink>
-                {isAuthorized
-                  ? (
-                    <StyledLink to={{
-                      pathname: '/settings',
-                      state: { user },
-                    }}
-                    >
-                      Edit Profile
-                    </StyledLink>
-                  )
-                  : ''}
               </div>
               <StatsWrapper>
                 <ul>
@@ -249,8 +240,15 @@ class Me extends React.Component {
             <Tabs index={1} tabState={activeTab}><TabBtn onClick={() => this.toggleTabs(1)}>Favourite Books</TabBtn></Tabs>
           </TabsWrapper>
           <ContentWrapper>
-            {activeTab === 0 ? <BookshelfList isAuthorized={isAuthorized} bookshelf={user.bookshelf} markBookCompleted={this.markBookCompleted} /> : <FavouriteBooks favourites={user.favourites} />}
             <Sidebar>
+              <div style={{ marginBottom: '1rem' }}>
+                <ButtonStyle><Link to="me-list">Bookshelf</Link></ButtonStyle>
+                <StyledLink to={{ pathname: '/settings', state: { user } }}>
+                  <ButtonStyle>Edit Profile</ButtonStyle>
+                </StyledLink>
+                <ButtonStyle>Recommend a book</ButtonStyle>
+              </div>
+
               <UserSocial user={user} />
               <UserBio user={user} />
               <UserGenres user={user} />
@@ -260,6 +258,7 @@ class Me extends React.Component {
                 {moment(user.created_at).fromNow()}
               </Joined>
             </Sidebar>
+            {activeTab === 0 ? <BookshelfList isAuthorized={isAuthorized} bookshelf={user.bookshelf} markBookCompleted={this.markBookCompleted} /> : <FavouriteBooks favourites={user.favourites} />}
           </ContentWrapper>
         </UserDetails>
         <Modal

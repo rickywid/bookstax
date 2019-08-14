@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { Header2 } from '../../styled-components/header';
 import { ReactComponent as InstagramSVG } from '../../assets/icons/instagram.svg';
 import { ReactComponent as TwitterSVG } from '../../assets/icons/twitter.svg';
 
@@ -78,7 +77,6 @@ class UserSocial extends Component {
 
     return (
       <Wrapper>
-        <Header2>Connect</Header2>
         {el}
       </Wrapper>
     );

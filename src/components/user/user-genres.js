@@ -1,16 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button } from 'antd';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { Header2 } from '../../styled-components/header';
 
 const Wrapper = styled.div`
   margin-bottom: 1rem;
-`;
-
-const ButtonStyle = styled(Button)`
-  margin-top: 1rem;
 `;
 const LinkStyle = styled(Link)`
   display: block
@@ -48,7 +42,6 @@ class UserGenres extends Component {
     }
     return (
       <Wrapper>
-        <Header2>Genres</Header2>
         {user.genres.length
           ? (
             <ul>
@@ -57,8 +50,6 @@ class UserGenres extends Component {
           )
           : text
         }
-
-        <ButtonStyle>Recommend a book</ButtonStyle>
       </Wrapper>
     );
   }
