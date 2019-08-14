@@ -3,10 +3,11 @@ import { withRouter, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { Input } from 'antd';
+import { Input, Button } from 'antd';
 import Routes from './routes';
 import * as actions from './actions/simpleAction';
 import Logo from './assets/images/logo.png';
+import { ReactComponent as Avatar } from './assets/icons/avatar.svg';
 
 const NavBar = styled.nav`
   display: flex;
@@ -19,6 +20,7 @@ const NavList = styled.ul`
   margin: 0;
   padding: 0;
   display: inline-block;
+  display: flex;
 `;
 
 const NavRightSide = styled.div`
@@ -29,6 +31,8 @@ const NavItems = styled.li`
   display: inline-block;
   list-style: none;
   padding-right: 1rem;
+  display: flex;
+  align-items: center;
 `;
 
 const Container = styled.div`
@@ -37,6 +41,23 @@ const Container = styled.div`
   padding-bottom: 5rem;
 `;
 
+const AvatarStyle = styled(Avatar)`
+  width: 30px;
+  margin-right: 1rem;
+  float: left;
+`;
+
+const AvatarWrapper = styled.div`
+  height: 30px !important;
+  width: 30px !important;
+  border-radius: 50%;
+  overflow: hidden;
+  background-image: ${props => (props.img ? `url(${props.img})` : '')};
+  background-size: 30px auto;
+  background-position: center;
+  background-repeat: no-repeat;
+  float: left;
+`;
 const { Search } = Input;
 
 class App extends React.Component {
@@ -96,6 +117,11 @@ class App extends React.Component {
         <React.Fragment>
           <NavItems>
             {/* eslint jsx-quotes: ["error", "prefer-single"] */}
+            {this.props.user.avatar_url /* eslint-disable-line */
+              ? (
+                <AvatarWrapper img={this.props.user.avatar_url} /> /* eslint-disable-line */
+              )
+              : <AvatarStyle />}
             <Link to='/me'>
               {user.username}
               {' '}
@@ -109,7 +135,7 @@ Bookshelf
               {user.list_id}
             </Link>
           </NavItems>
-          <NavItems onClick={this.signout}>Sign Out</NavItems>
+          <NavItems onClick={this.signout}><Button>Sign Out</Button></NavItems>
         </React.Fragment>
       );
     }
@@ -117,8 +143,8 @@ Bookshelf
 
     return (
       <React.Fragment>
-        <NavItems><Link to='/read-assessment'>Reading Test</Link></NavItems>
-        <NavItems><Link to='/signin'>Sign In</Link></NavItems>
+        <NavItems><Link to='/read-assessment'>Reading Assessment</Link></NavItems>
+        <NavItems><Link to='/signin'><Button>Sign In</Button></Link></NavItems>
       </React.Fragment>
     );
   }
