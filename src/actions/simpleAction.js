@@ -120,7 +120,7 @@ export const signin = (values, history) => (
           });
           return;
         }
-        response.json();
+        return response.json(); {/* eslint-disable-line */}
       }).then((json) => {
         // save token to local storage
         localStorage.setItem('token', json.token);
@@ -135,11 +135,6 @@ export const signin = (values, history) => (
         history.push({ pathname: '/dashboard', state: { fromSignUp: true } });
       }).catch((err) => {
         console.log(err);
-
-        // dispatch({
-        //   type: 'AUTH_ERR',
-        //   payload: 'Email or password is incorrect',
-        // });
       });
   }
 );

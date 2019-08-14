@@ -122,7 +122,7 @@ class SignUp extends Component {
               </Button>
             </Form.Item>
           </Form>
-          {errors ? errors.map(error => <p style={{ fontWeight: 'bold', color: 'red', textAlign: 'center' }}>{error}</p>) : ''}
+          {errors ? errors.map(error => <p style={{ color: 'red', marginBottom: 0 }}>{error}</p>) : ''}
         </LoginWrapper>
         <p style={{ textAlign: 'center', marginTop: '1rem' }}>
           Already have an account?&nbsp;

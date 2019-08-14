@@ -43,6 +43,12 @@ const Header = styled.h2`
 `;
 
 const SocialLoginWrapper = styled.div``;
+const ErrorMsg = styled.p`
+  display: inline;
+  fontWeight: bold; 
+  color: red; 
+  textAlign: center;
+`;
 
 const btnStyle = {
   width: '85%',
@@ -102,6 +108,7 @@ class Landing extends React.Component {
 
   render() {
     const { getFieldDecorator } = this.props.form; {/* eslint-disable-line */}
+    const { errors } = this.props;
 
     return (
       <LandingWrapper>
@@ -112,6 +119,7 @@ class Landing extends React.Component {
         </LandingLeft>
         <LandingRight>
           <LoginWrapper>
+            <h2>Sign In</h2>
             <Form onSubmit={this.handleSubmit} className="login-form">
               <Form.Item>
                 {getFieldDecorator('login', {
@@ -135,9 +143,10 @@ class Landing extends React.Component {
                 )}
               </Form.Item>
               <Form.Item>
-                <Button type="primary" htmlType="submit" className="login-form-button">
+                <Button style={{ marginRight: '1rem' }} type="primary" htmlType="submit" className="login-form-button">
                   Log in
                 </Button>
+                {errors ? errors.map(error => <ErrorMsg>{error}</ErrorMsg>) : ''}
               </Form.Item>
             </Form>
             <p style={style1}>
@@ -160,13 +169,21 @@ class Landing extends React.Component {
   }
 }
 
+function mapStateToProps(state) {
+  return {
+    errors: state.auth.errors,
+  };
+}
+
 const WrappedNormalLoginForm = Form.create({ name: 'normal_login' })(Landing);
 
-export default connect(null, actions)(withRouter(WrappedNormalLoginForm));
+export default connect(mapStateToProps, actions)(withRouter(WrappedNormalLoginForm));
 
 
 Landing.propTypes = {
-  error: PropTypes.shape({}).isRequired,
+  errors: PropTypes.shape({
+    map: PropTypes.func.isRequired,
+  }).isRequired,
   form: PropTypes.shape({
     validateFields: PropTypes.func.isRequired,
     getFieldDecorator: PropTypes.func.isRequired,

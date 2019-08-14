@@ -117,9 +117,6 @@ Bookshelf
 
     return (
       <React.Fragment>
-        <NavItems>About</NavItems>
-        <NavItems>About</NavItems>
-        <NavItems>About</NavItems>
         <NavItems><Link to='/read-assessment'>Reading Test</Link></NavItems>
         <NavItems><Link to='/signin'>Sign In</Link></NavItems>
       </React.Fragment>

@@ -21,7 +21,12 @@ const LoginWrapper = styled.div`
 `;
 
 const SocialLoginWrapper = styled.div``;
-
+const ErrorMsg = styled.p`
+  display: inline;
+  fontWeight: bold; 
+  color: red; 
+  textAlign: center;
+`;
 const btnStyle = {
   width: '85%',
   fontWeight: 'bold',
@@ -105,9 +110,10 @@ class SignIn extends Component {
               )}
             </Form.Item>
             <Form.Item>
-              <Button type="primary" htmlType="submit" className="login-form-button">
+              <Button style={{ marginRight: '1rem' }} type="primary" htmlType="submit" className="login-form-button">
                 Log in
               </Button>
+              {errors ? errors.map(error => <ErrorMsg>{error}</ErrorMsg>) : ''}
             </Form.Item>
           </Form>
           <p style={style1}>
@@ -123,7 +129,6 @@ class SignIn extends Component {
               Sign In With Facebook
             </Button>
           </SocialLoginWrapper>
-          {errors ? <p style={{ fontWeight: 'bold', color: 'red', textAlign: 'center' }}>{errors}</p> : ''}
         </LoginWrapper>
         <p style={{ textAlign: 'center', marginTop: '1rem' }}>
           Don&apos;t have an account?&nbsp;

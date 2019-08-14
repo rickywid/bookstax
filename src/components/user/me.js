@@ -109,6 +109,7 @@ const AvatarWrapper = styled.div`
   background-image: ${props => (props.img ? `url(${props.img})` : '')};
   background-size: 100px auto;
   background-position: center;
+  background-repeat: no-repeat;
 `;
 
 class Me extends React.Component {
