@@ -26,6 +26,7 @@ class UserGenres extends Component {
       const { user } = this.props;
       const state = prevState;
       state.user = user;
+
       state.user.genres = state.user.genres || [];
 
       return state;

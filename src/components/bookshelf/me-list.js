@@ -367,7 +367,7 @@ class MeList extends React.Component {
     if (!data) return null;
 
     return (
-      <div>
+      <div className="animated fadeIn">
         <Header2>
           My Bookshelf
         </Header2>

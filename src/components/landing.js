@@ -121,7 +121,7 @@ class Landing extends React.Component {
     const { errors } = this.props;
 
     return (
-      <LandingWrapper>
+      <LandingWrapper className="animated fadeIn">
         <LandingLeft>
           <Header>Unlock Your Greatest Superpower</Header>
           <p>Keep track of all the past, present and future books you want to read. Check out other members profiles and see what books are on their list and maybe even recommend each other a book to read. </p>

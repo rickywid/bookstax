@@ -394,7 +394,7 @@ class UserList extends React.Component {
     if (!data) return null;
 
     return (
-      <div>
+      <div className="animated fadeIn">
         <Header2>
           <Link to={`/user/${this.username}/${this.userId}`}>
             {this.username}

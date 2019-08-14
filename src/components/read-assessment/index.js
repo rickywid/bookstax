@@ -112,7 +112,7 @@ class ReadAssessment extends React.Component {
 
     if (showStartPage) {
       return (
-        <div>
+        <div className="animated fadeIn">
           <h1>Reading Assessment</h1>
 
           <p>
@@ -123,7 +123,7 @@ class ReadAssessment extends React.Component {
             Your ability to read at higher speeds with good comprehension can dramatically affect your ability to succeed in school and in your career. Efficient reading leads to efficient learning. In today&apos;s information world there is no skill that is more important.
           </p>
 
-          <p>Select one of the following books</p>
+          <p>The timer will begin once you click Start. Please select one of the following books.</p>
           <SelectWrapper>
             {data.map((book, index) => <BookImg onClick={() => this.handleChange(index)} index={index} selectedBook={selectedBook} src={book.cover} alt={book.title} />)}
           </SelectWrapper>

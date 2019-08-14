@@ -101,7 +101,7 @@ class UserEdit extends React.Component {
     const { user, files } = this.state;
 
     return (
-      <div className="user-edit">
+      <div className="user-edit animated fadeIn">
         <Tabs animated={false} defaultActiveKey="1" onChange={() => this.callback()}>
           <TabPane tab="Profile" key="1">
             <Form onSubmit={this.handleSubmit}>

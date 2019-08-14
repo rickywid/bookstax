@@ -203,7 +203,7 @@ class Me extends React.Component {
     if (Object.keys(user).length === 0 && user.constructor === Object) return <div />;
 
     return (
-      <Wrapper>
+      <Wrapper className="animated fadeIn">
         <UserInfoWrapper>
           <UserInfo>
             {user.avatar_url

@@ -5,7 +5,6 @@ import styled from 'styled-components';
 
 const Container = styled.div`
   flex-basis: 70%;
-  padding-right: 1rem;
 `;
 const Wrapper = styled.div`
   display: inline-block;

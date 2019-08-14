@@ -67,7 +67,7 @@ class SignUp extends Component {
     const { getFieldDecorator } = this.props.form; {/* eslint-disable-line */}
     const { errors } = this.props;
     return (
-      <div>
+      <div className="animated fadeIn">
         <h1 style={{ textAlign: 'center' }}>Sign Up</h1>
         <LoginWrapper>
           <Form onSubmit={this.handleSubmit}>

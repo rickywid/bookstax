@@ -27,22 +27,28 @@ const ErrorMsg = styled.p`
   color: red; 
   textAlign: center;
 `;
-const btnStyle = {
-  width: '85%',
-  fontWeight: 'bold',
-  background: '#fff',
-  marginBottom: '1rem',
-  height: 'auto',
-  display: 'flex',
-  alignItems: 'center',
-  padding: '7px 7px 7px 20px',
-  color: 'black',
-};
 
-const socialIconStyle = {
-  height: '20px',
-  marginRight: '1rem',
-};
+const ButtonSocialStyle = styled(Button)`
+  width: 100%;
+  font-weight: bold;
+  background: #fff;
+  margin-bottom: 1rem;
+  height: auto;
+  display: flex !important;
+  text-align: initial;
+  align-items: center;
+  padding: 7px 7px 7px 20px;
+  color: black;
+`;
+
+const GoogleIconStyle = styled(GoogleIcon)`
+  height: 20px
+  margin-right: 1rem
+`;
+const FacebookIconStyle = styled(FacebookIcon)`
+  height: 20px
+  margin-right: 1rem
+`;
 
 const style1 = {
   width: '100%',
@@ -84,7 +90,7 @@ class SignIn extends Component {
     const { getFieldDecorator } = this.props.form; {/* eslint-disable-line */}
     const { errors } = this.props;
     return (
-      <div>
+      <div className="animated fadeIn">
         <h1 style={{ textAlign: 'center' }}>Sign In</h1>
         <LoginWrapper>
           <Form onSubmit={this.handleSubmit} className="login-form">
@@ -120,14 +126,14 @@ class SignIn extends Component {
             <span style={style2}>OR</span>
           </p>
           <SocialLoginWrapper>
-            <Button style={btnStyle} onClick={this.handleSignIn}>
-              <GoogleIcon style={socialIconStyle} />
+            <ButtonSocialStyle onClick={this.handleSignIn}>
+              <GoogleIconStyle />
               Sign In With Google
-            </Button>
-            <Button style={btnStyle} onClick={this.handleSignIn}>
-              <FacebookIcon style={socialIconStyle} />
+            </ButtonSocialStyle>
+            <ButtonSocialStyle onClick={this.handleSignIn}>
+              <FacebookIconStyle />
               Sign In With Facebook
-            </Button>
+            </ButtonSocialStyle>
           </SocialLoginWrapper>
         </LoginWrapper>
         <p style={{ textAlign: 'center', marginTop: '1rem' }}>
