@@ -51,7 +51,7 @@ class Column extends React.Component {
 
   componentDidMount() {
     const { favourites } = this.props;
-    this.setState({ favourites });
+    this.setState({ favourites: favourites || [] });
   }
 
   showModal = (id, column) => {
@@ -109,7 +109,7 @@ class Column extends React.Component {
   checkIsFavourite(book) {
     const { favourites } = this.state;
     const id = book.content.bookId;
-
+    console.log(this);
     const match = favourites.filter(item => item.bookId === id);
 
 
@@ -157,7 +157,7 @@ class Column extends React.Component {
           closable={false}
           title=""
           visible={visible}
-          footer={[
+          footer={window.location.pathname.includes('/me') ? [
             <Button key="close" onClick={this.handleOk}>
               Close
             </Button>,
@@ -165,7 +165,7 @@ class Column extends React.Component {
             <Button key="delete" type="primary" loading={isDeleting} onClick={this.handleDelete}>
               Remove Book
             </Button>,
-          ]}
+          ] : [<Button key="close" onClick={this.handleOk}>Close</Button>]}
         >
           <BookshelfBookItem {...modalBook} />
         </Modal>
