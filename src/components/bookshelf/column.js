@@ -88,7 +88,7 @@ class Column extends React.Component {
         book: JSON.stringify(books),
       };
     } else {
-      const bookId = book.bookId; {/* eslint-disable-line */}
+      const bookId = book.bookId; /* eslint-disable-line */
       const books = favourites.filter(item => item.bookId !== bookId);
 
       data = {
@@ -107,17 +107,17 @@ class Column extends React.Component {
   }
 
   checkIsFavourite(book) {
+    if (!Object.keys(book).length) return;
+
     const { favourites } = this.state;
     const id = book.content.bookId;
-    console.log(this);
     const match = favourites.filter(item => item.bookId === id);
 
-
     if (match.length) {
-      return <Button key="favourite" type="primary" onClick={() => this.updateFavourite(book.content, 'remove')}>Remove from Favourites</Button>;
+      return <Button key="favourite" type="primary" onClick={() => this.updateFavourite(book.content, 'remove')}>Remove from Favourites</Button>;/* eslint-disable-line */
     }
 
-    return <Button key="favourite" type="primary" onClick={() => this.updateFavourite(book.content, 'add')}>Save to Favourites</Button>;
+    return <Button key="favourite" type="primary" onClick={() => this.updateFavourite(book.content, 'add')}>Save to Favourites</Button>;/* eslint-disable-line */
   }
 
   render() {
