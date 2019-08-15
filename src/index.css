@@ -6,9 +6,9 @@ body {
   padding-bottom: 5rem !important;
 }
 
-/*h2 {
-  font-size: 14px;
-}*/
+a, h1,h2,h3,h4,h5,h6 {
+  color: #ff18a0 !important;
+}
 
 button:focus {outline:0;}
 

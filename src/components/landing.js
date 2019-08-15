@@ -8,7 +8,7 @@ import {
 } from 'antd';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import * as actions from '../actions/simpleAction';
 import { ReactComponent as GoogleIcon } from '../assets/icons/google.svg';
 import { ReactComponent as FacebookIcon } from '../assets/icons/facebook.svg';
@@ -29,7 +29,10 @@ const LandingRight = styled.div`
   margin: auto;
 `;
 const LoginWrapper = styled.div`
-  background: #d0e3ed;
+  background: #00000005;
+  border: 1px solid #00000005;
+  border-radius: 4px;
+  box-shadow: -4px 6px 5px 0px rgba(0,0,0,0.35);
   width: 80%;
   padding: 60px;
   margin: 0 auto;
@@ -84,14 +87,14 @@ const ReadingSVGStyle = styled(ReadingSVG)`
 const style1 = {
   width: '100%',
   textAlign: 'center',
-  borderBottom: '1px solid #58646a',
+  borderBottom: '1px solid #c7c7c7',
   lineHeight: '0.1em',
   fontSize: '18px',
   fontWeight: 'bold',
   margin: '2rem 0',
 };
 const style2 = {
-  background: '#d0e3ed',
+  background: '#fafafa',
   padding: '0 10px',
   color: '#58646a',
 };
@@ -129,7 +132,7 @@ class Landing extends React.Component {
         </LandingLeft>
         <LandingRight>
           <LoginWrapper>
-            <h2>Sign In</h2>
+            <h2>SIGN IN</h2>
             <Form onSubmit={this.handleSubmit} className="login-form">
               <Form.Item>
                 {getFieldDecorator('login', {
@@ -173,6 +176,10 @@ class Landing extends React.Component {
               </ButtonSocialStyle>
             </SocialLoginWrapper>
           </LoginWrapper>
+          <p style={{ textAlign: 'center', marginTop: '1rem' }}>
+            Don&apos;t have an account?&nbsp;
+            <Link to="/signup">Sign Up</Link>
+          </p>
         </LandingRight>
       </LandingWrapper>
     );

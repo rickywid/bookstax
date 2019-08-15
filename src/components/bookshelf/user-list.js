@@ -69,7 +69,9 @@ const FormStyle = styled.form`
   width: 300px;
 `;
 
-const CommentWrapper = styled.div``;
+const CommentWrapper = styled.div`
+  margin-bottom: 1rem;
+`;
 
 const svgStyle = {
   height: '20px',
@@ -118,17 +120,17 @@ class UserList extends React.Component {
       columns: {
         backlog: {
           id: 'backlog',
-          title: 'Backlog',
+          title: 'BACKLOG',
           bookIds: [],
         },
         completed: {
           id: 'completed',
-          title: 'Completed',
+          title: 'COMPLETED',
           bookIds: [],
         },
         current: {
           id: 'current',
-          title: 'Currently Reading',
+          title: 'CURRENTLY READING',
           bookIds: [],
         },
       },
