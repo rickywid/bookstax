@@ -1,12 +1,20 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { DragDropContext } from 'react-beautiful-dnd';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { Modal, message } from 'antd';
+import {
+  Modal,
+  message,
+  Input,
+  Button,
+} from 'antd';
+import moment from 'moment';
 import Column from './column';
 import LoaderHOC from '../isLoading';
 import Api from '../../services/api';
+import { ReactComponent as Avatar } from '../../assets/icons/avatar.svg';
 import { ReactComponent as Like } from '../../assets/icons/like.svg';
 import { ReactComponent as Unlike } from '../../assets/icons/unlike.svg';
 import { Header2 } from '../../styled-components/header';
@@ -45,6 +53,43 @@ const TopWrapper = styled.div`
   }
 `;
 
+const CommentsWrapper = styled.div`
+  margin-top: 3rem;
+`;
+
+const CommentDetail = styled.div`
+  display: inline-block;
+  width: 600px;
+`;
+
+const UserComments = styled.div`
+  margin-top: 3rem;
+`;
+
+const AvatarStyle = styled(Avatar)`
+  width: 30px;
+  margin-right: 1rem;
+  float: left;
+`;
+const AvatarWrapper = styled.div`
+  height: 30px !important;
+  width: 30px !important;
+  margin-right: 2rem !important;
+  border-radius: 50%;
+  overflow: hidden;
+  background-image: ${props => (props.img ? `url(${props.img})` : '')};
+  background-size: 30px auto;
+  background-position: center;
+  background-repeat: no-repeat;
+  float: left;
+`;
+const CommentWrapper = styled.div``;
+const FormStyle = styled.form`
+  width: 300px;
+`;
+
+const { TextArea } = Input;
+
 class MeList extends React.Component {
   api = new Api().Resolve();
 
@@ -57,6 +102,9 @@ class MeList extends React.Component {
       likeCount: null,
       likedUsers: [],
       visible: false,
+      comments: [],
+      comment: '',
+      errors: '',
     };
     this.onDragEnd = this.onDragEnd.bind(this);
     this.onHandleLike = this.onHandleLike.bind(this);
@@ -94,14 +142,16 @@ class MeList extends React.Component {
       fetch(`http://localhost:3001/user/list/likes/${loggedInUserId}/${loggedInUserListId}`),
       fetch(`http://localhost:3001/user/bookshelf/${loggedInUserListId}`),
       fetch(`http://localhost:3001/favourites/${loggedInUserId}`),
+      fetch(`http://localhost:3001/bookshelf/comments/${loggedInUserListId}`),
     ]).then((res) => {
-      Promise.all([res[0].json(), res[1].json(), res[2].json()]).then((res2) => {
+      Promise.all([res[0].json(), res[1].json(), res[2].json(), res[3].json()]).then((res2) => {
         const isLiked = res2[0].voted;
         const likeCount = res2[0].count;
         const { likedUsers } = res2[0];
         const books = [...res2[1][0].backlog, ...res2[1][0].completed, ...res2[1][0].currently];
         const booksObj = {};
         const favourites = res2[2];
+        const comments = res2[3];
 
         books.map((book, index) => {
           booksObj[`book-${index + 1}`] = {
@@ -139,7 +189,7 @@ class MeList extends React.Component {
         };
 
         this.setState({
-          isLiked, likeCount, data, likedUsers, favourites,
+          isLiked, likeCount, data, likedUsers, favourites, comments: comments.comments,
         });
       });
     });
@@ -304,6 +354,45 @@ class MeList extends React.Component {
     });
   };
 
+  handleChange = (e) => {
+    this.setState({ comment: e.target.value });
+  }
+
+  onFormSubmit = async (e) => {
+    e.preventDefault();
+
+    const { loggedInUserId, user } = this.props;
+    const { comment } = this.state;
+
+    if (!comment.comment) {
+      this.setState({ errors: 'You must enter a comment' });
+      return;
+    }
+
+    const data = {
+      comment,
+      user_id: loggedInUserId,
+      list_id: this.bookshelfId,
+    };
+
+    this.setState((prevState) => {
+      const state = prevState;
+      state.comment = '';
+
+      // push comment
+      const userComment = {
+        avatar_url: user.avatar_url,
+        username: user.username,
+        created_at: moment().toDate(),
+        comment,
+      };
+
+      state.comments.push(userComment);
+      return state;
+    });
+    await this.api.submitBookshelfComment(data);
+  }
+
   deleteBook(id, bookId) {
     this.setState(async (prevState) => {
       const state = prevState;
@@ -360,6 +449,9 @@ class MeList extends React.Component {
       likedUsers,
       visible,
       favourites,
+      comments,
+      comment,
+      errors,
     } = this.state;
 
     const { loggedInUserId } = this.props;
@@ -390,6 +482,45 @@ class MeList extends React.Component {
             })}
           </DragDropContext>
         </ReactDnDArea>
+        <CommentsWrapper>
+          <Header2>Leave a comment</Header2>
+          <FormStyle onSubmit={this.onFormSubmit}>
+            <TextArea rows={4} onChange={this.handleChange} value={comment} />
+            <Button style={{ marginRight: '1rem' }} onClick={this.onFormSubmit}>Send</Button>
+            <span style={{ color: 'red' }}>{errors}</span>
+          </FormStyle>
+          <UserComments>
+            <p style={{ fontWeight: 'bold' }}>
+              Comments (
+              {comments.length}
+              )
+            </p>
+            {comments.map((userComment) => {
+              let link;
+
+              if (loggedInUserId === userComment.user_id) {
+                link = <Link style={{ fontWeight: 'bold' }} to="/me">{userComment.username}</Link>;
+              } else {
+                link = <Link style={{ fontWeight: 'bold' }} to={`/user/${userComment.username}/${userComment.user_id}`}>{userComment.username}</Link>;
+              }
+              return (
+                <CommentWrapper key={userComment.comment}>
+                  {userComment.avatar_url
+                    ? (
+                      <AvatarWrapper img={userComment.avatar_url} />
+                    )
+                    : <AvatarStyle />}
+                  <CommentDetail>
+                    {link}
+                    &nbsp;
+                    <small>{moment(userComment.created_at).fromNow()}</small>
+                    <p>{userComment.comment}</p>
+                  </CommentDetail>
+                </CommentWrapper>
+              );
+            })}
+          </UserComments>
+        </CommentsWrapper>
         <Modal
           title="Likes"
           visible={visible}
@@ -405,6 +536,7 @@ class MeList extends React.Component {
 
 function mapStateToProps(state) {
   return {
+    user: state.getUser,
     loggedInUserId: state.getUser.id,
     loggedInUserListId: state.getUser.list_id,
   };
@@ -416,4 +548,8 @@ export default connect(mapStateToProps, null)(LoaderHOC('loggedInUserId')(MeList
 MeList.propTypes = {
   loggedInUserId: PropTypes.number.isRequired,
   loggedInUserListId: PropTypes.number.isRequired,
+  user: PropTypes.shape({
+    avatar_url: PropTypes.string.isRequired,
+    username: PropTypes.string.isRequired,
+  }).isRequired,
 };

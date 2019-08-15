@@ -104,6 +104,7 @@ class UserList extends React.Component {
       likedUsers: [],
       comments: [],
       visible: false,
+      errors: '',
     };
     this.onDragEnd = this.onDragEnd.bind(this);
     this.onHandleLike = this.onHandleLike.bind(this);
@@ -335,6 +336,11 @@ class UserList extends React.Component {
     const { loggedInUserId, user } = this.props;
     const { comment } = this.state;
 
+    if (!comment) {
+      this.setState({ errors: 'You must enter a comment' });
+      return;
+    }
+
     const data = {
       comment,
       user_id: loggedInUserId,
@@ -354,6 +360,7 @@ class UserList extends React.Component {
       };
 
       state.comments.push(userComment);
+      state.errors = '';
       return state;
     });
     await this.api.submitBookshelfComment(data);
@@ -386,6 +393,7 @@ class UserList extends React.Component {
       comments,
       comment,
       visible,
+      errors,
     } = this.state;
 
     const { loggedInUserId } = this.props;
@@ -427,7 +435,8 @@ class UserList extends React.Component {
           <Header2>Leave a comment</Header2>
           <FormStyle onSubmit={this.onFormSubmit}>
             <TextArea rows={4} onChange={this.handleChange} value={comment} />
-            <Button onClick={this.onFormSubmit}>Send</Button>
+            <Button style={{ marginRight: '1rem' }} onClick={this.onFormSubmit}>Send</Button>
+            <span style={{ color: 'red' }}>{errors}</span>
           </FormStyle>
           <UserComments>
             <p style={{ fontWeight: 'bold' }}>
@@ -441,7 +450,7 @@ class UserList extends React.Component {
               if (loggedInUserId === userComment.user_id) {
                 link = <Link to="/me">{userComment.username}</Link>;
               } else {
-                link = <Link to={`/user/${userComment.id}`}>{userComment.username}</Link>;
+                link = <Link to={`/user/${userComment.username}/${userComment.id}`}>{userComment.username}</Link>;
               }
               return (
                 <CommentWrapper key={userComment.comment}>
