@@ -67,23 +67,25 @@ const UserComments = styled.div`
 `;
 
 const AvatarStyle = styled(Avatar)`
-  width: 30px;
+  width: 50px;
   margin-right: 1rem;
   float: left;
 `;
 const AvatarWrapper = styled.div`
-  height: 30px !important;
-  width: 30px !important;
+  height: 50px !important;
+  width: 50px !important;
   margin-right: 2rem !important;
   border-radius: 50%;
   overflow: hidden;
   background-image: ${props => (props.img ? `url(${props.img})` : '')};
-  background-size: 30px auto;
+  background-size: 50px auto;
   background-position: center;
   background-repeat: no-repeat;
   float: left;
 `;
-const CommentWrapper = styled.div``;
+const CommentWrapper = styled.div`
+  margin-bottom: 1rem
+`;
 const FormStyle = styled.form`
   width: 300px;
 `;
@@ -120,17 +122,17 @@ class MeList extends React.Component {
       columns: {
         backlog: {
           id: 'backlog',
-          title: 'Backlog',
+          title: 'BACKLOG',
           bookIds: [],
         },
         completed: {
           id: 'completed',
-          title: 'Completed',
+          title: 'COMPLETED',
           bookIds: [],
         },
         current: {
           id: 'current',
-          title: 'Currently Reading',
+          title: 'CURRENTLY READING',
           bookIds: [],
         },
       },

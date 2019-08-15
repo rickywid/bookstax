@@ -12,19 +12,21 @@ const Container = styled.div`
   padding: 10px;
   width: 32%;
   background: #f5f5f5;
+  border-radius: 4px;
 
   &:nth-child(1) {
-    border-top: 5px solid pink;
+    border-top: 5px solid #5ed6ff;
   }
   &:nth-child(2) {
-    border-top: 5px solid orange;
+    border-top: 5px solid #ff4fe5;
   }
   &:nth-child(3) {
-    border-top: 5px solid green;
+    border-top: 5px solid #f6a354;
   }
 `;
 const Title = styled.h3`
   font-weight: bold;
+  font-size: 14px;
 `;
 const BookList = styled.div`
   min-height: 300px;

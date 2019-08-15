@@ -49,18 +49,18 @@ const UserComments = styled.div`
 `;
 
 const AvatarStyle = styled(Avatar)`
-  width: 30px;
+  width: 50px;
   margin-right: 1rem;
   float: left;
 `;
 const AvatarWrapper = styled.div`
-  height: 30px !important;
-  width: 30px !important;
+  height: 50px !important;
+  width: 50px !important;
   margin-right: 2rem !important;
   border-radius: 50%;
   overflow: hidden;
   background-image: ${props => (props.img ? `url(${props.img})` : '')};
-  background-size: 30px auto;
+  background-size: 50px auto;
   background-position: center;
   background-repeat: no-repeat;
   float: left;
