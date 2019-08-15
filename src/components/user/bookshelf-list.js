@@ -5,8 +5,7 @@ import BookItem from './book-item';
 import { Header2 } from '../../styled-components/header';
 
 const Container = styled.div`
-  flex-basis: 70%;
-  padding-right: 1rem;
+  clear: both;
 `;
 const Wrapper = styled.div`
   margin-bottom: 2rem;

@@ -12,19 +12,21 @@ const Container = styled.div`
   padding: 10px;
   width: 32%;
   background: #f5f5f5;
+  border-radius: 4px;
 
   &:nth-child(1) {
-    border-top: 5px solid pink;
+    border-top: 5px solid #5ed6ff;
   }
   &:nth-child(2) {
-    border-top: 5px solid orange;
+    border-top: 5px solid #ff4fe5;
   }
   &:nth-child(3) {
-    border-top: 5px solid green;
+    border-top: 5px solid #f6a354;
   }
 `;
 const Title = styled.h3`
   font-weight: bold;
+  font-size: 14px;
 `;
 const BookList = styled.div`
   min-height: 300px;
@@ -51,7 +53,7 @@ class Column extends React.Component {
 
   componentDidMount() {
     const { favourites } = this.props;
-    this.setState({ favourites });
+    this.setState({ favourites: favourites || [] });
   }
 
   showModal = (id, column) => {
@@ -88,7 +90,7 @@ class Column extends React.Component {
         book: JSON.stringify(books),
       };
     } else {
-      const bookId = book.bookId; {/* eslint-disable-line */}
+      const bookId = book.bookId; /* eslint-disable-line */
       const books = favourites.filter(item => item.bookId !== bookId);
 
       data = {
@@ -107,17 +109,17 @@ class Column extends React.Component {
   }
 
   checkIsFavourite(book) {
+    if (!Object.keys(book).length) return;
+
     const { favourites } = this.state;
     const id = book.content.bookId;
-
     const match = favourites.filter(item => item.bookId === id);
 
-
     if (match.length) {
-      return <Button key="favourite" type="primary" onClick={() => this.updateFavourite(book.content, 'remove')}>Remove from Favourites</Button>;
+      return <Button key="favourite" type="primary" onClick={() => this.updateFavourite(book.content, 'remove')}>Remove from Favourites</Button>;/* eslint-disable-line */
     }
 
-    return <Button key="favourite" type="primary" onClick={() => this.updateFavourite(book.content, 'add')}>Save to Favourites</Button>;
+    return <Button key="favourite" type="primary" onClick={() => this.updateFavourite(book.content, 'add')}>Save to Favourites</Button>;/* eslint-disable-line */
   }
 
   render() {
@@ -157,7 +159,7 @@ class Column extends React.Component {
           closable={false}
           title=""
           visible={visible}
-          footer={[
+          footer={window.location.pathname.includes('/me') ? [
             <Button key="close" onClick={this.handleOk}>
               Close
             </Button>,
@@ -165,7 +167,7 @@ class Column extends React.Component {
             <Button key="delete" type="primary" loading={isDeleting} onClick={this.handleDelete}>
               Remove Book
             </Button>,
-          ]}
+          ] : [<Button key="close" onClick={this.handleOk}>Close</Button>]}
         >
           <BookshelfBookItem {...modalBook} />
         </Modal>

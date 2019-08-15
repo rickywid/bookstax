@@ -14,7 +14,10 @@ import { ReactComponent as FacebookIcon } from '../assets/icons/facebook.svg';
 import * as actions from '../actions/simpleAction';
 
 const LoginWrapper = styled.div`
-  background: #d0e3ed;
+  background: #00000005;
+  border: 1px solid #00000005;
+  border-radius: 4px;
+  box-shadow: -4px 6px 5px 0px rgba(0,0,0,0.35);
   width: 500px;
   padding: 60px;
   margin: 0 auto;
@@ -27,34 +30,40 @@ const ErrorMsg = styled.p`
   color: red; 
   textAlign: center;
 `;
-const btnStyle = {
-  width: '85%',
-  fontWeight: 'bold',
-  background: '#fff',
-  marginBottom: '1rem',
-  height: 'auto',
-  display: 'flex',
-  alignItems: 'center',
-  padding: '7px 7px 7px 20px',
-  color: 'black',
-};
 
-const socialIconStyle = {
-  height: '20px',
-  marginRight: '1rem',
-};
+const ButtonSocialStyle = styled(Button)`
+  width: 100%;
+  font-weight: bold;
+  background: #fff;
+  margin-bottom: 1rem;
+  height: auto;
+  display: flex !important;
+  text-align: initial;
+  align-items: center;
+  padding: 7px 7px 7px 20px;
+  color: black;
+`;
+
+const GoogleIconStyle = styled(GoogleIcon)`
+  height: 20px
+  margin-right: 1rem
+`;
+const FacebookIconStyle = styled(FacebookIcon)`
+  height: 20px
+  margin-right: 1rem
+`;
 
 const style1 = {
   width: '100%',
   textAlign: 'center',
-  borderBottom: '1px solid #000',
+  borderBottom: '1px solid #c7c7c7',
   lineHeight: '0.1em',
   fontSize: '18px',
   fontWeight: 'bold',
   margin: '2rem 0',
 };
 const style2 = {
-  background: '#d0e3ed',
+  background: '#fafafa',
   padding: '0 10px',
 };
 
@@ -84,8 +93,8 @@ class SignIn extends Component {
     const { getFieldDecorator } = this.props.form; {/* eslint-disable-line */}
     const { errors } = this.props;
     return (
-      <div>
-        <h1 style={{ textAlign: 'center' }}>Sign In</h1>
+      <div className="animated fadeIn">
+        <h1 style={{ textAlign: 'center' }}>SIGN IN</h1>
         <LoginWrapper>
           <Form onSubmit={this.handleSubmit} className="login-form">
             <Form.Item>
@@ -120,14 +129,14 @@ class SignIn extends Component {
             <span style={style2}>OR</span>
           </p>
           <SocialLoginWrapper>
-            <Button style={btnStyle} onClick={this.handleSignIn}>
-              <GoogleIcon style={socialIconStyle} />
+            <ButtonSocialStyle onClick={this.handleSignIn}>
+              <GoogleIconStyle />
               Sign In With Google
-            </Button>
-            <Button style={btnStyle} onClick={this.handleSignIn}>
-              <FacebookIcon style={socialIconStyle} />
+            </ButtonSocialStyle>
+            <ButtonSocialStyle onClick={this.handleSignIn}>
+              <FacebookIconStyle />
               Sign In With Facebook
-            </Button>
+            </ButtonSocialStyle>
           </SocialLoginWrapper>
         </LoginWrapper>
         <p style={{ textAlign: 'center', marginTop: '1rem' }}>

@@ -16,9 +16,14 @@ const ListItem = styled.li`
   align-items: center;
 `;
 const AvatarStyle = styled(Avatar)`
-  width: 30px;
+  width: 50px;
   margin-right: 1rem;
   float: left;
+`;
+const UserAvatar = styled.img`
+  width: 50px;
+  border-radius: 50%;
+  margin-right: 1rem;
 `;
 
 const BookshelfLikes = (props) => {
@@ -32,8 +37,8 @@ const BookshelfLikes = (props) => {
             /* eslint jsx-quotes: ["error", "prefer-single"] */
             return (
               <ListItem key={user.name}>
-                <AvatarStyle />
-                <Link to='/me'>{user.name}</Link>
+                {user.avatar_url ? <UserAvatar src={user.avatar_url} alt={user.username} /> : <AvatarStyle />}
+                <Link to='/me'>{user.username}</Link>
               </ListItem>
             );
           }
@@ -41,7 +46,7 @@ const BookshelfLikes = (props) => {
           return (
             <ListItem key={user.name}>
               <AvatarStyle />
-              <Link to={`/user/${user.username}/${user.id}`}>{user.name}</Link>
+              <Link to={`/user/${user.username}/${user.id}`}>{user.username}</Link>
             </ListItem>
           );
         })}

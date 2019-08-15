@@ -8,7 +8,7 @@ import {
 } from 'antd';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import * as actions from '../actions/simpleAction';
 import { ReactComponent as GoogleIcon } from '../assets/icons/google.svg';
 import { ReactComponent as FacebookIcon } from '../assets/icons/facebook.svg';
@@ -29,7 +29,10 @@ const LandingRight = styled.div`
   margin: auto;
 `;
 const LoginWrapper = styled.div`
-  background: #d0e3ed;
+  background: #00000005;
+  border: 1px solid #00000005;
+  border-radius: 4px;
+  box-shadow: -4px 6px 5px 0px rgba(0,0,0,0.35);
   width: 80%;
   padding: 60px;
   margin: 0 auto;
@@ -50,40 +53,50 @@ const ErrorMsg = styled.p`
   textAlign: center;
 `;
 
-const btnStyle = {
-  width: '85%',
-  fontWeight: 'bold',
-  background: '#fff',
-  marginBottom: '1rem',
-  height: 'auto',
-  display: 'flex',
-  alignItems: 'center',
-  padding: '7px 7px 7px 20px',
-  color: 'black',
-};
+const ButtonStyle = styled(Button)`
+  margin-right: 1rem;
+`;
 
-const socialIconStyle = {
-  height: '20px',
-  marginRight: '1rem',
-};
+const ButtonSocialStyle = styled(Button)`
+  width: 100%;
+  font-weight: bold;
+  background: #fff;
+  margin-bottom: 1rem;
+  height: auto;
+  display: flex !important;
+  text-align: initial;
+  align-items: center;
+  padding: 7px 7px 7px 20px;
+  color: black;
+`;
 
-const readingSVGStyle = {
-  height: 'auto',
-  width: '90%',
-};
+const GoogleIconStyle = styled(GoogleIcon)`
+  height: 20px
+  margin-right: 1rem
+`;
+const FacebookIconStyle = styled(FacebookIcon)`
+  height: 20px
+  margin-right: 1rem
+`;
+
+const ReadingSVGStyle = styled(ReadingSVG)`
+  height: auto;
+  width: 90%;
+`;
 
 const style1 = {
   width: '100%',
   textAlign: 'center',
-  borderBottom: '1px solid #000',
+  borderBottom: '1px solid #c7c7c7',
   lineHeight: '0.1em',
   fontSize: '18px',
   fontWeight: 'bold',
   margin: '2rem 0',
 };
 const style2 = {
-  background: '#d0e3ed',
+  background: '#fafafa',
   padding: '0 10px',
+  color: '#58646a',
 };
 
 class Landing extends React.Component {
@@ -111,15 +124,15 @@ class Landing extends React.Component {
     const { errors } = this.props;
 
     return (
-      <LandingWrapper>
+      <LandingWrapper className="animated fadeIn">
         <LandingLeft>
-          <Header>Grab A Book And Free Your Mind</Header>
+          <Header>Unlock Your Greatest Superpower</Header>
           <p>Keep track of all the past, present and future books you want to read. Check out other members profiles and see what books are on their list and maybe even recommend each other a book to read. </p>
-          <ReadingSVG style={readingSVGStyle} />
+          <ReadingSVGStyle />
         </LandingLeft>
         <LandingRight>
           <LoginWrapper>
-            <h2>Sign In</h2>
+            <h2>SIGN IN</h2>
             <Form onSubmit={this.handleSubmit} className="login-form">
               <Form.Item>
                 {getFieldDecorator('login', {
@@ -143,9 +156,9 @@ class Landing extends React.Component {
                 )}
               </Form.Item>
               <Form.Item>
-                <Button style={{ marginRight: '1rem' }} type="primary" htmlType="submit" className="login-form-button">
+                <ButtonStyle type="primary" htmlType="submit" className="login-form-button">
                   Log in
-                </Button>
+                </ButtonStyle>
                 {errors ? errors.map(error => <ErrorMsg>{error}</ErrorMsg>) : ''}
               </Form.Item>
             </Form>
@@ -153,16 +166,20 @@ class Landing extends React.Component {
               <span style={style2}>OR</span>
             </p>
             <SocialLoginWrapper>
-              <Button style={btnStyle} onClick={this.handleSignIn}>
-                <GoogleIcon style={socialIconStyle} />
+              <ButtonSocialStyle onClick={this.handleSignIn}>
+                <GoogleIconStyle />
                 Sign In With Google
-              </Button>
-              <Button style={btnStyle} onClick={this.handleSignIn}>
-                <FacebookIcon style={socialIconStyle} />
+              </ButtonSocialStyle>
+              <ButtonSocialStyle onClick={this.handleSignIn}>
+                <FacebookIconStyle />
                 Sign In With Facebook
-              </Button>
+              </ButtonSocialStyle>
             </SocialLoginWrapper>
           </LoginWrapper>
+          <p style={{ textAlign: 'center', marginTop: '1rem' }}>
+            Don&apos;t have an account?&nbsp;
+            <Link to="/signup">Sign Up</Link>
+          </p>
         </LandingRight>
       </LandingWrapper>
     );

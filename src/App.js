@@ -57,6 +57,7 @@ const AvatarWrapper = styled.div`
   background-position: center;
   background-repeat: no-repeat;
   float: left;
+  margin-right: 1rem;
 `;
 const { Search } = Input;
 

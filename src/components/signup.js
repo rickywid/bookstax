@@ -11,7 +11,10 @@ import styled from 'styled-components';
 import * as actions from '../actions/simpleAction';
 
 const LoginWrapper = styled.div`
-  background: #d0e3ed;
+  background: #00000005;
+  border: 1px solid #00000005;
+  border-radius: 4px;
+  box-shadow: -4px 6px 5px 0px rgba(0,0,0,0.35);
   width: 500px;
   padding: 60px;
   margin: 0 auto;
@@ -67,8 +70,8 @@ class SignUp extends Component {
     const { getFieldDecorator } = this.props.form; {/* eslint-disable-line */}
     const { errors } = this.props;
     return (
-      <div>
-        <h1 style={{ textAlign: 'center' }}>Sign Up</h1>
+      <div className="animated fadeIn">
+        <h1 style={{ textAlign: 'center' }}>SIGN UP</h1>
         <LoginWrapper>
           <Form onSubmit={this.handleSubmit}>
             <Form.Item label="Username">
