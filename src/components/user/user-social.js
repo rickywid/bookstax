@@ -9,12 +9,12 @@ const Wrapper = styled.div`
   margin-bottom: 1rem;
 `;
 const InstagramSVGStyle = styled(InstagramSVG)`
-  height: 20px;
-  margin-right: 1rem;
+  height: 15px;
+  margin-right: 10px;
 `;
 const TwitterSVGStyle = styled(TwitterSVG)`
-  height: 20px;
-  margin-right: 1rem;
+  height: 15px;
+  margin-right: 10px;
 `;
 const SocialWrapper = styled.div`
   display: flex;

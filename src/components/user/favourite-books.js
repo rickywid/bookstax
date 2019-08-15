@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 const Container = styled.div`
-  flex-basis: 70%;
+  clear: both;
 `;
 const Wrapper = styled.div`
   display: inline-block;
@@ -19,7 +19,7 @@ class FavouriteBooks extends Component {
   render() {
     const { favourites } = this.props;
     return (
-      <Container>
+      <Container className="animate fadeIn">
         {favourites.map(book => <Wrapper key={book.bookId}><Link to={`/book/${book.bookId}`}><img src={book.cover} alt="" /></Link></Wrapper>)}
       </Container>
     );

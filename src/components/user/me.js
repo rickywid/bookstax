@@ -63,24 +63,24 @@ const StatTitle = styled.p`
   font-size: 12px;
   color: #00000073;
 `;
-const TabsWrapper = styled.ul`
-  margin: 0;
-  margin-bottom: 1.5rem;
-  text-align: center;
-  border-bottom: 1px solid #8b8b8b82;
-`;
-const Tabs = styled.li`
-  display: inline-block;
-  margin-right: 1rem;
-  padding: 6px 12px;
-  border-left: ${props => (props.index === props.tabState ? '1px solid #8b8b8b82' : 'none')};;
-  border-right: ${props => (props.index === props.tabState ? '1px solid #8b8b8b82' : 'none')};
-  background: ${props => (props.index === props.tabState ? '#d8e1ef' : 'none')};
-`;
-const TabBtn = styled.button`
-  background: none;
-  border: none;
-`;
+// const TabsWrapper = styled.ul`
+//   margin: 0;
+//   margin-bottom: 1.5rem;
+//   text-align: center;
+//   border-bottom: 1px solid #8b8b8b82;
+// `;
+// const Tabs = styled.li`
+//   display: inline-block;
+//   margin-right: 1rem;
+//   padding: 6px 12px;
+//   border-left: ${props => (props.index === props.tabState ? '1px solid #8b8b8b82' : 'none')};;
+//   border-right: ${props => (props.index === props.tabState ? '1px solid #8b8b8b82' : 'none')};
+//   background: ${props => (props.index === props.tabState ? '#d8e1ef' : 'none')};
+// `;
+// const TabBtn = styled.button`
+//   background: none;
+//   border: none;
+// `;
 const ContentWrapper = styled.div`
   display: flex;
 `;
@@ -110,9 +110,12 @@ const AvatarWrapper = styled.div`
   background-repeat: no-repeat;
 `;
 const ButtonStyle = styled(Button)`
-  margin-top: 1rem;
   display: block;
   width: 100%;
+  border: none !important;
+  text-align: initial !important;
+  padding: 0 !important;
+  box-shadow: none !important;
 `;
 
 class Me extends React.Component {
@@ -124,7 +127,7 @@ class Me extends React.Component {
     this.state = {
       user: {},
       displayCongratssModal: false,
-      activeTab: 0,
+      showFavourites: false,
     };
 
     this.markBookCompleted = this.markBookCompleted.bind(this);
@@ -192,12 +195,12 @@ class Me extends React.Component {
     this.setState({ displayCongratssModal: true });
   }
 
-  toggleTabs(index) {
-    this.setState({ activeTab: index });
+  showFavourites(bool) {
+    this.setState({ showFavourites: bool });
   }
 
   render() {
-    const { user, displayCongratssModal, activeTab } = this.state;
+    const { user, displayCongratssModal, showFavourites } = this.state;
     const isAuthorized = window.location.pathname.split('/')[1] === 'me';
 
     if (Object.keys(user).length === 0 && user.constructor === Object) return <div />;
@@ -235,18 +238,15 @@ class Me extends React.Component {
           </UserInfo>
         </UserInfoWrapper>
         <UserDetails>
-          <TabsWrapper>
-            <Tabs index={0} tabState={activeTab}><TabBtn onClick={() => this.toggleTabs(0)}>Bookshelf</TabBtn></Tabs>
-            <Tabs index={1} tabState={activeTab}><TabBtn onClick={() => this.toggleTabs(1)}>Favourite Books</TabBtn></Tabs>
-          </TabsWrapper>
           <ContentWrapper>
             <Sidebar>
               <div style={{ marginBottom: '1rem' }}>
-                <ButtonStyle><Link to="me-list">Bookshelf</Link></ButtonStyle>
+                <ButtonStyle icon="unordered-list" onClick={() => this.showFavourites(false)}>Bookshelf</ButtonStyle>
+                <ButtonStyle icon="star" onClick={() => this.showFavourites(true)}>Favourites</ButtonStyle>
                 <StyledLink to={{ pathname: '/settings', state: { user } }}>
-                  <ButtonStyle>Edit Profile</ButtonStyle>
+                  <ButtonStyle icon="edit">Edit Profile</ButtonStyle>
                 </StyledLink>
-                <ButtonStyle>Recommend a book</ButtonStyle>
+                <ButtonStyle icon="book">Recommend a book</ButtonStyle>
               </div>
 
               <UserSocial user={user} />
@@ -258,7 +258,10 @@ class Me extends React.Component {
                 {moment(user.created_at).fromNow()}
               </Joined>
             </Sidebar>
-            {activeTab === 0 ? <BookshelfList isAuthorized={isAuthorized} bookshelf={user.bookshelf} markBookCompleted={this.markBookCompleted} /> : <FavouriteBooks favourites={user.favourites} />}
+            <div style={{ flexBasis: '70%', position: 'relative' }}>
+              <Link to="me-list" style={{ position: 'absolute', right: 0, top: -1 }}><ButtonStyle icon="unordered-list">View Full Bookshelf</ButtonStyle></Link>
+              {!showFavourites ? <BookshelfList isAuthorized={isAuthorized} bookshelf={user.bookshelf} markBookCompleted={this.markBookCompleted} /> : <FavouriteBooks favourites={user.favourites} />}
+            </div>
           </ContentWrapper>
         </UserDetails>
         <Modal

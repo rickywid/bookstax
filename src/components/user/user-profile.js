@@ -51,24 +51,6 @@ const Joined = styled.p`
 const Stat = styled.p`
   font-size: 40px;
 `;
-const TabsWrapper = styled.ul`
-  margin: 0;
-  margin-bottom: 1.5rem;
-  text-align: center;
-  border-bottom: 1px solid #8b8b8b82;
-`;
-const Tabs = styled.li`
-  display: inline-block;
-  margin-right: 1rem;
-  padding: 6px 12px;
-  border-left: ${props => (props.index === props.tabState ? '1px solid #8b8b8b82' : 'none')};;
-  border-right: ${props => (props.index === props.tabState ? '1px solid #8b8b8b82' : 'none')};
-  background: ${props => (props.index === props.tabState ? '#d8e1ef' : 'none')};
-`;
-const TabBtn = styled.button`
-  background: none;
-  border: none;
-`;
 const ContentWrapper = styled.div`
   display: flex;
 `;
@@ -99,9 +81,12 @@ const AvatarWrapper = styled.div`
   background-repeat: no-repeat;
 `;
 const ButtonStyle = styled(Button)`
-  margin-top: 1rem;
   display: block;
   width: 100%;
+  border: none !important;
+  text-align: initial !important;
+  padding: 0 !important;
+  box-shadow: none !important;
 `;
 
 class UserProfile extends React.Component {
@@ -114,7 +99,7 @@ class UserProfile extends React.Component {
 
     this.state = {
       user: {},
-      activeTab: 0,
+      showFavourites: false,
     };
   }
 
@@ -139,8 +124,8 @@ class UserProfile extends React.Component {
     });
   }
 
-  toggleTabs(index) {
-    this.setState({ activeTab: index });
+  showFavourites(bool) {
+    this.setState({ showFavourites: bool });
   }
 
   renderCurrentBooks() {
@@ -154,7 +139,7 @@ class UserProfile extends React.Component {
   }
 
   render() {
-    const { user, activeTab } = this.state;
+    const { user, showFavourites } = this.state;
     const isAuthorized = window.location.pathname.split('/')[1] === 'me';
 
     if (Object.keys(user).length === 0 && user.constructor === Object) return <div />;
@@ -192,16 +177,13 @@ class UserProfile extends React.Component {
           </UserInfo>
         </UserInfoWrapper>
         <UserDetails>
-          <TabsWrapper>
-            <Tabs index={0} tabState={activeTab}><TabBtn onClick={() => this.toggleTabs(0)}>Bookshelf</TabBtn></Tabs>
-            <Tabs index={1} tabState={activeTab}><TabBtn onClick={() => this.toggleTabs(1)}>Favourite Books</TabBtn></Tabs>
-          </TabsWrapper>
           <ContentWrapper>
             <Sidebar>
               <div style={{ marginBottom: '1rem' }}>
-                <ButtonStyle><Link to={`/user/${user.username}/${user.id}/list/${user.list_id}`}>Bookshelf</Link></ButtonStyle>
-                <ButtonStyle>Send message</ButtonStyle>
-                <ButtonStyle>Recommend a book</ButtonStyle>
+                <ButtonStyle onClick={() => this.showFavourites(false)} icon="unordered-list">Bookshelf</ButtonStyle>
+                <ButtonStyle icon="star" onClick={() => this.showFavourites(true)}>Favourites</ButtonStyle>
+                <ButtonStyle icon="message">Send message</ButtonStyle>
+                <ButtonStyle icon="book">Recommend a book</ButtonStyle>
               </div>
               <UserSocial user={user} />
               <UserBio user={user} />
@@ -212,7 +194,10 @@ class UserProfile extends React.Component {
                 {moment(user.created_at).fromNow()}
               </Joined>
             </Sidebar>
-            {activeTab === 0 ? <BookshelfList isAuthorized={isAuthorized} bookshelf={[user.bookshelf]} markBookCompleted={this.markBookCompleted} /> : <FavouriteBooks favourites={user.favourites} />}
+            <div style={{ flexBasis: '70%', position: 'relative' }}>
+              <Link to={`/user/${user.username}/${user.id}/list/${user.list_id}`} style={{ position: 'absolute', right: 0, top: -1 }}><ButtonStyle icon="unordered-list">View Full Bookshelf</ButtonStyle></Link>
+              {!showFavourites ? <BookshelfList isAuthorized={isAuthorized} bookshelf={[user.bookshelf]} markBookCompleted={this.markBookCompleted} /> : <FavouriteBooks favourites={user.favourites} />}
+            </div>
           </ContentWrapper>
         </UserDetails>
       </Wrapper>
