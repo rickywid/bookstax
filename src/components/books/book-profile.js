@@ -118,7 +118,7 @@ class BookProfile extends React.Component {
     };
 
     // save book to user's backlog
-    await fetch(`http://localhost:3000/user/addbook/${loggedInUserId}`, {
+    await fetch(`${process.env.REACT_APP_HOSTNAME}/user/addbook/${loggedInUserId}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
