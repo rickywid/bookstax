@@ -150,13 +150,13 @@ class Me extends React.Component {
     }
 
 
-    const data = await fetch(`http://localhost:3001/user/bookshelf/${user.list_id}`);
+    const data = await fetch(`${process.env.REACT_APP_HOSTNAME}/user/bookshelf/${user.list_id}`);
     const userList = await data.json();
 
-    const data2 = await fetch(`http://localhost:3001/favourites/${user.id}`);
+    const data2 = await fetch(`${process.env.REACT_APP_HOSTNAME}/favourites/${user.id}`);
     const userFavourites = await data2.json();
 
-    const data3 = await fetch(`http://localhost:3001/user/${user.id}/genre`);
+    const data3 = await fetch(`${process.env.REACT_APP_HOSTNAME}/user/${user.id}/genre`);
     const userGenres = await data3.json();
 
     this.setState((prevState) => {

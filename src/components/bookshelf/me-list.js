@@ -141,10 +141,10 @@ class MeList extends React.Component {
 
 
     Promise.all([
-      fetch(`http://localhost:3001/user/list/likes/${loggedInUserId}/${loggedInUserListId}`),
-      fetch(`http://localhost:3001/user/bookshelf/${loggedInUserListId}`),
-      fetch(`http://localhost:3001/favourites/${loggedInUserId}`),
-      fetch(`http://localhost:3001/bookshelf/comments/${loggedInUserListId}`),
+      fetch(`${process.env.REACT_APP_HOSTNAME}/user/list/likes/${loggedInUserId}/${loggedInUserListId}`),
+      fetch(`${process.env.REACT_APP_HOSTNAME}/user/bookshelf/${loggedInUserListId}`),
+      fetch(`${process.env.REACT_APP_HOSTNAME}/favourites/${loggedInUserId}`),
+      fetch(`${process.env.REACT_APP_HOSTNAME}/bookshelf/comments/${loggedInUserListId}`),
     ]).then((res) => {
       Promise.all([res[0].json(), res[1].json(), res[2].json(), res[3].json()]).then((res2) => {
         const isLiked = res2[0].voted;
@@ -323,7 +323,7 @@ class MeList extends React.Component {
 
     this.setState({ isLiked: !isLiked }, () => {
       // add id to likes table
-      fetch('http://localhost:3001/user/update/list/likes', {
+      fetch(`${process.env.REACT_APP_HOSTNAME}/user/update/list/likes`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

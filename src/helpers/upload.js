@@ -25,7 +25,7 @@ export default class UploadFile extends Component {
         const data = new FormData();
         data.append('file', file2.file);
 
-        fetch('http://localhost:3001/upload/avatar', {
+        fetch(`${process.env.REACT_APP_HOSTNAME}/upload/avatar`, {
           method: 'POST',
           body: data,
         })

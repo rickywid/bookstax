@@ -116,7 +116,7 @@ class Landing extends React.Component {
   };
 
   handleSignIn = () => {
-    window.open('http://localhost:3001/signin', '_self');
+    window.open(`${process.env.REACT_APP_HOSTNAME}/signin`, '_self');
   }
 
   render() {

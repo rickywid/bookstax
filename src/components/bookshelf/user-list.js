@@ -138,9 +138,9 @@ class UserList extends React.Component {
     };
 
     Promise.all([
-      fetch(`http://localhost:3001/user/list/likes/${loggedInUserId}/${this.bookshelfId}`),
-      fetch(`http://localhost:3001/user/bookshelf/${this.bookshelfId}`),
-      fetch(`http://localhost:3001/bookshelf/comments/${this.bookshelfId}`)]).then((res) => {
+      fetch(`${process.env.REACT_APP_HOSTNAME}/user/list/likes/${loggedInUserId}/${this.bookshelfId}`),
+      fetch(`${process.env.REACT_APP_HOSTNAME}/user/bookshelf/${this.bookshelfId}`),
+      fetch(`${process.env.REACT_APP_HOSTNAME}/bookshelf/comments/${this.bookshelfId}`)]).then((res) => {
       Promise.all([res[0].json(), res[1].json(), res[2].json()]).then((res2) => {
         const isLiked = res2[0].voted;
         const likeCount = res2[0].count;
@@ -314,7 +314,7 @@ class UserList extends React.Component {
 
     this.setState({ isLiked: !isLiked }, () => {
       // add id to likes table
-      fetch('http://localhost:3001/user/update/list/likes', {
+      fetch(`${process.env.REACT_APP_HOSTNAME}/user/update/list/likes`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

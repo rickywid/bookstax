@@ -3,7 +3,7 @@ import Api from '../services/api';
 const api = new Api().Resolve();
 
 export const getUserProfile = () => (dispatch) => {
-  fetch('http://localhost:3001/user/2', {
+  fetch(`${process.env.REACT_APP_HOSTNAME}/user/2`, {
     credentials: 'include',
     headers: {
       'Access-Control-Allow-Credentials': true,
@@ -37,7 +37,7 @@ export const userAuth = () => (dispatch) => {
 
 export const signup = (values, history) => (
   (dispatch) => {
-    fetch('http://localhost:3000/signup', {
+    fetch(`${process.env.REACT_APP_HOSTNAME}/signup`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -101,7 +101,7 @@ export const searchResults = (data, history) => (dispatch) => {
 
 export const signin = (values, history) => (
   (dispatch) => {
-    fetch('http://localhost:3001/signin/local', {
+    fetch(`${process.env.REACT_APP_HOSTNAME}/signin/local`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',

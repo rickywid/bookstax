@@ -14,7 +14,7 @@ export class ApiService {
   // get current (logged in) user profile
   getCurrentUserProfile(id) {
     return this.httpClient.get(
-      `http://localhost:3001/user/auth?id=${id}`,
+      `${process.env.REACT_APP_HOSTNAME}/user/auth?id=${id}`,
       {
         Accept: 'application/json',
         'Content-Type': 'application/json; charset=utf-8',
@@ -26,7 +26,7 @@ export class ApiService {
   // get user's profile
   getUserProfile(userId) {
     return this.httpClient.get(
-      `http://localhost:3001/user/${userId}`,
+      `${process.env.REACT_APP_HOSTNAME}/user/${userId}`,
       { 
         Accept: 'application/json',
         'Content-Type': 'application/json; charset=utf-8',
@@ -37,7 +37,7 @@ export class ApiService {
   // update user's profile
   updateUserProfile(userId, data) {
     this.httpClient.post(
-      `http://localhost:3001/user/${userId}/update`,
+      `${process.env.REACT_APP_HOSTNAME}/user/${userId}/update`,
       {
         'Content-Type': 'application/json',
       },
@@ -51,7 +51,7 @@ export class ApiService {
   // update user's bookshelf
   updateUserBookshelf(bookshelfId, data) {
     return this.httpClient.put(
-      `http://localhost:3001/user/update/books/${bookshelfId}`,
+      `${process.env.REACT_APP_HOSTNAME}/user/update/books/${bookshelfId}`,
       { 'Content-Type': 'application/json' },
       data,
     );
@@ -64,7 +64,7 @@ export class ApiService {
   addUserLikeBookshelf(data) {
     console.log(data)
     return this.httpClient.delete(
-      'http://localhost:3001/user/update/list/likes',
+      `${process.env.REACT_APP_HOSTNAME}/user/update/list/likes`,
       { 'Content-Type': 'application/json' },
       data,
     );
@@ -83,7 +83,7 @@ export class ApiService {
   submitBookshelfComment(data) {
     console.log(data)
     return this.httpClient.post(
-      `http://localhost:3001/bookshelf/comment/new`,
+      `${process.env.REACT_APP_HOSTNAME}/bookshelf/comment/new`,
       { 'Content-Type': 'application/json' },
       data,
     );
