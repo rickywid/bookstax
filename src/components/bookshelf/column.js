@@ -99,7 +99,7 @@ class Column extends React.Component {
       };
     }
 
-    fetch(`http://localhost:3001/favourites/add/${userId}`, {
+    fetch(`${process.env.REACT_APP_HOSTNAME}/favourites/add/${userId}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

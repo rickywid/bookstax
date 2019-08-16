@@ -18,6 +18,8 @@ if (token) {
   store.dispatch({ type: 'IS_AUTH', payload: true });
 }
 
+console.log(process.env);
+
 ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>

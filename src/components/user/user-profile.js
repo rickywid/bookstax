@@ -105,13 +105,13 @@ class UserProfile extends React.Component {
 
   async componentDidMount() {
     const user = await this.api.getUserProfile(this.userId);
-    const data = await fetch(`http://localhost:3001/user/bookshelf/${user[0].list_id}`);
+    const data = await fetch(`${process.env.REACT_APP_HOSTNAME}/user/bookshelf/${user[0].list_id}`);
     const userList = await data.json();
 
-    const data2 = await fetch(`http://localhost:3001/favourites/${this.userId}`);
+    const data2 = await fetch(`${process.env.REACT_APP_HOSTNAME}/favourites/${this.userId}`);
     const userFavourites = await data2.json();
 
-    const data3 = await fetch(`http://localhost:3001/user/${this.userId}/genre`);
+    const data3 = await fetch(`${process.env.REACT_APP_HOSTNAME}/user/${this.userId}/genre`);
     const userGenres = await data3.json();
 
     this.setState((prevState) => {
