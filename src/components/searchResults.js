@@ -5,18 +5,17 @@ import { Link } from 'react-router-dom';
 import { Pagination, Button, message } from 'antd';
 import styled from 'styled-components';
 import moment from 'moment';
+import { Header2 } from '../styled-components/header';
 
 const Wrapper = styled.div`
 `;
 const InnerWrapper = styled.div`
-  border-top: 1px solid #a7a7a7;
-  border-bottom: 1px solid #a7a7a7;
   padding: 1rem 0;
   margin: 1rem 0;
 `;
 const ItemWrapper = styled.div`
   display: flex;
-  margin: 1.5rem 0;
+  margin: 2rem 0;
 `;
 const CoverWrapper = styled.div`
 `;
@@ -46,6 +45,10 @@ const AuthorList = styled.div`
     font-weight: bold;
   }
 `;
+const TextSnippet = styled.p`
+  min-height: 100px;
+`;
+
 class SearchResults extends React.Component {
   constructor(props) {
     super(props);
@@ -88,13 +91,16 @@ class SearchResults extends React.Component {
     const bookId = book.id; {/* eslint-disable-line */}
     const { loggedInUserListId, loggedInUserId } = this.props;
 
+    const hasPropImgLinks = Object.prototype.hasOwnProperty.call(book.volumeInfo, 'imageLinks');
+    const hasPropAuthors = Object.prototype.hasOwnProperty.call(book.volumeInfo, 'authors');
+
     const data = {
       id: loggedInUserListId,
       content: {
         bookId,
         title: book.volumeInfo.title,
-        author: book.volumeInfo.authors[0],
-        cover: book.volumeInfo.imageLinks.smallThumbnail,
+        author: hasPropAuthors ? JSON.stringify(book.volumeInfo.authors) : JSON.stringify([]),
+        cover: hasPropImgLinks ? book.volumeInfo.imageLinks.smallThumbnail : 'https://d827xgdhgqbnd.cloudfront.net/wp-content/uploads/2016/04/09121712/book-cover-placeholder.png',
         description: book.volumeInfo.description,
         avgRating: book.volumeInfo.averageRating,
         pageCount: book.volumeInfo.pageCount,
@@ -162,7 +168,7 @@ class SearchResults extends React.Component {
                 )
                 : ''}
             </AuthorList>
-            <p>{textSnippet}</p>
+            <TextSnippet>{textSnippet}</TextSnippet>
             <Button onClick={() => this.saveBook(item)} disabled={saveBookState}>{saveBookState ? 'Log in to save book' : 'Save To Bookshelf' }</Button>
           </InfoWrapper>
         </ItemWrapper>
@@ -182,7 +188,7 @@ class SearchResults extends React.Component {
 
     return (
       <Wrapper>
-        <h2>{searchResultHeader}</h2>
+        <Header2>{searchResultHeader}</Header2>
         <InnerWrapper>
           {this.renderItems()}
         </InnerWrapper>

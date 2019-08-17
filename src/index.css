@@ -1,15 +1,26 @@
 /*
   GLOBAL CSS STYLES
 */
+/*
+  mustard - #f8e9a1
+  red - #f76c6c
+  baby blue - #a8dee6
+  purple - #374785
+  dark purple - #24305e
+*/
 body {
   font-family: 'Raleway', sans-serif !important;
   padding-bottom: 5rem !important;
 }
 
 a, h1,h2,h3,h4,h5,h6 {
-  color: #ff18a0 !important;
+  color: #f76c6c !important;
 }
 
+/*button {
+  background: #000 !important;
+  color: white !important;
+}*/
 button:focus {outline:0;}
 
 .error {

@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import moment from 'moment';
 import { Modal, Button } from 'antd';
 import Api from '../../services/api';
 import LoaderHOC from '../isLoading';
@@ -49,10 +48,6 @@ const InnerWrapper = styled.div`
     font-size: 12px;
   }
 `;
-const Joined = styled.p`
-  font-size: 12px;
-  margin-top: 1rem;
-`;
 const StyledLink = styled(Link)`
   
 `;
@@ -63,24 +58,6 @@ const StatTitle = styled.p`
   font-size: 12px;
   color: #00000073;
 `;
-// const TabsWrapper = styled.ul`
-//   margin: 0;
-//   margin-bottom: 1.5rem;
-//   text-align: center;
-//   border-bottom: 1px solid #8b8b8b82;
-// `;
-// const Tabs = styled.li`
-//   display: inline-block;
-//   margin-right: 1rem;
-//   padding: 6px 12px;
-//   border-left: ${props => (props.index === props.tabState ? '1px solid #8b8b8b82' : 'none')};;
-//   border-right: ${props => (props.index === props.tabState ? '1px solid #8b8b8b82' : 'none')};
-//   background: ${props => (props.index === props.tabState ? '#d8e1ef' : 'none')};
-// `;
-// const TabBtn = styled.button`
-//   background: none;
-//   border: none;
-// `;
 const ContentWrapper = styled.div`
   display: flex;
 `;
@@ -116,6 +93,7 @@ const ButtonStyle = styled(Button)`
   text-align: initial !important;
   padding: 0 !important;
   box-shadow: none !important;
+  background: transparent;
 `;
 
 class Me extends React.Component {
@@ -252,11 +230,6 @@ class Me extends React.Component {
               <UserSocial user={user} />
               <UserBio user={user} />
               <UserGenres user={user} />
-              <Joined>
-                Joined
-                <span> </span>
-                {moment(user.created_at).fromNow()}
-              </Joined>
             </Sidebar>
             <div style={{ flexBasis: '70%', position: 'relative' }}>
               <Link to="me-list" style={{ position: 'absolute', right: 0, top: -1 }}><ButtonStyle icon="unordered-list">View Full Bookshelf</ButtonStyle></Link>

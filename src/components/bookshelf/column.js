@@ -27,6 +27,7 @@ const Container = styled.div`
 const Title = styled.h3`
   font-weight: bold;
   font-size: 14px;
+  color: #747474 !important;
 `;
 const BookList = styled.div`
   min-height: 300px;
