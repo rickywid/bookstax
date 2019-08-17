@@ -12,6 +12,7 @@ const Wrapper = styled.div`
 const CoverWrapper = styled.div`
   img {
     border-radius: 5px;
+    max-height: 205px;
   }
 `;
 const StyledLink = styled(Link)`

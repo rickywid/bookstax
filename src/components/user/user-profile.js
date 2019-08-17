@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import moment from 'moment';
 import { Button } from 'antd';
 import Api from '../../services/api';
 import BookItem from './book-item';
@@ -43,10 +42,6 @@ const InnerWrapper = styled.div`
   flex-grow: 1;
   display: flex;
   justify-content: space-between;
-`;
-const Joined = styled.p`
-  margin-top: 1rem;
-  font-size: 12px;
 `;
 const Stat = styled.p`
   font-size: 40px;
@@ -188,11 +183,6 @@ class UserProfile extends React.Component {
               <UserSocial user={user} />
               <UserBio user={user} />
               <UserGenres user={user} />
-              <Joined>
-                Joined
-                <span> </span>
-                {moment(user.created_at).fromNow()}
-              </Joined>
             </Sidebar>
             <div style={{ flexBasis: '70%', position: 'relative' }}>
               <Link to={`/user/${user.username}/${user.id}/list/${user.list_id}`} style={{ position: 'absolute', right: 0, top: -1 }}><ButtonStyle icon="unordered-list">View Full Bookshelf</ButtonStyle></Link>

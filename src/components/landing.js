@@ -127,7 +127,7 @@ class Landing extends React.Component {
       <LandingWrapper className="animated fadeIn">
         <LandingLeft>
           <Header>Unlock Your Greatest Superpower</Header>
-          <p>Keep track of all the past, present and future books you want to read. Check out other members profiles and see what books are on their list and maybe even recommend each other a book to read. </p>
+          <p>Connect with others by sharing your passion for reading. Create and manage your books easily by drag and drop. View what others are reading and even recommend a book for them to read next.</p>
           <ReadingSVGStyle />
         </LandingLeft>
         <LandingRight>
