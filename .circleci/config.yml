@@ -47,7 +47,7 @@ jobs:
       - run:
           name: Deploy Master to Heroku
           command: |
-            git push https://heroku:4cd245e6-b476-4b96-9156-1cadb402f9a5@git.heroku.com/bookstax.git master
+            git push https://heroku:4cd245e6-b476-4b96-9156-1cadb402f9a5@git.heroku.com/bookstax-staging.git master
 
 workflows:
   version: 2
