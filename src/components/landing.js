@@ -100,10 +100,6 @@ const style2 = {
 };
 
 class Landing extends React.Component {
-  componentDidMount() {
-    console.log('landing');
-  }
-
   handleSubmit = (e) => {
     const { signin, history } = this.props;
     const { validateFields } = this.props.form; {/* eslint-disable-line */}

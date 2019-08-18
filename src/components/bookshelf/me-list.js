@@ -412,7 +412,7 @@ class MeList extends React.Component {
           id: `book-${index + 1}`,
           content: state.data.books[key].content,
         };
-        // console.log(booksObj)
+
         if (state.data.books[key].content.status === 'backlog') {
           backlogIds.push(`book-${index + 1}`);
         }

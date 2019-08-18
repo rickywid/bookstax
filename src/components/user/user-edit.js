@@ -92,8 +92,8 @@ class UserEdit extends React.Component {
     });
   }
 
-  callback(key) {
-    console.log(this, key);
+  callback = () => {
+    console.log('callback');
   }
 
   render() {

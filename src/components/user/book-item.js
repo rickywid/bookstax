@@ -55,7 +55,7 @@ class BookItem extends Component {
   };
 
   readMore() {
-    this.setState({ visible: true }, () => console.log(this.state));
+    this.setState({ visible: true });
   }
 
   confirmation() {
