@@ -133,7 +133,7 @@ class SignIn extends Component {
               <GoogleIconStyle />
               Sign In With Google
             </ButtonSocialStyle>
-            <ButtonSocialStyle onClick={this.handleSignIn}>
+            <ButtonSocialStyle onClick={this.handleSignIn} disabled>
               <FacebookIconStyle />
               Sign In With Facebook
             </ButtonSocialStyle>
