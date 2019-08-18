@@ -177,8 +177,8 @@ class UserProfile extends React.Component {
               <div style={{ marginBottom: '1rem' }}>
                 <ButtonStyle onClick={() => this.showFavourites(false)} icon="unordered-list">Bookshelf</ButtonStyle>
                 <ButtonStyle icon="star" onClick={() => this.showFavourites(true)}>Favourites</ButtonStyle>
-                <ButtonStyle icon="message">Send message</ButtonStyle>
-                <ButtonStyle icon="book">Recommend a book</ButtonStyle>
+                <ButtonStyle style={{ marginBottom: '7px' }} icon="message" disabled>Send message</ButtonStyle>
+                <ButtonStyle icon="book" disabled>Recommend a book</ButtonStyle>
               </div>
               <UserSocial user={user} />
               <UserBio user={user} />

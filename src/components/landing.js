@@ -100,10 +100,6 @@ const style2 = {
 };
 
 class Landing extends React.Component {
-  componentDidMount() {
-    console.log('landing');
-  }
-
   handleSubmit = (e) => {
     const { signin, history } = this.props;
     const { validateFields } = this.props.form; {/* eslint-disable-line */}
@@ -170,7 +166,7 @@ class Landing extends React.Component {
                 <GoogleIconStyle />
                 Sign In With Google
               </ButtonSocialStyle>
-              <ButtonSocialStyle onClick={this.handleSignIn}>
+              <ButtonSocialStyle onClick={this.handleSignIn} disabled>
                 <FacebookIconStyle />
                 Sign In With Facebook
               </ButtonSocialStyle>

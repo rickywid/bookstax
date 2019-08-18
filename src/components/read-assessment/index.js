@@ -47,10 +47,6 @@ class ReadAssessment extends React.Component {
     this.timer = new Timer();
   }
 
-  componentDidMount() {
-    console.log('read assessment mounted');
-  }
-
   handleChange = (index) => {
     this.setState({ selectedBook: index });
   }
