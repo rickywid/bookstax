@@ -228,12 +228,12 @@ class UserEdit extends React.Component {
               </Form.Item>
             </Form>
           </TabPane>
-          <TabPane tab="Settings" key="2">
+          <TabPane tab="Settings" disabled key="2">
             <p>Display email</p>
             <p>Display location</p>
             <button type="button">Delete Account</button>
           </TabPane>
-          <TabPane tab="Connect" key="3">
+          <TabPane tab="Connect" disabled key="3">
             <button type="button">Connect to Twitter</button>
             <button type="button">Connect to Instagram</button>
             <button type="button">Connect to Facebook</button>

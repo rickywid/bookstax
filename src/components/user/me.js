@@ -224,7 +224,7 @@ class Me extends React.Component {
                 <StyledLink to={{ pathname: '/settings', state: { user } }}>
                   <ButtonStyle icon="edit">Edit Profile</ButtonStyle>
                 </StyledLink>
-                <ButtonStyle icon="book">Recommend a book</ButtonStyle>
+                <ButtonStyle icon="book" disabled>Recommend a book</ButtonStyle>
               </div>
 
               <UserSocial user={user} />
