@@ -99,7 +99,7 @@ class SearchResults extends React.Component {
       content: {
         bookId,
         title: book.volumeInfo.title,
-        author: hasPropAuthors ? JSON.stringify(book.volumeInfo.authors) : JSON.stringify([]),
+        author: hasPropAuthors ? book.volumeInfo.authors[0] : null,
         cover: hasPropImgLinks ? book.volumeInfo.imageLinks.smallThumbnail : 'https://d827xgdhgqbnd.cloudfront.net/wp-content/uploads/2016/04/09121712/book-cover-placeholder.png',
         description: book.volumeInfo.description,
         avgRating: book.volumeInfo.averageRating,

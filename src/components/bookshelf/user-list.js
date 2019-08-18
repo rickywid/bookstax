@@ -153,9 +153,13 @@ class UserList extends React.Component {
           booksObj[`book-${index + 1}`] = {
             id: `book-${index + 1}`,
             content: {
+              bookId: book.bookId,
               title: book.title,
               author: book.author,
               cover: book.cover,
+              description: book.description,
+              avgRating: book.avgRating,
+              pageCount: book.pageCount,
               isbn: book.isbn,
               status: book.status,
             },
