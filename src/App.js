@@ -125,16 +125,11 @@ class App extends React.Component {
               : <AvatarStyle />}
             <Link to='/me'>
               {user.username}
-              {' '}
-              {user.id}
             </Link>
           </NavItems>
           <NavItems>
             {/* eslint jsx-quotes: ["error", "prefer-single"] */}
-            <Link to='/me-list'>
-Bookshelf
-              {user.list_id}
-            </Link>
+            <Link to='/me-list'>Bookshelf</Link>
           </NavItems>
           <NavItems onClick={this.signout}><Button>Sign Out</Button></NavItems>
         </React.Fragment>
