@@ -149,7 +149,7 @@ class App extends React.Component {
     return (
       <div className='App'>
         <NavBar>
-          <Link to='/'><img style={{ width: '65%' }} src={Logo} alt='logo' /></Link>
+          <Link to='/home'><img style={{ width: '65%' }} src={Logo} alt='logo' /></Link>
           <Search
             placeholder='search book...'
             onSearch={values => this.onFormSubmit(null, values)}

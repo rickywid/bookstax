@@ -69,7 +69,7 @@ export const signup = (values, history) => (
           payload: true,
         });
 
-        history.push({ pathname: '/dashboard', state: { fromSignUp: true } });
+        history.push({ pathname: '/dashboardhome', state: { fromSignUp: true } });
       });
   }
 );
@@ -132,7 +132,7 @@ export const signin = (values, history) => (
           payload: true,
         });
 
-        history.push({ pathname: '/dashboard', state: { fromSignUp: true } });
+        history.push({ pathname: '/home', state: { fromSignUp: true } });
       }).catch((err) => {
         console.log(err);
       });
@@ -145,7 +145,7 @@ export const googleSignIn = history => (
       payload: true,
     });
 
-    history.push('/dashboard');
+    history.push('/home');
   }
 );
 

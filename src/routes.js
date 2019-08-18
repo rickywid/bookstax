@@ -4,7 +4,7 @@ import Main from './components/main';
 // import Landing from './components/landing';
 import ReadAssessment from './components/read-assessment/index';
 import BookProfile from './components/books/book-profile';
-import Dashboard from './components/dashboard';
+import Home from './components/home';
 import Me from './components/user/me';
 import MeList from './components/bookshelf/me-list';
 import UserProfile from './components/user/user-profile';
@@ -24,7 +24,7 @@ const Routes = (
     <Route exact path="/signin" component={SignIn} />
     <Route exact path="/read-assessment" component={ReadAssessment} />
     <Route exact path="/book/:book_id" component={BookProfile} />
-    <Route exact path="/dashboard" component={RequireAuth(Dashboard)} />
+    <Route exact path="/home" component={RequireAuth(Home)} />
     <Route exact path="/me" component={RequireAuth(Me)} />
     <Route exact path="/me-list" component={RequireAuth(MeList)} />
     <Route exact path="/user/:username/:user_id" component={RequireAuth(UserProfile)} />

@@ -55,6 +55,7 @@ class Home extends React.Component {
             <li>Private messaging to individual members</li>
             <li>Ability to integrate your social media accounts into your profile (twitter, instagram).</li>
             <li>Recommend a book to another member.</li>
+            <li>Facebook login</li>
             <li>Making the website responsive</li>
             <li>and more...</li>
           </ul>
