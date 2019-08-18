@@ -9,14 +9,28 @@ import {
   Row,
   Col,
   message,
+  Modal,
 } from 'antd';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
+import ConfirmDelete from '../modals/confirmDelete';
 import Api from '../../services/api';
 import { genres, countries } from '../../const';
 import UploadFile from '../../helpers/upload';
+import { Header3 } from '../../styled-components/header';
 
 const { TabPane } = Tabs;
 const { Option } = Select;
+
+const ButtonDanger = styled(Button)`
+  background: #f5222d !important;
+  color: white !important;
+  border-color: transparent !important;
+  &:hover {
+    background: #f5222dc2 !important
+    border-color: transparent !important;
+  }
+`;
 
 function hasErrors(fieldsError) {
   return Object.keys(fieldsError).some(field => fieldsError[field]);
@@ -33,6 +47,7 @@ class UserEdit extends React.Component {
         genres: [],
       },
       files: [],
+      visible: false,
     };
   }
 
@@ -46,6 +61,24 @@ class UserEdit extends React.Component {
       return state;
     });
   }
+
+  showModal = () => {
+    this.setState({
+      visible: true,
+    });
+  };
+
+  handleOk = () => {
+    this.setState({
+      visible: false,
+    });
+  };
+
+  handleCancel = () => {
+    this.setState({
+      visible: false,
+    });
+  };
 
   handleSubmit = (e) => {
     const { form, history } = this.props;
@@ -98,8 +131,7 @@ class UserEdit extends React.Component {
 
   render() {
     const { getFieldDecorator, getFieldsError } = this.props.form; {/* eslint-disable-line */}
-    const { user, files } = this.state;
-
+    const { user, files, visible } = this.state;
     return (
       <div className="user-edit animated fadeIn">
         <Tabs animated={false} defaultActiveKey="1" onChange={() => this.callback()}>
@@ -228,10 +260,17 @@ class UserEdit extends React.Component {
               </Form.Item>
             </Form>
           </TabPane>
-          <TabPane tab="Settings" disabled key="2">
-            <p>Display email</p>
-            <p>Display location</p>
-            <button type="button">Delete Account</button>
+          <TabPane tab="Settings" key="2">
+            <Header3>Delete Account</Header3>
+            <p>Permanently delete your account profile.</p>
+            <ButtonDanger onClick={this.showModal}>Danger</ButtonDanger>
+            <Modal
+              title="Delete Account"
+              visible={visible}
+              onCancel={this.handleCancel}
+            >
+              <ConfirmDelete id={user.id} username={user.username} />
+            </Modal>
           </TabPane>
           <TabPane tab="Connect" disabled key="3">
             <button type="button">Connect to Twitter</button>
