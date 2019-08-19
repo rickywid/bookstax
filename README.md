@@ -1,68 +1,45 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+![BookStax](https://i.imgur.com/FWravPZ.png "BookStax")
 
-In the project directory, you can run:
+## BookStax
 
-### `npm start`
+This is a full stack application where I used React on the front end and Nodejs, Postgres and Heroku on the back end. BookStax allows readers to keep track of the their books by managing their list with a drag and drop UI. Users can view, comment and like other users profiles. Users can login through email or social login via Google or Facebook.
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+[View website](https://bookstax.herokuapp.com)
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+## Motivation
 
-### `npm test`
+The motivation for me to create BookStax was for me to be able to mange the books I've read by creating a list by using a simple UI. I wanted to build a community where members can recommend each other awesome books to read.
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Features
 
-### `npm run build`
+- Drag n Drop to manage lists
+- Save book to favourites list
+- Search and save books to bookshelf
+- View, comment and like users profiles
+- OAuth login
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Future Features
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+- Real time activity feed so you can get updates on what books are other members are reading
+- Private messaging to individual members
+- Ability to integrate your social media accounts into your profile (twitter, instagram)
+- Recommend a book to other members
+- Facebook login
+- Bookshelf search filtering
+- Making the website responsive
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+and more...
 
-### `npm run eject`
+## Tech Stack
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+- HTML/CSS/JS
+- React/Redux
+- Styled-Components
+- NodeJS/Express
+- PassportJS
+- Postgres
+- CircleCI
+- Heroku
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
