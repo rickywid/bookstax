@@ -112,7 +112,7 @@ class UserList extends React.Component {
     this.onHandleLike = this.onHandleLike.bind(this);
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const { loggedInUserId } = this.props;
 
     const data = {
@@ -137,57 +137,54 @@ class UserList extends React.Component {
       columnOrder: ['backlog', 'completed', 'current'],
     };
 
-    Promise.all([
-      fetch(`${process.env.REACT_APP_HOSTNAME}/user/list/likes/${loggedInUserId}/${this.bookshelfId}`),
-      fetch(`${process.env.REACT_APP_HOSTNAME}/user/bookshelf/${this.bookshelfId}`),
-      fetch(`${process.env.REACT_APP_HOSTNAME}/bookshelf/comments/${this.bookshelfId}`)]).then((res) => {
-      Promise.all([res[0].json(), res[1].json(), res[2].json()]).then((res2) => {
-        const isLiked = res2[0].voted;
-        const likeCount = res2[0].count;
-        const { likedUsers } = res2[0];
-        const books = [...res2[1][0].backlog, ...res2[1][0].currently, ...res2[1][0].completed];
-        const booksObj = {};
-        const { comments } = res2[2];
+    const likes = await this.api.getUserLikesBookshelf(loggedInUserId, this.bookshelfId);
+    const bookshelf = await this.api.getUserBookshelf(this.bookshelfId);
+    const commentsData = await this.api.getUserBookshelfComments(this.bookshelfId);
 
-        books.map((book, index) => {
-          booksObj[`book-${index + 1}`] = {
-            id: `book-${index + 1}`,
-            content: {
-              bookId: book.bookId,
-              title: book.title,
-              author: book.author,
-              cover: book.cover,
-              description: book.description,
-              avgRating: book.avgRating,
-              pageCount: book.pageCount,
-              isbn: book.isbn,
-              status: book.status,
-            },
-          };
+    const isLiked = likes.voted;
+    const likeCount = likes.count;
+    const { likedUsers } = likes;
+    const books = [...bookshelf[0].backlog, ...bookshelf[0].currently, ...bookshelf[0].completed];
+    const booksObj = {};
+    const { comments } = commentsData;
 
-          if (book.status === 'backlog') {
-            data.columns.backlog.bookIds.push(`book-${index + 1}`);
-          }
+    books.map((book, index) => {
+      booksObj[`book-${index + 1}`] = {
+        id: `book-${index + 1}`,
+        content: {
+          bookId: book.bookId,
+          title: book.title,
+          author: book.author,
+          cover: book.cover,
+          description: book.description,
+          avgRating: book.avgRating,
+          pageCount: book.pageCount,
+          isbn: book.isbn,
+          status: book.status,
+        },
+      };
 
-          if (book.status === 'completed') {
-            data.columns.completed.bookIds.push(`book-${index + 1}`);
-          }
+      if (book.status === 'backlog') {
+        data.columns.backlog.bookIds.push(`book-${index + 1}`);
+      }
 
-          if (book.status === 'current') {
-            data.columns.current.bookIds.push(`book-${index + 1}`);
-          }
+      if (book.status === 'completed') {
+        data.columns.completed.bookIds.push(`book-${index + 1}`);
+      }
 
-          return null;
-        });
+      if (book.status === 'current') {
+        data.columns.current.bookIds.push(`book-${index + 1}`);
+      }
 
-        data.books = {
-          ...booksObj,
-        };
+      return null;
+    });
 
-        this.setState({
-          isLiked, likeCount, data, likedUsers, comments,
-        });
-      });
+    data.books = {
+      ...booksObj,
+    };
+
+    this.setState({
+      isLiked, likeCount, data, likedUsers, comments,
     });
   }
 

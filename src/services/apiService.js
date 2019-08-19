@@ -42,6 +42,20 @@ export class ApiService {
     )
   }
 
+  getUserBookshelf(bookshelfId) {
+    return this.httpClient.get(
+      `${process.env.REACT_APP_HOSTNAME}/user/bookshelf/${bookshelfId}`,
+      { 'Content-Type': 'application/json' },
+    );
+  }
+
+  getUserBookshelfComments(bookshelfId) {
+    return this.httpClient.get(
+      `${process.env.REACT_APP_HOSTNAME}/bookshelf/comments/${bookshelfId}`,
+      { 'Content-Type': 'application/json' },
+    );
+  }
+
   updateUserBookshelf(bookshelfId, data) {
     return this.httpClient.put(
       `${process.env.REACT_APP_HOSTNAME}/user/update/books/${bookshelfId}`,
@@ -56,6 +70,13 @@ export class ApiService {
       { 'Content-Type': 'application/json' },
       data,
     );
+  }
+
+  getUserLikesBookshelf(userId, bookshelfId) {
+    return this.httpClient.get(
+      `${process.env.REACT_APP_HOSTNAME}/user/list/likes/${userId}/${bookshelfId}`,
+      { 'Content-Type': 'application/json' }
+    ); 
   }
 
   submitBookshelfComment(data) {
@@ -73,6 +94,8 @@ export class ApiService {
       data,
     );
   }
+
+ 
 }
 
 export default ApiService;
