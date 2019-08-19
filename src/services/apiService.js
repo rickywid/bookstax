@@ -51,7 +51,6 @@ export class ApiService {
   }
 
   addUserLikeBookshelf(data) {
-    console.log(data)
     return this.httpClient.delete(
       `${process.env.REACT_APP_HOSTNAME}/user/update/list/likes`,
       { 'Content-Type': 'application/json' },
@@ -60,9 +59,16 @@ export class ApiService {
   }
 
   submitBookshelfComment(data) {
-    console.log(data)
     return this.httpClient.post(
       `${process.env.REACT_APP_HOSTNAME}/bookshelf/comment/new`,
+      { 'Content-Type': 'application/json' },
+      data,
+    );
+  }
+
+  addBookToBookshelf(id, data) {
+    return this.httpClient.post(
+      `${process.env.REACT_APP_HOSTNAME}/user/addbook/${id}`,
       { 'Content-Type': 'application/json' },
       data,
     );
@@ -70,4 +76,3 @@ export class ApiService {
 }
 
 export default ApiService;
- 
