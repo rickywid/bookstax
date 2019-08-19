@@ -2,21 +2,6 @@ import Api from '../services/api';
 
 const api = new Api().Resolve();
 
-export const getUserProfile = () => (dispatch) => {
-  fetch(`${process.env.REACT_APP_HOSTNAME}/user/2`, {
-    credentials: 'include',
-    headers: {
-      'Access-Control-Allow-Credentials': true,
-    },
-  }).then(res => res.json()).then((data) => {
-    // set user profile to global application state
-    dispatch({
-      type: 'GET_USER',
-      payload: data[0],
-    });
-  });
-};
-
 export const getLoggedInUserProfile = () => async (dispatch) => {
   // https://stackoverflow.com/questions/16434893/node-express-passport-req-user-undefined
   const userId = localStorage.getItem('userID') || '';
