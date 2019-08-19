@@ -11,6 +11,17 @@ export class ApiService {
     'Content-Type': 'application/json; charset=utf-8',
   }
 
+  getAllUsers() {
+    return this.httpClient.get(
+      `${process.env.REACT_APP_HOSTNAME}/users`,
+      {
+        Accept: 'application/json',
+        'Content-Type': 'application/json; charset=utf-8',
+        'Access-Control-Allow-Credentials': true,
+      },
+    );    
+  }
+
   getCurrentUserProfile(id) {
     return this.httpClient.get(
       `${process.env.REACT_APP_HOSTNAME}/user/auth?id=${id}`,

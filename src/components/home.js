@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import Api from '../services/api';
 
 import * as actions from '../actions/simpleAction';
 import { ReactComponent as Avatar } from '../assets/icons/avatar.svg';
@@ -25,9 +26,11 @@ const AvatarStyle = styled(Avatar)`
 `;
 
 class Home extends React.Component {
+  api = new Api().Resolve();
+
   state = { users: [] }
 
-  componentDidMount() {
+  async componentDidMount() {
     const { state } = this.props.location; {/* eslint-disable-line */}
     // if Dashboard component is rendered from a redirect from user signup page, fetch user's data
     if (state) {
@@ -38,7 +41,8 @@ class Home extends React.Component {
       }
     }
 
-    fetch(`${process.env.REACT_APP_HOSTNAME}/users`).then(res => res.json()).then(users => this.setState({ users }));
+    const users = await this.api.getAllUsers();
+    this.setState({ users });
   }
 
   render() {
