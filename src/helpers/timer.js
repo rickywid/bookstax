@@ -1,7 +1,3 @@
-// var timer = document.getElementById('timer');
-// var toggleBtn = document.getElementById('toggle');
-// var resetBtn = document.getElementById('reset');
-
 class Timer {
   constructor() {
     this.on = false;

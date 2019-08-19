@@ -24,7 +24,6 @@ class BookItem extends React.Component {
               {...provided.draggableProps}
               {...provided.dragHandleProps}
               ref={provided.innerRef}
-              // innerRef={provided.innerRef}
             >
               <p style={{ margin: 0 }}>{book.content.title}</p>
             </Container>
@@ -48,5 +47,4 @@ BookItem.propTypes = {
 };
 
 export default BookItem;
-
 // https://github.com/atlassian/react-beautiful-dnd/issues/875

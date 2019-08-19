@@ -322,7 +322,6 @@ class MeList extends React.Component {
     }
 
     this.setState({ isLiked: !isLiked }, () => {
-      // add id to likes table
       fetch(`${process.env.REACT_APP_HOSTNAME}/user/update/list/likes`, {
         method: 'POST',
         headers: {

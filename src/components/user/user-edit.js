@@ -137,38 +137,12 @@ class UserEdit extends React.Component {
         <Tabs animated={false} defaultActiveKey="1" onChange={() => this.callback()}>
           <TabPane tab="Profile" key="1">
             <Form onSubmit={this.handleSubmit}>
-
-              {/* NAME */}
-
               <Form.Item label="Name">
                 {getFieldDecorator('name', {
                   initialValue: user.name,
                   rules: [{ required: false, message: 'Please input a name', whitespace: true }],
                 })(<Input />)}
               </Form.Item>
-
-              {/* USER NAME */}
-
-              {/* <Form.Item
-                label={
-                  (
-                    <span>
-                      Username&nbsp;
-                      <Tooltip title="Display name on your profile">
-                        <Icon type="question-circle-o" />
-                      </Tooltip>
-                    </span>
-                  )
-                }
-              >
-                {getFieldDecorator('username', {
-                  initialValue: user.username,
-                  rules: [{ required: false, message: 'Please input a display name', whitespace: true }],
-                })(<Input />)}
-              </Form.Item>* /}
-
-              {/* EMAIL */}
-
               <Form.Item label="E-mail">
                 {getFieldDecorator('email', {
                   initialValue: user.email,
@@ -184,9 +158,6 @@ class UserEdit extends React.Component {
                   ],
                 })(<Input />)}
               </Form.Item>
-
-              {/* COUNTRY */}
-
               <Form.Item label="Country" hasFeedback>
                 {getFieldDecorator('country', {
                   initialValue: user.location,
@@ -197,9 +168,6 @@ class UserEdit extends React.Component {
                   </Select>,
                 )}
               </Form.Item>
-
-              {/* DESCRIPTION */}
-
               <Form.Item label="Bio">
                 {getFieldDecorator('bio', {
                   initialValue: user.description,
@@ -227,9 +195,6 @@ class UserEdit extends React.Component {
                   <Input />,
                 )}
               </Form.Item>
-
-              {/* GENRES */}
-
               <Form.Item label="I'm interested in the following genres">
                 {getFieldDecorator('genres', {
                   initialValue: user.genres.map(genre => genre.id),

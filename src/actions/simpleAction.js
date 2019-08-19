@@ -59,7 +59,7 @@ export const signup = (values, history) => (
 
           return;
         }
-        // save token to local storage
+
         localStorage.setItem('token', json.token);
         localStorage.setItem('userID', json.id);
 
@@ -122,11 +122,9 @@ export const signin = (values, history) => (
         }
         return response.json(); {/* eslint-disable-line */}
       }).then((json) => {
-        // save token to local storage
         localStorage.setItem('token', json.token);
         localStorage.setItem('userID', json.id);
 
-        // call dispatch to AUTH_USER reducer
         dispatch({
           type: 'IS_AUTH',
           payload: true,
@@ -138,6 +136,7 @@ export const signin = (values, history) => (
       });
   }
 );
+
 export const googleSignIn = history => (
   (dispatch) => {
     dispatch({
