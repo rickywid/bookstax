@@ -53,6 +53,13 @@ export class ApiService {
     )
   }
 
+  deleteUser(userId) {
+    return this.httpClient.delete(
+      `${process.env.REACT_APP_HOSTNAME}/user/delete/${userId}`,
+      { 'Content-Type': 'application/json' },
+    );
+  }
+
   getUserBookshelf(bookshelfId) {
     return this.httpClient.get(
       `${process.env.REACT_APP_HOSTNAME}/user/bookshelf/${bookshelfId}`,
