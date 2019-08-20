@@ -67,6 +67,20 @@ export class ApiService {
     );
   }
 
+  getUserBookshelfFavourites(userId) {
+    return this.httpClient.get(
+      `${process.env.REACT_APP_HOSTNAME}/favourites/${userId}`,
+      { 'Content-Type': 'application/json' },
+    ); 
+  }
+
+  getUserGenres(userId) {
+    return this.httpClient.get(
+      `${process.env.REACT_APP_HOSTNAME}/user/${userId}/genre`,
+      { 'Content-Type': 'application/json' },
+    ); 
+  }
+
   getUserBookshelfComments(bookshelfId) {
     return this.httpClient.get(
       `${process.env.REACT_APP_HOSTNAME}/bookshelf/comments/${bookshelfId}`,

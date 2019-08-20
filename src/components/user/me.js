@@ -127,22 +127,16 @@ class Me extends React.Component {
       user.avatar_url = state.file;
     }
 
-
-    const data = await fetch(`${process.env.REACT_APP_HOSTNAME}/user/bookshelf/${user.list_id}`);
-    const userList = await data.json();
-
-    const data2 = await fetch(`${process.env.REACT_APP_HOSTNAME}/favourites/${user.id}`);
-    const userFavourites = await data2.json();
-
-    const data3 = await fetch(`${process.env.REACT_APP_HOSTNAME}/user/${user.id}/genre`);
-    const userGenres = await data3.json();
+    const bookshelf = await this.api.getUserBookshelf(user.list_id);
+    const favourites = await this.api.getUserBookshelfFavourites(user.id);
+    const genres = await this.api.getUserGenres(user.id);
 
     this.setState((prevState) => {
       const state2 = prevState;
       state2.user = user;
-      state2.user.bookshelf = userList;
-      state2.user.favourites = userFavourites;
-      state2.user.genres = userGenres;
+      state2.user.bookshelf = bookshelf;
+      state2.user.favourites = favourites;
+      state2.user.genres = genres;
 
       return state2;
     });
