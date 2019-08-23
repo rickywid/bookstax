@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import * as actions from '../../actions/simpleAction';
+import Api from '../../services/api';
 
 const ButtonDanger = styled(Button)`
   background: #f5222d !important;
@@ -20,6 +21,8 @@ const ButtonDanger = styled(Button)`
 `;
 
 class ConfirmDelete extends Component {
+  api = new Api().Resolve();
+
   constructor(props) {
     super(props);
 
@@ -29,17 +32,9 @@ class ConfirmDelete extends Component {
   }
 
   handleDelete = () => {
-    const { id } = this.props;
+    const { id, signOut } = this.props;
 
-    fetch(`${process.env.REACT_APP_HOSTNAME}/user/delete/${id}`, {
-      method: 'DELETE',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-    });
-
-    const { signOut } = this.props;
+    this.api.deleteUser(id);
     signOut();
   }
 

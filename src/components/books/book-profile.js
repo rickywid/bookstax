@@ -9,6 +9,7 @@ import {
 } from 'antd';
 import styled from 'styled-components';
 import moment from 'moment';
+import Api from '../../services/api';
 import Divider from '../../styled-components/divider';
 
 const Wrapper = styled.div``;
@@ -75,6 +76,8 @@ const ButtonWrapper = styled.div`
 const { Panel } = Collapse;
 
 class BookProfile extends React.Component {
+  api = new Api().Resolve();
+
   constructor(props) {
     super(props);
     this.state = {
@@ -117,14 +120,8 @@ class BookProfile extends React.Component {
       },
     };
 
-    // save book to user's backlog
-    await fetch(`${process.env.REACT_APP_HOSTNAME}/user/addbook/${loggedInUserId}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    }).then(() => message.success(`${book.title} successfully added to your backlog`));
+    await this.api.addBookToBookshelf(loggedInUserId, data);
+    message.success(`${book.title} successfully added to your backlog`);
   }
 
 

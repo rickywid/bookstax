@@ -87,7 +87,7 @@ class SearchResults extends React.Component {
     this.setState({ currentPage: page });
   }
 
-  saveBook = (book) => {
+  saveBook = async (book) => {
     const bookId = book.id; {/* eslint-disable-line */}
     const { loggedInUserListId, loggedInUserId } = this.props;
 
@@ -109,14 +109,8 @@ class SearchResults extends React.Component {
       },
     };
 
-    // save book to user's backlog
-    fetch(`${process.env.REACT_APP_HOSTNAME}/user/addbook/${loggedInUserId}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    }).then(() => message.success(`${book.volumeInfo.title} successfully added to your backlog`));
+    await this.api.addBookToBookshelf(loggedInUserId, data);
+    message.success(`${book.title} successfully added to your backlog`);
   }
 
   renderItems() {

@@ -113,8 +113,7 @@ class MeList extends React.Component {
     this.deleteBook = this.deleteBook.bind(this);
   }
 
-  componentDidMount() {
-    // const bookshelfId = window.location.pathname.split('/')[4];
+  async componentDidMount() {
     const { loggedInUserId, loggedInUserListId } = this.props;
 
     const data = {
@@ -139,61 +138,54 @@ class MeList extends React.Component {
       columnOrder: ['backlog', 'current', 'completed'],
     };
 
+    const likes = await this.api.getUserLikesBookshelf(loggedInUserId, loggedInUserListId);
+    const bookshelf = await this.api.getUserBookshelf(loggedInUserListId);
+    const commentsData = await this.api.getUserBookshelfComments(loggedInUserListId);
 
-    Promise.all([
-      fetch(`${process.env.REACT_APP_HOSTNAME}/user/list/likes/${loggedInUserId}/${loggedInUserListId}`),
-      fetch(`${process.env.REACT_APP_HOSTNAME}/user/bookshelf/${loggedInUserListId}`),
-      fetch(`${process.env.REACT_APP_HOSTNAME}/favourites/${loggedInUserId}`),
-      fetch(`${process.env.REACT_APP_HOSTNAME}/bookshelf/comments/${loggedInUserListId}`),
-    ]).then((res) => {
-      Promise.all([res[0].json(), res[1].json(), res[2].json(), res[3].json()]).then((res2) => {
-        const isLiked = res2[0].voted;
-        const likeCount = res2[0].count;
-        const { likedUsers } = res2[0];
-        const books = [...res2[1][0].backlog, ...res2[1][0].completed, ...res2[1][0].currently];
-        const booksObj = {};
-        const favourites = res2[2];
-        const comments = res2[3];
+    const isLiked = likes.voted;
+    const likeCount = likes.count;
+    const { likedUsers } = likes;
+    const books = [...bookshelf[0].backlog, ...bookshelf[0].currently, ...bookshelf[0].completed];
+    const booksObj = {};
+    const { comments } = commentsData;
 
-        books.map((book, index) => {
-          booksObj[`book-${index + 1}`] = {
-            id: `book-${index + 1}`,
-            content: {
-              bookId: book.bookId,
-              title: book.title,
-              author: book.author,
-              cover: book.cover,
-              description: book.description,
-              avgRating: book.avgRating,
-              pageCount: book.pageCount,
-              isbn: book.isbn,
-              status: book.status,
-            },
-          };
+    books.map((book, index) => {
+      booksObj[`book-${index + 1}`] = {
+        id: `book-${index + 1}`,
+        content: {
+          bookId: book.bookId,
+          title: book.title,
+          author: book.author,
+          cover: book.cover,
+          description: book.description,
+          avgRating: book.avgRating,
+          pageCount: book.pageCount,
+          isbn: book.isbn,
+          status: book.status,
+        },
+      };
 
-          if (book.status === 'backlog') {
-            data.columns.backlog.bookIds.push(`book-${index + 1}`);
-          }
+      if (book.status === 'backlog') {
+        data.columns.backlog.bookIds.push(`book-${index + 1}`);
+      }
 
-          if (book.status === 'completed') {
-            data.columns.completed.bookIds.push(`book-${index + 1}`);
-          }
+      if (book.status === 'completed') {
+        data.columns.completed.bookIds.push(`book-${index + 1}`);
+      }
 
-          if (book.status === 'current') {
-            data.columns.current.bookIds.push(`book-${index + 1}`);
-          }
+      if (book.status === 'current') {
+        data.columns.current.bookIds.push(`book-${index + 1}`);
+      }
 
-          return null;
-        });
+      return null;
+    });
 
-        data.books = {
-          ...booksObj,
-        };
+    data.books = {
+      ...booksObj,
+    };
 
-        this.setState({
-          isLiked, likeCount, data, likedUsers, favourites, comments: comments.comments,
-        });
-      });
+    this.setState({
+      isLiked, likeCount, data, likedUsers, comments,
     });
   }
 
@@ -283,7 +275,6 @@ class MeList extends React.Component {
     // insert moved item into new position if dropped in same column
     newTaskIds.splice(destination.index, 0, draggableId);
 
-    // update state
     data.columns = {
       ...data.columns,
       [newColumn.id]: newColumn,
@@ -380,7 +371,6 @@ class MeList extends React.Component {
       const state = prevState;
       state.comment = '';
 
-      // push comment
       const userComment = {
         avatar_url: user.avatar_url,
         username: user.username,
@@ -405,7 +395,7 @@ class MeList extends React.Component {
 
       delete state.data.books[bookId];
 
-      const keys = Object.keys(state.data.books); // book-1, book-2 etc...
+      const keys = Object.keys(state.data.books);
       keys.map((key, index) => {
         booksObj[`book-${index + 1}`] = {
           id: `book-${index + 1}`,
@@ -472,8 +462,6 @@ class MeList extends React.Component {
         </TopWrapper>
         <ReactDnDArea>
           <DragDropContext
-            // onDragStart
-            // onDragupdate
             onDragEnd={this.onDragEnd}
           >
             {data.columnOrder.map((columnId, index) => {

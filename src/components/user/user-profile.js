@@ -100,21 +100,17 @@ class UserProfile extends React.Component {
 
   async componentDidMount() {
     const user = await this.api.getUserProfile(this.userId);
-    const data = await fetch(`${process.env.REACT_APP_HOSTNAME}/user/bookshelf/${user[0].list_id}`);
-    const userList = await data.json();
 
-    const data2 = await fetch(`${process.env.REACT_APP_HOSTNAME}/favourites/${this.userId}`);
-    const userFavourites = await data2.json();
-
-    const data3 = await fetch(`${process.env.REACT_APP_HOSTNAME}/user/${this.userId}/genre`);
-    const userGenres = await data3.json();
+    const bookshelf = await this.api.getUserBookshelf(user[0].list_id);
+    const favourites = await this.api.getUserBookshelfFavourites(this.userId);
+    const genres = await this.api.getUserGenres(this.userId);
 
     this.setState((prevState) => {
       const state = prevState;
       state.user = user[0]; {/* eslint-disable-line */}
-      state.user.bookshelf = userList[0]; {/* eslint-disable-line */}
-      state.user.favourites = userFavourites;
-      state.user.genres = userGenres;
+      state.user.bookshelf = bookshelf[0]; {/* eslint-disable-line */}
+      state.user.favourites = favourites;
+      state.user.genres = genres;
       return state;
     });
   }

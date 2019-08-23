@@ -11,6 +11,17 @@ export class ApiService {
     'Content-Type': 'application/json; charset=utf-8',
   }
 
+  getAllUsers() {
+    return this.httpClient.get(
+      `${process.env.REACT_APP_HOSTNAME}/users`,
+      {
+        Accept: 'application/json',
+        'Content-Type': 'application/json; charset=utf-8',
+        'Access-Control-Allow-Credentials': true,
+      },
+    );    
+  }
+
   getCurrentUserProfile(id) {
     return this.httpClient.get(
       `${process.env.REACT_APP_HOSTNAME}/user/auth?id=${id}`,
@@ -42,6 +53,41 @@ export class ApiService {
     )
   }
 
+  deleteUser(userId) {
+    return this.httpClient.delete(
+      `${process.env.REACT_APP_HOSTNAME}/user/delete/${userId}`,
+      { 'Content-Type': 'application/json' },
+    );
+  }
+
+  getUserBookshelf(bookshelfId) {
+    return this.httpClient.get(
+      `${process.env.REACT_APP_HOSTNAME}/user/bookshelf/${bookshelfId}`,
+      { 'Content-Type': 'application/json' },
+    );
+  }
+
+  getUserBookshelfFavourites(userId) {
+    return this.httpClient.get(
+      `${process.env.REACT_APP_HOSTNAME}/favourites/${userId}`,
+      { 'Content-Type': 'application/json' },
+    ); 
+  }
+
+  getUserGenres(userId) {
+    return this.httpClient.get(
+      `${process.env.REACT_APP_HOSTNAME}/user/${userId}/genre`,
+      { 'Content-Type': 'application/json' },
+    ); 
+  }
+
+  getUserBookshelfComments(bookshelfId) {
+    return this.httpClient.get(
+      `${process.env.REACT_APP_HOSTNAME}/bookshelf/comments/${bookshelfId}`,
+      { 'Content-Type': 'application/json' },
+    );
+  }
+
   updateUserBookshelf(bookshelfId, data) {
     return this.httpClient.put(
       `${process.env.REACT_APP_HOSTNAME}/user/update/books/${bookshelfId}`,
@@ -51,7 +97,6 @@ export class ApiService {
   }
 
   addUserLikeBookshelf(data) {
-    console.log(data)
     return this.httpClient.delete(
       `${process.env.REACT_APP_HOSTNAME}/user/update/list/likes`,
       { 'Content-Type': 'application/json' },
@@ -59,15 +104,30 @@ export class ApiService {
     );
   }
 
+  getUserLikesBookshelf(userId, bookshelfId) {
+    return this.httpClient.get(
+      `${process.env.REACT_APP_HOSTNAME}/user/list/likes/${userId}/${bookshelfId}`,
+      { 'Content-Type': 'application/json' }
+    ); 
+  }
+
   submitBookshelfComment(data) {
-    console.log(data)
     return this.httpClient.post(
       `${process.env.REACT_APP_HOSTNAME}/bookshelf/comment/new`,
       { 'Content-Type': 'application/json' },
       data,
     );
   }
+
+  addBookToBookshelf(id, data) {
+    return this.httpClient.post(
+      `${process.env.REACT_APP_HOSTNAME}/user/addbook/${id}`,
+      { 'Content-Type': 'application/json' },
+      data,
+    );
+  }
+
+ 
 }
 
 export default ApiService;
- 
