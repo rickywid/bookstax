@@ -7,7 +7,6 @@ import styled from 'styled-components';
 import * as actions from '../actions/simpleAction';
 import { ReactComponent as Avatar } from '../assets/icons/avatar.svg';
 
-
 const AvatarStyle = styled(Avatar)`
   width: 50px;
   margin-bottom: 15px;
