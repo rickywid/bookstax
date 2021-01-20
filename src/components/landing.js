@@ -129,6 +129,7 @@ class Landing extends React.Component {
         <LandingRight>
           <LoginWrapper>
             <h2>SIGN IN</h2>
+            <small>test login: testuser/password</small>
             <Form onSubmit={this.handleSubmit} className="login-form">
               <Form.Item>
                 {getFieldDecorator('login', {
